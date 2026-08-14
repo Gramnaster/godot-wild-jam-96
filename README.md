@@ -2,16 +2,16 @@
 Hello, this is our primary project for the Godot Wild Jam #96.
 
 # Lessons to Practise - as much as we can even fit:
-Top-down movement and collision
-Basic score / HUD logic
-Enemy spawning and pacing intuition
-Signals / autoload thinking
-Basic AI rhythm and boss-behavior instincts
-IDamageable as the first real gameplay interface
-Explicit C# state-machine structure instead of ad hoc logic
-Weapon-as-child-scene composition
-Mouse aim plus homing / steering math
-RayCast2D line-of-sight checks
+- Top-down movement and collision
+- Basic score / HUD logic
+- Enemy spawning and pacing intuition
+- Signals / autoload thinking
+- Basic AI rhythm and boss-behavior instincts
+- IDamageable as the first real gameplay interface
+- Explicit C# state-machine structure instead of ad hoc logic
+- Weapon-as-child-scene composition
+- Mouse aim plus homing / steering math
+- RayCast2D line-of-sight checks
 
 # Architecture
 We'll be trying to practise the Sim-View architecture, which is going to make things harder, but we need to know exactly where we stand anyway.
