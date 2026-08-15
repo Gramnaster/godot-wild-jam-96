@@ -25,4 +25,9 @@
   <ItemGroup>
     <ProjectReference Include="GodotWildJam96.Sim\GodotWildJam96.Sim.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="GodotWildJam96.Sim\**\*.cs" />
+    <EmbeddedResource Remove="GodotWildJam96.Sim\**\*" />
+    <None Remove="GodotWildJam96.Sim\**\*" />
+  </ItemGroup>
 </Project>

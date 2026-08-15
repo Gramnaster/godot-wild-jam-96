@@ -94,3 +94,6 @@ dotnet_diagnostic.CA1825.severity = warning
 dotnet_diagnostic.CA1861.severity = warning
 # Prefer concrete types over interfaces for local variables (avoids interface dispatch overhead)
 dotnet_diagnostic.CA1859.severity = suggestion
+
+# Temporary suppression
+dotnet_diagnostic.CS0579.severity = none

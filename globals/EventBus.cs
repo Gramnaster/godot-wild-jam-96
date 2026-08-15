@@ -3,6 +3,6 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class SignalHub : Node
+public partial class EventBus : Node
 {
 }

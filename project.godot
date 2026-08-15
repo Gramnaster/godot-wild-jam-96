@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SignalHub="*uid://mohlbuayagnr"
+EventBus="*uid://w8vh3j4r7513"
 
 [display]
 
