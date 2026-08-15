@@ -5,4 +5,5 @@ namespace GodotWildJam96;
 
 public partial class EventBus : Node
 {
+
 }

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://csfc3p5naeeb"]
+
+[ext_resource type="Script" uid="uid://bqxiayu5ig6id" path="res://scenes/Sun/Sun.cs" id="1_5cq3v"]
+[ext_resource type="Texture2D" uid="uid://bje1me7viny8i" path="res://assets/sun/sun.png" id="2_io6w5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
+
+[node name="Sun" type="Area2D" unique_id=1970878653]
+script = ExtResource("1_5cq3v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1364876561]
+shape = SubResource("CircleShape2D_pm0ju")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=367024031]
+modulate = Color(1, 1, 1, 0.37254903)
+scale = Vector2(0.14, 0.14)
+texture = ExtResource("2_io6w5")
