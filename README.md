@@ -41,4 +41,20 @@ Honestly should only be used for SignalHub
 ## Resources
 Godot Resources
 
+## Extensions
+C#
+C# Dev Kit
+csproj Extensions
+Godot Docs for C#
+Godot Files
+Godot Snippets for C#
+Godot Tools Enhanced Sharp
+Roslynator
+
+MSBuild project tools
+GitLens
+EditorConfig
+Error Lens
+
+
 
