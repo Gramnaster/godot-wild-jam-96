@@ -1,7 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
-/android/
+GodotWildJam96.Game/android/
 
 # .NET build output
 bin/
 obj/
+
+# Visual Studio
+.vs/
