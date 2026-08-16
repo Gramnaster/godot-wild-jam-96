@@ -51,6 +51,15 @@ public partial class Player : CharacterBody2D
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
+
+        EventBus.Instance.OnShipEntered += OnPlayerEntered;
+        EventBus.Instance.OnShipExited += OnPlayerExited;
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Instance.OnShipEntered -= OnPlayerEntered;
+        EventBus.Instance.OnShipExited -= OnPlayerExited;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -78,18 +87,6 @@ public partial class Player : CharacterBody2D
         // Debug
         DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
         DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
-    }
-
-    public override void _Ready()
-    {
-        EventBus.Instance.OnShipEntered += OnPlayerEntered;
-        EventBus.Instance.OnShipExited += OnPlayerExited;
-    }
-
-    public override void _ExitTree()
-    {
-        EventBus.Instance.OnShipEntered -= OnPlayerEntered;
-        EventBus.Instance.OnShipExited -= OnPlayerExited;
     }
 
     public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
