@@ -6,12 +6,13 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
-    public const float SHIP_MOVESPEED = 300.0f;
+    private const float SHIP_MOVESPEED = 300.0f;
 
     // Radians per scond. Tau is one full revolution per second.
-    [Export] public float TurnSpeed { get; set; } = Mathf.Tau;
+    [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
+    [Export] private Label DebugLabel { get; set; }
 
-    public Vector2 shipVelocity = new Vector2();
+    private Vector2 shipVelocity = new();
 
     private float _targetRotation;
 
@@ -37,6 +38,9 @@ public partial class Player : CharacterBody2D
     {
         // Set initial _rotation for use in GetInput
         _targetRotation = Rotation;
+
+        // Makes the label independent of Player transformations
+        DebugLabel.TopLevel = true;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -47,7 +51,7 @@ public partial class Player : CharacterBody2D
         MoveAndSlide();
     }
 
-    public void GetInput(float dt)
+    private void GetInput(float dt)
     {
         Vector2 shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
         Velocity = shipVelocity * SHIP_MOVESPEED;
@@ -60,5 +64,9 @@ public partial class Player : CharacterBody2D
 
         // Final ship rotation is what it should be pointed towards
         Rotation = Mathf.RotateToward(Rotation, _targetRotation, TurnSpeed * dt);
+
+        // Debug
+        DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
+        DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
     }
 }

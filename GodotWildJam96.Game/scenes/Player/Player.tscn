@@ -6,8 +6,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pm0ju"]
 size = Vector2(37, 21)
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784]
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("DebugLabel")]
 script = ExtResource("1_h00vy")
+DebugLabel = NodePath("Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1985309505]
 shape = SubResource("RectangleShape2D_pm0ju")
@@ -15,3 +16,21 @@ shape = SubResource("RectangleShape2D_pm0ju")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
 scale = Vector2(0.27, 0.27)
 texture = ExtResource("2_ky53y")
+
+[node name="PlayerCam" type="Camera2D" parent="." unique_id=425998596]
+
+[node name="Label" type="Label" parent="." unique_id=211489110]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -34.0
+offset_right = 20.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "text"
+horizontal_alignment = 1
+vertical_alignment = 1
