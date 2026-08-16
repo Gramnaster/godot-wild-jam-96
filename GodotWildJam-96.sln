@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Game", "GodotWildJam96.Game\GodotWildJam96.Game.csproj", "{3E8BC428-935E-48EA-95EB-853E8B195892}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Game", "GodotWildJam96.Game\GodotWildJam-96.csproj", "{3E8BC428-935E-48EA-95EB-853E8B195892}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Sim", "GodotWildJam96.Sim\GodotWildJam96.Sim.csproj", "{876C5A9B-DE0E-4CF6-BFE7-CA5E1F7E2759}"
 EndProject

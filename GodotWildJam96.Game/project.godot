@@ -28,6 +28,7 @@ window/stretch/mode="viewport"
 [dotnet]
 
 project/assembly_name="GodotWildJam-96"
+project/solution_directory="../"
 
 [editor]
 
