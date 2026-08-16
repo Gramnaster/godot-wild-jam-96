@@ -13,8 +13,11 @@ public partial class Player : CharacterBody2D
     [Export] private Label DebugLabel { get; set; }
 
     private Vector2 shipVelocity = new();
-
     private float _targetRotation;
+
+    //Removed a boolean _canSiphon as if SunInteractionArea is null, siphon cannot be started, and if it is not null, siphon can be started. So this boolean was redundant.
+    public SunInteractionArea _currentSunInteractionArea;
+    public bool _siphonUnderway = false;
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -31,6 +34,13 @@ public partial class Player : CharacterBody2D
         if (@event.IsActionPressed("switch_weapon_right"))
         {
             GD.Print("Switch Weapon Right");
+        }
+
+        if (@event.IsActionPressed("siphon") && _currentSunInteractionArea != null)
+        {
+            GD.Print("Start Siphoning");
+            _siphonUnderway = true;
+            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea);
         }
     }
 
@@ -68,5 +78,36 @@ public partial class Player : CharacterBody2D
         // Debug
         DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
         DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
+    }
+
+    public override void _Ready()
+    {
+        EventBus.Instance.OnShipEntered += OnPlayerEntered;
+        EventBus.Instance.OnShipExited += OnPlayerExited;
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Instance.OnShipEntered -= OnPlayerEntered;
+        EventBus.Instance.OnShipExited -= OnPlayerExited;
+    }
+
+    public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
+    {
+        GD.Print("Ship entered " + interactionArea.Name);
+        _currentSunInteractionArea = interactionArea;
+    }
+
+
+    public void OnPlayerExited(Node2D player, SunInteractionArea interactionArea)
+    {
+        GD.Print("Ship exited " + interactionArea.Name);
+        if (_siphonUnderway == true)
+        {
+            GD.Print("Siphon stopped, you lost some energy!");
+            _siphonUnderway = false;
+        }
+        _currentSunInteractionArea = null;
+        EventBus.Instance.EmitOnSiphonEnd(interactionArea);
     }
 }
