@@ -13,7 +13,7 @@ public partial class SunInteractionArea : Area2D
         BodyEntered += OnBodyEntered;
         BodyExited += OnBodyExited;
 
-        this._lightRadiusSprite = this.GetChild<Sprite2D>(0);
+        _lightRadiusSprite = GetChild<Sprite2D>(0);
     }
 
     public override void _ExitTree()

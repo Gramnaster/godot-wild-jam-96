@@ -16,6 +16,7 @@ public partial class Sun : Area2D
     public float _sunSiphonRate = 1.01f;
 
     public Sprite2D _lightRadiusSprite;
+    public SunInteractionArea _mySunInteractionArea;
 
 
 	// Called when the node enters the scene tree for the first time.
@@ -23,12 +24,14 @@ public partial class Sun : Area2D
     {
         EventBus.Instance.OnSiphonStart += StartSiphon;
         EventBus.Instance.OnSiphonEnd += StopSiphon;
+
         GD.Print($"[{GetPath()}] Subscribed to EventBus {EventBus.Instance.GetInstanceId()}");
 
-        _lightRadiusSprite = this.GetChild<SunInteractionArea>(0)._lightRadiusSprite;
+        _mySunInteractionArea = GetChild<SunInteractionArea>(0);
+        _lightRadiusSprite = _mySunInteractionArea._lightRadiusSprite;
     }
 
-    public override void _Draw()
+    public override void _ExitTree()
     {
         EventBus.Instance.OnSiphonStart -= StartSiphon;
         EventBus.Instance.OnSiphonEnd -= StopSiphon;
@@ -53,7 +56,7 @@ public partial class Sun : Area2D
 
     public void StartSiphon(SunInteractionArea sunInteractionArea)
     {
-        if (sunInteractionArea != null)
+        if (sunInteractionArea != null && sunInteractionArea == _mySunInteractionArea)
         {
             _siphonOngoing = true;
         }
