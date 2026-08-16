@@ -12,7 +12,7 @@ public partial class Player : CharacterBody2D
     [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
     [Export] private Label DebugLabel { get; set; }
 
-    private Vector2 shipVelocity = new();
+    private Vector2 _shipVelocity = new();
     private float _targetRotation;
 
     //Removed a boolean _canSiphon as if SunInteractionArea is null, siphon cannot be started, and if it is not null, siphon can be started. So this boolean was redundant.
@@ -72,13 +72,13 @@ public partial class Player : CharacterBody2D
 
     private void GetInput(float dt)
     {
-        Vector2 shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Velocity = shipVelocity * SHIP_MOVESPEED;
+        Vector2 _shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+        Velocity = _shipVelocity * SHIP_MOVESPEED;
 
         // Gives us where ship should be pointing
-        if (shipVelocity != Vector2.Zero)
+        if (_shipVelocity != Vector2.Zero)
         {
-            _targetRotation = shipVelocity.Angle();
+            _targetRotation = _shipVelocity.Angle();
         }
 
         // Final ship rotation is what it should be pointed towards
