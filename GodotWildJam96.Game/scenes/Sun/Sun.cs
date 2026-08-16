@@ -45,7 +45,7 @@ public partial class Sun : Area2D
                 return;
             }
             _lightRadiusSprite.Scale = _lightRadiusSprite.Scale/_sunSiphonRate;
-            GD.Print(_lightRadiusSprite.Scale);
+            GD.Print("Siphoning!");
             this._currentEnergy /= _sunSiphonRate;
         }
     }
