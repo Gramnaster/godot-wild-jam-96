@@ -5,6 +5,7 @@ namespace GodotWildJam96;
 
 public partial class EventBus : Node
 {
+
     public static EventBus Instance { get; private set; }
     public event Action<Node2D, SunInteractionArea> OnShipEntered;
     public event Action<Node2D, SunInteractionArea> OnShipExited;
@@ -41,6 +42,7 @@ public partial class EventBus : Node
 
     public void EmitOnSiphonEnd(SunInteractionArea interactionArea)
     {
+        GD.Print($"Siphon End Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonEnd?.GetInvocationList().Length ?? 0}");
         OnSiphonEnd?.Invoke(interactionArea);
     }
 }
