@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b64sw3rw2gko4"]
+
+[ext_resource type="PackedScene" uid="uid://dtnpot34cv61j" path="res://scenes/ScrollingBackground/ScrollingBackground.tscn" id="1_nrmop"]
+[ext_resource type="PackedScene" uid="uid://23h8lvgv6cx2" path="res://scenes/Player/Player.tscn" id="2_e7jje"]
+
+[node name="LevelBase" type="Node" unique_id=2017188397]
+
+[node name="ScrollingBackground" parent="." unique_id=548645227 instance=ExtResource("1_nrmop")]
+z_index = -10
+
+[node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
+
+[node name="Enemies" type="Node" parent="." unique_id=1397552595]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44243129]
