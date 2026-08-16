@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://23h8lvgv6cx2"]
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
-[ext_resource type="Texture2D" uid="uid://cpl0dnnswm1ir" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
+[ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pm0ju"]
 size = Vector2(37, 21)
@@ -13,5 +13,5 @@ script = ExtResource("1_h00vy")
 shape = SubResource("RectangleShape2D_pm0ju")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.27, 0.27)
 texture = ExtResource("2_ky53y")
