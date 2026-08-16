@@ -8,7 +8,7 @@
       "preLaunchTask": "build",
       "program": "${config:godotTools.editorPath.godot4}",
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/GodotWildJam96.Game",
       "stopAtEntry": false,
       "console": "internalConsole"
     },
@@ -19,7 +19,7 @@
       "preLaunchTask": "build",
       "program": "${config:godotTools.editorPath.godot4}",
       "args": ["${fileDirname}/${fileBasenameNoExtension}.tscn"],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/GodotWildJam96.Game",
       "stopAtEntry": false,
       "console": "internalConsole"
     },
@@ -30,7 +30,7 @@
       "preLaunchTask": "build",
       "program": "${env:GODOT4}",
       "args": ["--remote-debug", "tcp://127.0.0.1:6007"],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/GodotWildJam96.Game",
       "stopAtEntry": false
     }
   ]

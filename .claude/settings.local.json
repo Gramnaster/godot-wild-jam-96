@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build-server *)",
+      "Bash(rm -rf \".godot/mono/temp/obj\" \".godot/mono/temp/bin\")",
+      "Bash(dotnet msbuild *)"
+    ]
+  }
+}

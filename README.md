@@ -5,7 +5,7 @@ Hello, this is our primary project for the Godot Wild Jam #96.
 - Install the **.NET/Mono build** of **Godot 4.7.x**.
 - Install **.NET SDK 8.0** or later.
 - Clone via SSH (`git@github.com:Gramnaster/godot-wild-jam-96.git`) - you'll need your own SSH key added to GitHub, or ask for an HTTPS remote instead.
-- Open the project in Godot, then hit the Build (hammer icon, top-right of the editor) once. This restores the NuGet analyzer packages (Roslynator, Meziantou, ErrorProne.NET) and builds both `GodotWildJam-96` and `GodotWildJam96.Sim`.
+- Open `GodotWildJam96.Game/project.godot` in Godot, then hit the Build (hammer icon, top-right of the editor) once. This restores the NuGet analyzer packages (Roslynator, Meziantou, ErrorProne.NET) and builds both `GodotWildJam-96` and `GodotWildJam96.Sim`.
 - Build warnings are treated as errors (`TreatWarningsAsErrors`), so a clean Build here confirms your setup is good before you start writing code.
 
 # Lessons to Practise - as much as we can even fit:
