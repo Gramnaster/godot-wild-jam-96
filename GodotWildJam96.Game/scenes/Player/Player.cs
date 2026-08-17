@@ -21,7 +21,9 @@ public partial class Player : CharacterBody2D
 
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
-    private Vector2 _shipVelocity = new();
+
+    // Disabled because we have no use for it at the moment
+    // private Vector2 _shipVelocity = new();
     private float _targetRotation;
 
     // Temporarily here until I figure out where to put this, ideally Shooter's _speed should go here instead.
@@ -88,13 +90,13 @@ public partial class Player : CharacterBody2D
 
     private void GetInput(float dt)
     {
-        Vector2 _shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Velocity = _shipVelocity * SHIP_MOVESPEED;
+        Vector2 shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+        Velocity = shipVelocity * SHIP_MOVESPEED;
 
         // Gives us where ship should be pointing
-        if (_shipVelocity != Vector2.Zero)
+        if (shipVelocity != Vector2.Zero)
         {
-            _targetRotation = _shipVelocity.Angle();
+            _targetRotation = shipVelocity.Angle();
         }
 
         // Final ship rotation is what it should be pointed towards
