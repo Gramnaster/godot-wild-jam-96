@@ -34,6 +34,9 @@ public partial class BulletBase : Area2D
     // Bullet disappears if it touches anything.
     private void OnAreaEntered(Area2D area)
     {
+        // Bullet can't interact with itself
+        if (area is BulletBase) return;
+
         QueueFree();
     }
 }

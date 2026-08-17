@@ -7,8 +7,8 @@ namespace GodotWildJam96;
 public partial class Shooter : Node2D
 {
     [Export] private PackedScene _bulletScene;
-    [Export] private float _speed = 5.0f;
-    [Export] private float _shootDelay = 0f;
+    [Export] private float _speed = 500.0f;
+    [Export] private float _shootDelay = 0.7f;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Timer _shootTimer;
 
@@ -21,16 +21,22 @@ public partial class Shooter : Node2D
         _shootTimer.Timeout += OnShootTimerTimeout;
     }
 
-    public void Shoot(Vector2 direction)
+    // Extension that uses default speed unless given
+    public void Shoot(Vector2[] directions) => Shoot(directions, _speed);
+
+    public void Shoot(Vector2[] directions, float speed)
     {
         if (!_canShoot) return;
 
-        EventBus.EmitOnCreateBullet(GlobalPosition, direction, _speed, _bulletScene);
+        foreach (Vector2 direction in directions)
+        {
+            EventBus.EmitOnCreateBullet(GlobalPosition, direction, speed, _bulletScene);
+        }
+
         _shootSound.Play();
         _canShoot = false;
         _shootTimer.Start();
     }
-
 
     private void OnShootTimerTimeout()
     {

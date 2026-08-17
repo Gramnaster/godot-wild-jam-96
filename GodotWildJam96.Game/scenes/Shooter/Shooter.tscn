@@ -6,7 +6,7 @@
 [node name="Shooter" type="Node2D" unique_id=1648900959 node_paths=PackedStringArray("_shootSound", "_shootTimer")]
 script = ExtResource("1_fg1hh")
 _bulletScene = ExtResource("2_56sud")
-_speed = 250.0
+_shootDelay = 0.1
 _shootSound = NodePath("AudioStreamPlayer2D")
 _shootTimer = NodePath("ShootTimer")
 

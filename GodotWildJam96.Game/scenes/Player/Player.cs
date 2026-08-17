@@ -6,24 +6,40 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
-    private const float SHIP_MOVESPEED = 300.0f;
+    private const float SHIP_MOVESPEED = 150.0f;
 
+    [Export] private Sprite2D _playerSprite;
+    [Export] private AudioStreamPlayer2D _shootSound;
+    [Export] private Shooter _shooter;
     // Radians per scond. Tau is one full revolution per second.
     [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
     [Export] private Label DebugLabel { get; set; }
-
-    private Vector2 _shipVelocity = new();
-    private float _targetRotation;
 
     //Removed a boolean _canSiphon as if SunInteractionArea is null, siphon cannot be started, and if it is not null, siphon can be started. So this boolean was redundant.
     public SunInteractionArea _currentSunInteractionArea;
     public bool _siphonUnderway = false;
 
+    // Weapons will use this to query the angle
+    private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
+    private Vector2 _shipVelocity = new();
+    private float _targetRotation;
+
+    // Temporarily here until I figure out where to put this, ideally Shooter's _speed should go here instead.
+    private float _primarySpeed = 500f;
+    private float _secondarySpeed = 1500f;
+
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("shoot"))
+        if (@event.IsActionPressed("shoot1"))
         {
-            GD.Print("Shoot");
+            GD.Print("Shoot1");
+            ShootFront();
+        }
+
+        if (@event.IsActionPressed("shoot2"))
+        {
+            GD.Print("Shoot2");
+            ShootSide();
         }
 
         if (@event.IsActionPressed("switch_weapon_left"))
@@ -106,5 +122,17 @@ public partial class Player : CharacterBody2D
         }
         _currentSunInteractionArea = null;
         EventBus.Instance.EmitOnSiphonEnd(interactionArea);
+    }
+
+    private void ShootFront()
+    {
+        _shooter.Shoot([FacingDirection], _primarySpeed);
+    }
+
+    private void ShootSide()
+    {
+        Vector2 fireLeft = FacingDirection.Rotated(-Mathf.Pi / 2f);
+        Vector2 fireRight = FacingDirection.Rotated(Mathf.Pi / 2f);
+        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed);
     }
 }

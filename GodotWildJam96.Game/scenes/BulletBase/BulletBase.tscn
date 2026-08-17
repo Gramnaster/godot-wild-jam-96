@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dv4x838xcci2f"]
 
-[ext_resource type="Texture2D" uid="uid://cwwicgpeuke1i" path="res://assets/bullet/Bullet-01.png" id="1_kbx3i"]
+[ext_resource type="Texture2D" path="res://assets/bullet/Bullet-01.png" id="1_kbx3i"]
 [ext_resource type="Script" uid="uid://c268xr2jw25b2" path="res://scenes/BulletBase/BulletBase.cs" id="1_ykyfn"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_wi33n"]
