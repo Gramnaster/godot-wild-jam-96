@@ -2,12 +2,18 @@
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
 [ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
+[ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pm0ju"]
 size = Vector2(37, 21)
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("DebugLabel")]
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_playerSprite", "_shootSound", "_shooter", "DebugLabel")]
+collision_layer = 4
+collision_mask = 11
 script = ExtResource("1_h00vy")
+_playerSprite = NodePath("Sprite2D")
+_shootSound = NodePath("ShootSound")
+_shooter = NodePath("Shooter")
 DebugLabel = NodePath("Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1985309505]
@@ -17,7 +23,10 @@ shape = SubResource("RectangleShape2D_pm0ju")
 scale = Vector2(0.27, 0.27)
 texture = ExtResource("2_ky53y")
 
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=519660857]
+
 [node name="PlayerCam" type="Camera2D" parent="." unique_id=425998596]
+zoom = Vector2(1.3, 1.3)
 
 [node name="Label" type="Label" parent="." unique_id=211489110]
 anchors_preset = 7
@@ -34,3 +43,5 @@ grow_vertical = 0
 text = "text"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Shooter" parent="." unique_id=1648900959 instance=ExtResource("3_bvqhm")]
