@@ -18,12 +18,12 @@ public sealed partial class ObjectMaker : Node
 
     // Instantiate bullet from PackedScene, configures in Setup(),
     // defers call so physics is clean state
-    private void OnCreateBulletHandler(Vector2 position, Vector2 direction, float speed, PackedScene scene)
+    private void OnCreateBulletHandler(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds, PackedScene scene)
     {
         if (scene is null) return;
 
         BulletBase bullet = scene.Instantiate<BulletBase>();
-        bullet.Setup(position, direction, speed);
+        bullet.Setup(position, direction, speed, lifetimeSeconds);
         CallDeferred(Node.MethodName.AddChild, bullet);
     }
 }

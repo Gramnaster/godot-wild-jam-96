@@ -11,9 +11,11 @@ public partial class Player : CharacterBody2D
     [Export] private Sprite2D _playerSprite;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
+    [Export] private Label DebugLabel { get; set; }
+
     // Radians per scond. Tau is one full revolution per second.
     [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
-    [Export] private Label DebugLabel { get; set; }
+    [Export] private float _maxChargeSeconds = 1.0f;
 
     //Removed a boolean _canSiphon as if SunInteractionArea is null, siphon cannot be started, and if it is not null, siphon can be started. So this boolean was redundant.
     public SunInteractionArea _currentSunInteractionArea;
@@ -26,22 +28,41 @@ public partial class Player : CharacterBody2D
     // private Vector2 _shipVelocity = new();
     private float _targetRotation;
 
-    // Temporarily here until I figure out where to put this, ideally Shooter's _speed should go here instead.
-    private float _primarySpeed = 500f;
+    // Attack properties
+    private float _primarySpeed = 500f;                     // How fast the bullet moves
+    private float _primaryChargedSpeed = 900f;              // (unused) How fast the bullet moves after charging
+    private float _primaryLifetimeSeconds = 1.5f;           // How long the bullet lasts (determines range)
+    private float _primaryChargedLifetimeSeconds = 3.0f;    // How long the bullet lasts after charging
+
     private float _secondarySpeed = 1500f;
+    private float _secondaryChargedSpeed = 2200f;           // (unused)
+    private float _secondaryLifetimeSeconds = 1.0f;
+    private float _secondaryChargedLifetimeSeconds = 2.0f;
+
+    // Measure of time for the charge attack
+    private ulong _shoot1PressedAtMsec;
+    private ulong _shoot2PressedAtMsec;
+
 
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsActionPressed("shoot1"))
         {
-            GD.Print("Shoot1");
-            ShootFront();
+            _shoot1PressedAtMsec = Time.GetTicksMsec();
+        }
+        if (@event.IsActionReleased("shoot1"))
+        {
+            ShootFront(ChargeRatio(_shoot1PressedAtMsec));
         }
 
         if (@event.IsActionPressed("shoot2"))
         {
-            GD.Print("Shoot2");
-            ShootSide();
+            _shoot2PressedAtMsec = Time.GetTicksMsec();
+        }
+
+        if (@event.IsActionReleased("shoot2"))
+        {
+            ShootSide(ChargeRatio(_shoot2PressedAtMsec));
         }
 
         if (@event.IsActionPressed("switch_weapon_left"))
@@ -126,15 +147,30 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.EmitOnSiphonEnd(interactionArea);
     }
 
-    private void ShootFront()
+    private void ShootFront(float chargeRatio)
     {
-        _shooter.Shoot([FacingDirection], _primarySpeed);
+        // Charging time between the attacks determines how far the projectile goes
+        float adjustedLifetime = Mathf.Lerp(_primaryLifetimeSeconds, _primaryChargedLifetimeSeconds, chargeRatio);
+
+        GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
+        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime);
     }
 
-    private void ShootSide()
+    private void ShootSide(float chargeRatio)
     {
+        float adjustedLifetime = Mathf.Lerp(_secondaryLifetimeSeconds, _secondaryChargedLifetimeSeconds, chargeRatio);
+
         Vector2 fireLeft = FacingDirection.Rotated(-Mathf.Pi / 2f);
         Vector2 fireRight = FacingDirection.Rotated(Mathf.Pi / 2f);
-        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed);
+
+        GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
+        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime);
+    }
+
+    // Determines how much charging you can pull off in the listed charging time
+    private float ChargeRatio(ulong pressedAtMsec)
+    {
+        float heldSeconds = (Time.GetTicksMsec() - pressedAtMsec) / 1000f;
+        return Mathf.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
     }
 }

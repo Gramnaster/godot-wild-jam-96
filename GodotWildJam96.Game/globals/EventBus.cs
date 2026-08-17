@@ -15,7 +15,7 @@ public partial class EventBus : Node
     public event Action<SunInteractionArea> OnSiphonEnd;
 
     // Shooting events
-    public event Action<Vector2, Vector2, float, PackedScene> OnCreateBullet;
+    public event Action<Vector2, Vector2, float, float, PackedScene> OnCreateBullet;
     public event Action<Vector2> OnCreateExplosion; // Usually for enemy death
 
     public override void _Ready()
@@ -52,10 +52,10 @@ public partial class EventBus : Node
         OnSiphonEnd?.Invoke(interactionArea);
     }
 
-    public static void EmitOnCreateBullet(Vector2 position, Vector2 direction, float speed, PackedScene scene)
+    public static void EmitOnCreateBullet(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds, PackedScene scene)
     {
         GD.Print("Im firing ma lazors");
-        Instance.OnCreateBullet?.Invoke(position, direction, speed, scene);
+        Instance.OnCreateBullet?.Invoke(position, direction, speed, lifetimeSeconds, scene);
     }
 
     public static void EmitOnCreateExplosion(Vector2 position)

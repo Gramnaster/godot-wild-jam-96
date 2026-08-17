@@ -8,6 +8,7 @@ public partial class Shooter : Node2D
 {
     [Export] private PackedScene _bulletScene;
     [Export] private float _speed = 500.0f;
+    [Export] private float _bulletLifetimeSeconds = 1.5f;
     [Export] private float _shootDelay = 0.7f;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Timer _shootTimer;
@@ -22,15 +23,15 @@ public partial class Shooter : Node2D
     }
 
     // Extension that uses default speed unless given
-    public void Shoot(Vector2[] directions) => Shoot(directions, _speed);
+    public void Shoot(Vector2[] directions) => Shoot(directions, _speed, _bulletLifetimeSeconds);
 
-    public void Shoot(Vector2[] directions, float speed)
+    public void Shoot(Vector2[] directions, float speed, float lifetimeSeconds)
     {
         if (!_canShoot) return;
 
         foreach (Vector2 direction in directions)
         {
-            EventBus.EmitOnCreateBullet(GlobalPosition, direction, speed, _bulletScene);
+            EventBus.EmitOnCreateBullet(GlobalPosition, direction, speed, lifetimeSeconds, _bulletScene);
         }
 
         _shootSound.Play();

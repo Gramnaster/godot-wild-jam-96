@@ -1,9 +1,14 @@
 using System;
 using Godot;
 
+namespace GodotWildJam96;
+
 public partial class BulletBase : Area2D
 {
     [Export] private AnimatedSprite2D _bulletSprite;
+
+    [Export] private float _maxLifetimeSeconds = 1.5f;
+    private float _elapsedSeconds;
 
     private Vector2 _velocity;
 
@@ -22,14 +27,22 @@ public partial class BulletBase : Area2D
     public override void _PhysicsProcess(double delta)
     {
         Position += _velocity * (float)delta;
+
+        // Determines maximum range based on projectile lifetime
+        _elapsedSeconds += (float)delta;
+        if (_elapsedSeconds >= _maxLifetimeSeconds)
+        {
+            QueueFree();
+        }
     }
 
     // Called by ObjectMaker after instantiation, before node addded to scene tree.
-    public void Setup(Vector2 position, Vector2 direction, float speed)
+    public void Setup(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds)
     {
         GlobalPosition = position;
         _velocity = direction * speed;
         Rotation = direction.Angle();
+        _maxLifetimeSeconds = lifetimeSeconds;
     }
 
     // Bullet disappears if it touches anything.
