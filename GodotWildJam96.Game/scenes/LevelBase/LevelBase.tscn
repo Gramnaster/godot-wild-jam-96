@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dtnpot34cv61j" path="res://scenes/ScrollingBackground/ScrollingBackground.tscn" id="1_nrmop"]
 [ext_resource type="PackedScene" uid="uid://23h8lvgv6cx2" path="res://scenes/Player/Player.tscn" id="2_e7jje"]
+[ext_resource type="PackedScene" uid="uid://b1hho6jsoyoui" path="res://scenes/ObjectMaker/ObjectMaker.tscn" id="3_ny4ya"]
 
 [node name="LevelBase" type="Node" unique_id=2017188397]
 
@@ -13,3 +14,5 @@ z_index = -10
 [node name="Enemies" type="Node" parent="." unique_id=1397552595]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44243129]
+
+[node name="ObjectMaker" parent="." unique_id=144459317 instance=ExtResource("3_ny4ya")]

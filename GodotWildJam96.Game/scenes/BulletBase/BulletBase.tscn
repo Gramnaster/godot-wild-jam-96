@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dv4x838xcci2f"]
+
+[ext_resource type="Texture2D" path="res://assets/bullet/Bullet-01.png" id="1_kbx3i"]
+[ext_resource type="Script" uid="uid://c268xr2jw25b2" path="res://scenes/BulletBase/BulletBase.cs" id="1_ykyfn"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wi33n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_kbx3i")
+}],
+"loop": 1,
+"name": &"playerBullet",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wi33n"]
+
+[node name="BulletBase" type="Area2D" unique_id=1327038828 node_paths=PackedStringArray("_bulletSprite")]
+script = ExtResource("1_ykyfn")
+_bulletSprite = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1470412369]
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_wi33n")
+animation = &"playerBullet"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=578180003]
+shape = SubResource("CircleShape2D_wi33n")
