@@ -9,7 +9,7 @@ public partial class EventBus : Node
     public static EventBus Instance { get; private set; }
     public event Action<Node2D, SunInteractionArea> OnShipEntered;
     public event Action<Node2D, SunInteractionArea> OnShipExited;
-    public event Action<SunInteractionArea> OnSiphonStart;
+    public event Action<SunInteractionArea, int> OnSiphonStart;
     public event Action<SunInteractionArea> OnSiphonEnd;
     public override void _Ready()
     {
@@ -34,15 +34,18 @@ public partial class EventBus : Node
         OnShipExited?.Invoke(ship, interactionArea);
     }
 
-    public void EmitOnSiphonStart(SunInteractionArea interactionArea)
+    public void EmitOnSiphonStart(SunInteractionArea interactionArea, int siphonType)
     {
-        GD.Print($"Siphon Start Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonStart?.GetInvocationList().Length ?? 0}");
-        OnSiphonStart?.Invoke(interactionArea);
+        //Code to see who is subscribed to this event
+        //GD.Print($"Siphon Start Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonStart?.GetInvocationList().Length ?? 0}");
+        OnSiphonStart?.Invoke(interactionArea, siphonType);
     }
 
     public void EmitOnSiphonEnd(SunInteractionArea interactionArea)
     {
-        GD.Print($"Siphon End Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonEnd?.GetInvocationList().Length ?? 0}");
+        //Code to see who is subscribed to this event
+        //GD.Print($"Siphon End Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonEnd?.GetInvocationList().Length ?? 0}");
+        GD.Print("Siphon End Event Emitted");
         OnSiphonEnd?.Invoke(interactionArea);
     }
 }

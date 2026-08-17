@@ -1,0 +1,82 @@
+using Godot;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace GodotWildJam96;
+
+public partial class Spawner : Node2D
+{
+
+    [Export] public PackedScene _sunScene;
+    [Export] public Shape2D SpawnCheckShape;
+    //It's main for now, change to level base later
+    [Export] public Control _main;
+
+    private Vector2 _sunPos;
+
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
+    {
+        CallDeferred("Trial");
+    }
+
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+    {
+
+    }
+
+    private void Trial()
+    {
+        _ = SpawnSuns(25);
+    }
+    //Logic for spawning suns
+    private async Task SpawnSuns(int spawnCount)
+    {
+        for (int i = 0; i < spawnCount; i++)
+        {
+            int SPAWN_ATTEMPTS = 0;
+            do
+            {
+                SunSpawnCalculator();
+                SPAWN_ATTEMPTS++;
+                GD.Print(_sunPos + " " + SPAWN_ATTEMPTS + " " + i);
+            } while (!EnsurePositionValid(_sunPos) && SPAWN_ATTEMPTS < 25);
+
+            if (SPAWN_ATTEMPTS == 25)
+            {
+                GD.Print("Abort spawning this sun! No suitable place found!");
+                continue;
+            }
+
+            Sun newSun = _sunScene.Instantiate<Sun>();
+            //Instantiating the new sun as a child of the Main scene so it will be visible in the game
+            _main.AddChild(newSun);
+            newSun.GlobalPosition = _sunPos;
+
+            await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+        }
+    }
+    private bool EnsurePositionValid(Vector2 position)
+    {
+        PhysicsDirectSpaceState2D spaceState = GetWorld2D().DirectSpaceState;
+        var query = new PhysicsShapeQueryParameters2D
+        {
+            Shape = SpawnCheckShape,
+            Transform = new Transform2D(0, position),
+            CollisionMask = 1,
+            CollideWithBodies = false,
+            CollideWithAreas = true
+        };
+        var result = spaceState.IntersectShape(query);
+        GD.Print(result.Count == 0);
+        return result.Count == 0; // If the result is empty, the position is valid
+    }
+
+    private void SunSpawnCalculator()
+    {
+        _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-500, 500);
+        _sunPos = new Vector2 (_sunPos.X + 512.0f, _sunPos.Y + 384.0f);
+    }
+}

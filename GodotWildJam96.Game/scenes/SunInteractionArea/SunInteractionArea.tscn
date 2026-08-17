@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://hgi8xl4hxu0c" path="res://assets/sun/LightRadius.png" id="2_b1n1a"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
-radius = 45.01111
+radius = 45.0
 
 [node name="SunInteractionArea" type="Area2D" unique_id=368012975]
 script = ExtResource("1_7bfc8")

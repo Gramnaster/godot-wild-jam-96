@@ -26,21 +26,12 @@ public partial class Player : CharacterBody2D
             GD.Print("Shoot");
         }
 
-        if (@event.IsActionPressed("switch_weapon_left"))
+        if (@event.IsActionPressed("siphon_out") && _currentSunInteractionArea != null)
         {
-            GD.Print("Switch Weapon Left");
-        }
-
-        if (@event.IsActionPressed("switch_weapon_right"))
-        {
-            GD.Print("Switch Weapon Right");
-        }
-
-        if (@event.IsActionPressed("siphon") && _currentSunInteractionArea != null)
-        {
-            GD.Print("Start Siphoning");
+            GD.Print("Start siphoning energy out of Sun");
             _siphonUnderway = true;
-            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea);
+            //1 For siphon out, 0 for siphon in. This is to differentiate between the two siphon events.
+            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, 1);
         }
     }
 
