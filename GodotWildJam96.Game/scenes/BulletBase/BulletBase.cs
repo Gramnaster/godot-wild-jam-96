@@ -29,6 +29,7 @@ public partial class BulletBase : Area2D
     {
         GlobalPosition = position;
         _velocity = direction * speed;
+        Rotation = direction.Angle();
     }
 
     // Bullet disappears if it touches anything.
