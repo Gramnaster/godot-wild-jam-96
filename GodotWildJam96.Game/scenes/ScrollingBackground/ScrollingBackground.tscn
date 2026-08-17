@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dtnpot34cv61j"]
+
+[ext_resource type="Script" uid="uid://bo8332iv5o1ea" path="res://scenes/ScrollingBackground/ScrollingBackground.cs" id="1_bki86"]
+
+[node name="ScrollingBackground" type="Node2D" unique_id=548645227]
+script = ExtResource("1_bki86")
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1827525063]
