@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://s1r2gg3ipmj4"]
+
+[ext_resource type="Texture2D" uid="uid://cwwicgpeuke1i" path="res://assets/bullet/Bullet-01.png" id="1_1g8r8"]
+[ext_resource type="PackedScene" uid="uid://c0ho4372vm0up" path="res://scenes/Lifetime/Lifetime.tscn" id="2_phlvb"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0bm40"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_1g8r8")
+}],
+"loop": 1,
+"name": &"playerBullet",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mqbl7"]
+
+[node name="PlayerBullet" type="Area2D" unique_id=1544016463]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1541142400]
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_0bm40")
+animation = &"playerBullet"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=301642376]
+shape = SubResource("CircleShape2D_mqbl7")
+
+[node name="Lifetime" parent="." unique_id=409367880 instance=ExtResource("2_phlvb")]
