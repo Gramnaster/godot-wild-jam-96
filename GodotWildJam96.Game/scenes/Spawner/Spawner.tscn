@@ -1,11 +1,6 @@
 [gd_scene format=3 uid="uid://1y66bjuenyw8"]
 
-[ext_resource type="Script" uid="uid://c3ihl1ujbxb1h" path="res://Spawner.cs" id="1_5nymx"]
-[ext_resource type="PackedScene" uid="uid://csfc3p5naeeb" path="res://scenes/Sun/Sun.tscn" id="2_dmywd"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_rpns5"]
+[ext_resource type="Script" uid="uid://c3ihl1ujbxb1h" path="res://scenes/Spawner/Spawner.cs" id="1_5nymx"]
 
 [node name="Spawner" type="Node2D" unique_id=2107266173]
 script = ExtResource("1_5nymx")
-_sunScene = ExtResource("2_dmywd")
-SpawnCheckShape = SubResource("CircleShape2D_rpns5")

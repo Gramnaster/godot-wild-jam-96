@@ -7,6 +7,7 @@
 radius = 45.0
 
 [node name="SunInteractionArea" type="Area2D" unique_id=368012975]
+collision_mask = 5
 script = ExtResource("1_7bfc8")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=51866083]
