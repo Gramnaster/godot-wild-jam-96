@@ -11,7 +11,7 @@ public partial class Spawner : Node2D
     [Export] public PackedScene _sunScene;
     [Export] public Shape2D SpawnCheckShape;
     //It's main for now, change to level base later
-    [Export] public Control _main;
+    [Export] public Node _levelBase;
 
     private Vector2 _sunPos;
 
@@ -52,7 +52,7 @@ public partial class Spawner : Node2D
 
             Sun newSun = _sunScene.Instantiate<Sun>();
             //Instantiating the new sun as a child of the Main scene so it will be visible in the game
-            _main.AddChild(newSun);
+            _levelBase.AddChild(newSun);
             newSun.GlobalPosition = _sunPos;
 
             await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
