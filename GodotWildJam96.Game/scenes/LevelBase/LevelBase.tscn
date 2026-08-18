@@ -1,17 +1,29 @@
 [gd_scene format=3 uid="uid://b64sw3rw2gko4"]
 
+[ext_resource type="PackedScene" uid="uid://dtnpot34cv61j" path="res://scenes/ScrollingBackground/ScrollingBackground.tscn" id="1_7hghd"]
+[ext_resource type="Texture2D" uid="uid://b8kn3ilxf54dm" path="res://assets/backgrounds/empty-02.png" id="2_4j52w"]
+[ext_resource type="Texture2D" uid="uid://b8su8ntml16qu" path="res://assets/backgrounds/stars-01.png" id="2_6hn50"]
 [ext_resource type="PackedScene" uid="uid://23h8lvgv6cx2" path="res://scenes/Player/Player.tscn" id="2_e7jje"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/ScrollingBackgroundImages.cs" id="3_efum6"]
 [ext_resource type="PackedScene" uid="uid://b1hho6jsoyoui" path="res://scenes/ObjectMaker/ObjectMaker.tscn" id="3_ny4ya"]
 [ext_resource type="PackedScene" uid="uid://1y66bjuenyw8" path="res://scenes/Spawner/Spawner.tscn" id="3_u8cij"]
-[ext_resource type="PackedScene" uid="uid://csfc3p5naeeb" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
+[ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="4_ji8qy"]
+[ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
+[ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="5_ois7l"]
+
+[sub_resource type="Resource" id="Resource_7hghd"]
+script = ExtResource("3_efum6")
+Images = Array[Texture2D]([ExtResource("2_4j52w"), ExtResource("2_6hn50"), ExtResource("4_ji8qy"), ExtResource("5_ois7l")])
+metadata/_custom_type_script = "uid://bg2qdbskuvwe"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5nymx"]
 radius = 200.0
 
 [node name="LevelBase" type="Node" unique_id=2017188397]
 
-[node name="ScrollingBackground" parent="." unique_id=548645227]
+[node name="ScrollingBackground" parent="." unique_id=548645227 instance=ExtResource("1_7hghd")]
 z_index = -10
+_scrollingImages = SubResource("Resource_7hghd")
 
 [node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
 

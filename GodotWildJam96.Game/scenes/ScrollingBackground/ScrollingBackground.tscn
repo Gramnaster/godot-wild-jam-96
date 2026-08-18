@@ -4,5 +4,3 @@
 
 [node name="ScrollingBackground" type="Node2D" unique_id=548645227]
 script = ExtResource("1_bki86")
-
-[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1827525063]
