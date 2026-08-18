@@ -27,7 +27,6 @@ public partial class Player : CharacterBody2D
     private int _siphonType = 0;
     private float _interruptDamage;
 
-
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
 
