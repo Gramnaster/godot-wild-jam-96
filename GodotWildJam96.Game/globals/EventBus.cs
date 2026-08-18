@@ -13,6 +13,8 @@ public partial class EventBus : Node
     public event Action<Node2D, SunInteractionArea> OnShipExited;
     public event Action<SunInteractionArea, int> OnSiphonStart;
     public event Action<SunInteractionArea> OnSiphonEnd;
+    public event Action<Boolean> OnSiphonReset;
+    public event Action<float> OnDamageTakenPlayer;
 
     // Shooting events
     public event Action<Vector2, Vector2, float, float, PackedScene> OnCreateBullet;
@@ -55,6 +57,17 @@ public partial class EventBus : Node
         OnSiphonEnd?.Invoke(interactionArea);
     }
 
+    public void EmitOnSiphonReset(Boolean reset)
+    {
+        GD.Print("Siphon Reset!");
+        OnSiphonReset?.Invoke(reset);
+    }
+    public void EmitOnOnDamageTakenPlayer(float dmg)
+    {
+        GD.Print("Player taking damage!");
+        OnDamageTakenPlayer?.Invoke(dmg);
+    }
+
     public static void EmitOnCreateBullet(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds, PackedScene scene)
     {
         GD.Print("Im firing ma lazors");
@@ -66,4 +79,6 @@ public partial class EventBus : Node
         GD.Print("Explosion triggered");
         Instance.OnCreateExplosion?.Invoke(position);
     }
+
+
 }

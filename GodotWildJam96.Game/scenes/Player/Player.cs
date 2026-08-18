@@ -6,7 +6,10 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
+    //Ship Properties
     private const float SHIP_MOVESPEED = 150.0f;
+    public float _currentShieldEnergy = 0.0f;
+    public float _maxShieldEnergy = 100.0f;
 
     [Export] private Sprite2D _playerSprite;
     [Export] private AudioStreamPlayer2D _shootSound;
@@ -17,9 +20,12 @@ public partial class Player : CharacterBody2D
     [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
     [Export] private float _maxChargeSeconds = 1.0f;
 
-    //Removed a boolean _canSiphon as if SunInteractionArea is null, siphon cannot be started, and if it is not null, siphon can be started. So this boolean was redundant.
+
     public SunInteractionArea _currentSunInteractionArea;
     public bool _siphonUnderway = false;
+    //If _siphonType = 0, siphoning out of sun, if _siphonType = 1, siphoning in
+    private int _siphonType = 0;
+    private float _interruptDamage;
 
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
@@ -67,29 +73,42 @@ public partial class Player : CharacterBody2D
 
         if (@event.IsActionPressed("siphon_out") && _currentSunInteractionArea != null)
         {
+            _siphonType = 0;
             GD.Print("Start siphoning energy out of Sun");
-            _siphonUnderway = true;
-            //1 For siphon out, 0 for siphon in. This is to differentiate between the two siphon events.
-            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, 1);
+            //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
+            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
+        }
+        else if (@event.IsActionPressed("siphon_in") && _currentSunInteractionArea != null)
+        {
+            _siphonType = 1;
+            GD.Print("Start siphoning energy into Sun");
+            //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
+            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
         }
     }
-
+    public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
+    {
+        GD.Print("Ship entered " + interactionArea.Name);
+        _currentSunInteractionArea = interactionArea;
+    }
     public override void _Ready()
     {
+
+        EventBus.Instance.OnShipEntered += OnPlayerEntered;
+        EventBus.Instance.OnSiphonReset += ResetSiphon;
+        EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
         // Set initial _rotation for use in GetInput
         _targetRotation = Rotation;
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
-
-        EventBus.Instance.OnShipEntered += OnPlayerEntered;
-        EventBus.Instance.OnShipExited += OnPlayerExited;
     }
 
     public override void _ExitTree()
     {
+        EventBus.Instance.OnSiphonReset -= ResetSiphon;
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
-        EventBus.Instance.OnShipExited -= OnPlayerExited;
+        EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -119,24 +138,6 @@ public partial class Player : CharacterBody2D
         DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
     }
 
-    public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
-    {
-        GD.Print("Ship entered " + interactionArea.Name);
-        _currentSunInteractionArea = interactionArea;
-    }
-
-
-    public void OnPlayerExited(Node2D player, SunInteractionArea interactionArea)
-    {
-        GD.Print("Ship exited " + interactionArea.Name);
-        if (_siphonUnderway == true)
-        {
-            GD.Print("Siphon stopped, you lost some energy!");
-            _siphonUnderway = false;
-        }
-        _currentSunInteractionArea = null;
-        EventBus.Instance.EmitOnSiphonEnd(interactionArea);
-    }
 
     private void ShootFront(float chargeRatio)
     {
@@ -163,5 +164,23 @@ public partial class Player : CharacterBody2D
     {
         float heldSeconds = (Time.GetTicksMsec() - pressedAtMsec) / 1000f;
         return Mathf.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
+    }
+
+    private void ResetSiphon(bool reset)
+    {
+        GD.Print("Siphon Reset!");
+        _siphonUnderway = reset;
+    }
+
+    private void TakeDamage(float dmg)
+    {
+        GD.Print(dmg + " damage taken!");
+        GD.Print("Only " + _currentShieldEnergy + " shield energy left!");
+        _currentShieldEnergy -= dmg;
+        //If the shield takes too much damage too fast, interrupt the siphoning
+        if (dmg > _interruptDamage)
+        {
+            EventBus.Instance.EmitOnSiphonEnd(_currentSunInteractionArea);
+        }
     }
 }

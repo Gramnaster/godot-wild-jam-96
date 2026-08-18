@@ -1,16 +1,18 @@
-[gd_scene format=3 uid="uid://csfc3p5naeeb"]
+[gd_scene format=3 uid="uid://bq18a0mp544pe"]
 
 [ext_resource type="Script" uid="uid://bqxiayu5ig6id" path="res://scenes/Sun/Sun.cs" id="1_5cq3v"]
-[ext_resource type="Texture2D" uid="uid://bje1me7viny8i" path="res://assets/sun/sun.png" id="2_io6w5"]
+[ext_resource type="Texture2D" uid="uid://bcqdi0mkmnxal" path="res://assets/sun/New Piskel.png" id="3_mc6kf"]
 [ext_resource type="PackedScene" uid="uid://c82eb5al872j6" path="res://scenes/SunInteractionArea/SunInteractionArea.tscn" id="3_wk451"]
 [ext_resource type="PackedScene" uid="uid://bxvq6udgpkk3j" path="res://scenes/EnergyBar/EnergyBar.tscn" id="4_mc6kf"]
+[ext_resource type="AudioStream" uid="uid://ll2bm2k47rak" path="res://assets/sun/SiphonSound.mp3" id="5_1nwk5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
-radius = 45.0
 
-[node name="Sun" type="Area2D" unique_id=1970878653 node_paths=PackedStringArray("_energyValuebar")]
+[node name="Sun" type="Area2D" unique_id=1970878653 node_paths=PackedStringArray("_energyValuebar", "_siphonSound")]
+collision_mask = 5
 script = ExtResource("1_5cq3v")
 _energyValuebar = NodePath("EnergyBar")
+_siphonSound = NodePath("SiphonSound")
 
 [node name="SunInteractionArea" parent="." unique_id=368012975 instance=ExtResource("3_wk451")]
 
@@ -20,8 +22,14 @@ shape = SubResource("CircleShape2D_pm0ju")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=367024031]
 modulate = Color(1, 1, 1, 0.37254903)
 scale = Vector2(0.14, 0.14)
-texture = ExtResource("2_io6w5")
+texture = ExtResource("3_mc6kf")
 
 [node name="EnergyBar" parent="." unique_id=1948118894 instance=ExtResource("4_mc6kf")]
 offset_transform_enabled = true
 offset_transform_position = Vector2(-15, 0)
+
+[node name="SiphonSound" type="AudioStreamPlayer2D" parent="." unique_id=279573137]
+stream = ExtResource("5_1nwk5")
+volume_db = 10.0
+pitch_scale = 0.5
+parameters/looping = false
