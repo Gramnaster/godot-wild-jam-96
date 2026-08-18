@@ -6,23 +6,27 @@ namespace GodotWildJam96;
 public partial class ScrollingBackground : Node2D
 {
     [Export] private ScrollingBackgroundImages _scrollingImages;
-    [Export] private Vector2 _baseSize = new(1920f, 1080f);
+    [Export] private Vector2 _baseSize = new(1024f, 768f);
     [Export] private float _targetScale = 1.0f;
+    [Export] private Vector2 _autoscrollSpeed = new(50f, 50f);
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         if (_scrollingImages is null) QueueFree();
+        Setup();
         Scale = new Vector2(_targetScale, _targetScale);
-        Position -= new Vector2(0f, _baseSize.Y * _targetScale);
+        Position -= new Vector2(_baseSize.X * _targetScale, _baseSize.Y * _targetScale);
     }
 
     private void AddLayer(float currentScrollScale, Texture2D image)
     {
         Parallax2D parallax2D = new()
         {
-            RepeatSize = new(_baseSize.X, 0.0f),
-            ScrollScale = new(currentScrollScale, 1.0f),
+            RepeatSize = _baseSize,
+            RepeatTimes = 3,
+            ScrollScale = new(currentScrollScale, currentScrollScale),
+            Autoscroll = _autoscrollSpeed * currentScrollScale,
         };
 
         Sprite2D sprite = new()
@@ -38,7 +42,7 @@ public partial class ScrollingBackground : Node2D
     private void Setup()
     {
         float scrollGap = 1.0f / _scrollingImages.Images.Count;
-        float currentScrollScale = 0.0f;
+        float currentScrollScale = scrollGap;
 
         for (int i = 0; i < _scrollingImages.Images.Count; ++i)
         {
