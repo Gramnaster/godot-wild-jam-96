@@ -8,7 +8,6 @@ public partial class ScrollingBackground : Node2D
     [Export] private ScrollingBackgroundImages _scrollingImages;
     [Export] private Vector2 _baseSize = new(1024f, 768f);
     [Export] private float _targetScale = 1.0f;
-    [Export] private Vector2 _autoscrollSpeed = new(50f, 50f);
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -26,7 +25,6 @@ public partial class ScrollingBackground : Node2D
             RepeatSize = _baseSize,
             RepeatTimes = 3,
             ScrollScale = new(currentScrollScale, currentScrollScale),
-            Autoscroll = _autoscrollSpeed * currentScrollScale,
         };
 
         Sprite2D sprite = new()
