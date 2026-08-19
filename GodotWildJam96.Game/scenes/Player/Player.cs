@@ -7,7 +7,7 @@ namespace GodotWildJam96;
 public partial class Player : CharacterBody2D
 {
     //Ship Properties
-    private const float SHIP_MOVESPEED = 150.0f;
+    private const float SHIP_MOVESPEED = 120.0f;
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
 
@@ -27,7 +27,6 @@ public partial class Player : CharacterBody2D
     private int _siphonType = 0;
     private float _interruptDamage;
 
-
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
 
@@ -36,15 +35,15 @@ public partial class Player : CharacterBody2D
     private float _targetRotation;
 
     // Attack properties
-    private float _primarySpeed = 500f;                     // How fast the bullet moves
+    private float _primarySpeed = 450f;                     // How fast the bullet moves
     private float _primaryChargedSpeed = 900f;              // (unused) How fast the bullet moves after charging
-    private float _primaryLifetimeSeconds = 1.5f;           // How long the bullet lasts (determines range)
-    private float _primaryChargedLifetimeSeconds = 3.0f;    // How long the bullet lasts after charging
+    private float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
+    private float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
 
-    private float _secondarySpeed = 1500f;
+    private float _secondarySpeed = 750f;
     private float _secondaryChargedSpeed = 2200f;           // (unused)
-    private float _secondaryLifetimeSeconds = 1.0f;
-    private float _secondaryChargedLifetimeSeconds = 2.0f;
+    private float _secondaryLifetimeSeconds = 0.25f;
+    private float _secondaryChargedLifetimeSeconds = 1.0f;
 
     // Measure of time for the charge attack
     private ulong _shoot1PressedAtMsec;
