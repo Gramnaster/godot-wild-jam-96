@@ -85,6 +85,11 @@ public partial class Player : CharacterBody2D
             //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
             EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
         }
+        if (@event.IsActionPressed("teleport_home"))
+        {
+            EventBus.EmitOnTeleport(this);
+            TakeDamage(5);
+        }
     }
     public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
     {

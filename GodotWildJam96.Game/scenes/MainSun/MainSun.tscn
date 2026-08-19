@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://pfw3wix0v1je"]
+
+[ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="1_78w4w"]
+[ext_resource type="Script" uid="uid://byntpnympbcav" path="res://scenes/MainSun/MainSun.cs" id="2_8hkd7"]
+[ext_resource type="PackedScene" uid="uid://c14sf1yxnxr04" path="res://scenes/SpatialAnchor/SpatialAnchor.tscn" id="3_id5o2"]
+[ext_resource type="Script" uid="uid://62iygq24il1l" path="res://scenes/SpatialAnchor/SpatialAnchor.cs" id="4_egyuu"]
+
+[node name="MainSun" unique_id=1970878653 instance=ExtResource("1_78w4w")]
+script = ExtResource("2_8hkd7")
+
+[node name="SpatialAnchor" parent="." index="5" unique_id=2021847197 instance=ExtResource("3_id5o2")]
+position = Vector2(53, 57)
+script = ExtResource("4_egyuu")
