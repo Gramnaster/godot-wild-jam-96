@@ -63,7 +63,7 @@ public partial class EventBus : Node
         GD.Print("Siphon Reset!");
         OnSiphonReset?.Invoke(reset);
     }
-    public static void EmitOnOnDamageTakenPlayer(float dmg)
+    public static void EmitOnDamageTakenPlayer(float dmg)
     {
         GD.Print("Player taking damage!");
         Instance.OnDamageTakenPlayer?.Invoke(dmg);
