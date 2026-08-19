@@ -16,6 +16,7 @@ public partial class EventBus : Node
     public event Action<Boolean> OnSiphonReset;
     public event Action<float> OnDamageTakenPlayer;
     public event Action<Player> OnTeleport;
+    public event Action OnAllSunsSpawned;
 
     // Shooting events
     public event Action<Vector2, Vector2, float, float, PackedScene> OnCreateBullet;
@@ -72,6 +73,11 @@ public partial class EventBus : Node
     public static void EmitOnTeleport(Player player)
     {
         Instance.OnTeleport?.Invoke(player);
+    }
+
+    public static void EmitOnAllSunsSpawn()
+    {
+        Instance.OnAllSunsSpawned?.Invoke();
     }
 
     public static void EmitOnCreateBullet(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds, PackedScene scene)
