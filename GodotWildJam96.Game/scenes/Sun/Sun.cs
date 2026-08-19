@@ -50,6 +50,7 @@ public partial class Sun : Area2D
         _maxEnergy = _sunLevel + 3;
         _currentEnergy = GD.RandRange(3, _maxEnergy);
         _energyValuebar.InitializeValues(_maxEnergy, _currentEnergy);
+        AddToGroup(GameConstants.GroupSuns);
     }
 
     public override void _ExitTree()
