@@ -3,15 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://23h8lvgv6cx2" path="res://scenes/Player/Player.tscn" id="2_e7jje"]
 [ext_resource type="PackedScene" uid="uid://b1hho6jsoyoui" path="res://scenes/ObjectMaker/ObjectMaker.tscn" id="3_ny4ya"]
 [ext_resource type="PackedScene" uid="uid://1y66bjuenyw8" path="res://scenes/Spawner/Spawner.tscn" id="3_u8cij"]
-[ext_resource type="PackedScene" uid="uid://csfc3p5naeeb" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
+[ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5nymx"]
 radius = 200.0
 
 [node name="LevelBase" type="Node" unique_id=2017188397]
-
-[node name="ScrollingBackground" parent="." unique_id=548645227]
-z_index = -10
 
 [node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
 

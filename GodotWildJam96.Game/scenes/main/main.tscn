@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bq536l6vkmtjv"]
 
 [ext_resource type="Script" uid="uid://e578stec1hgi" path="res://scenes/main/Main.cs" id="1_hyk8p"]
-[ext_resource type="Texture2D" uid="uid://dd1qoymswqde1" path="res://assets/backgrounds/—Pngtree—purple science fiction universe starry_5418168.png" id="2_k2fmo"]
 
 [node name="Main" type="Control" unique_id=1767999679]
 layout_mode = 3
@@ -15,5 +14,4 @@ layout_mode = 0
 offset_left = -2.0
 offset_right = 1022.0
 offset_bottom = 1536.0
-texture = ExtResource("2_k2fmo")
 expand_mode = 1
