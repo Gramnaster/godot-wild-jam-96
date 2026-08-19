@@ -9,6 +9,7 @@ public partial class Spawner : Node2D
 {
 
     [Export] public PackedScene _sunScene;
+    [Export] public PackedScene _mainSunScene;
     [Export] public Shape2D SpawnCheckShape;
     //It's main for now, change to level base later
     [Export] public Node _levelBase;
@@ -19,6 +20,8 @@ public partial class Spawner : Node2D
 	public override void _Ready()
     {
         CallDeferred("Trial");
+        MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
+        CallDeferred("add_child",newMainSun);
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
