@@ -1,7 +1,7 @@
-using Godot;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Godot;
 
 namespace GodotWildJam96;
 
@@ -16,18 +16,12 @@ public partial class Spawner : Node2D
 
     private Vector2 _sunPos;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
     {
         CallDeferred("Trial");
         MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
-        CallDeferred("add_child",newMainSun);
-    }
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-    {
-
+        CallDeferred("add_child", newMainSun);
     }
 
     private void Trial()
@@ -60,6 +54,8 @@ public partial class Spawner : Node2D
 
             await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
         }
+
+        EventBus.EmitOnAllSunsSpawn();
     }
     private bool EnsurePositionValid(Vector2 position)
     {
@@ -80,6 +76,6 @@ public partial class Spawner : Node2D
     private void SunSpawnCalculator()
     {
         _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-500, 500);
-        _sunPos = new Vector2 (_sunPos.X + 512.0f, _sunPos.Y + 384.0f);
+        _sunPos = new Vector2(_sunPos.X + 512.0f, _sunPos.Y + 384.0f);
     }
 }

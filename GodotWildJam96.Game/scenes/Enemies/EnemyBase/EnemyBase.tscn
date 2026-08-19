@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://ccqbofhppreoq"]
+
+[ext_resource type="Script" uid="uid://b2obm0lqejwts" path="res://scenes/Enemies/EnemyBase/EnemyBase.cs" id="1_cdhqv"]
+[ext_resource type="PackedScene" uid="uid://brru0pk0gojxt" path="res://scenes/HitBox/HitBox.tscn" id="1_sam8l"]
+[ext_resource type="Texture2D" uid="uid://dp6tixu3npv0b" path="res://assets/enemies/Enemy-01.png" id="2_p6nij"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cdhqv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_p6nij")
+}],
+"loop": 1,
+"name": &"squid",
+"speed": 5.0
+}]
+
+[node name="EnemyBase" type="CharacterBody2D" unique_id=1191919949 node_paths=PackedStringArray("_screenNotifier", "_animatedSprite2D", "_hitBox", "_timer")]
+script = ExtResource("1_cdhqv")
+_screenNotifier = NodePath("VisibleOnScreenNotifier2D")
+_animatedSprite2D = NodePath("AnimatedSprite2D")
+_hitBox = NodePath("HitBox")
+_timer = NodePath("Timer")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=820005660]
+sprite_frames = SubResource("SpriteFrames_cdhqv")
+animation = &"squid"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1058850113]
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=770898641]
+
+[node name="HitBox" parent="." unique_id=1720138728 instance=ExtResource("1_sam8l")]
+collision_layer = 2
+collision_mask = 16
+script = null
+
+[node name="Timer" type="Timer" parent="." unique_id=1135546172]
