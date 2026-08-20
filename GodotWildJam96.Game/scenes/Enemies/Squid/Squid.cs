@@ -11,7 +11,7 @@ public partial class Squid : EnemyBase
         base._Ready();
         ActionTimer.OneShot = true;
         ActionTimer.WaitTime = GD.RandRange(2.0, 4.0);
-        Speed = 120.0f;
+        Speed = 50.0f;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

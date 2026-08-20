@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://23h8lvgv6cx2"]
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
-[ext_resource type="Texture2D" uid="uid://cky22ewdf7nkp" path="res://assets/player/Ship-02.png" id="2_xcisb"]
+[ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
 [ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
 [ext_resource type="AudioStream" uid="uid://mqa5o61cfvl7" path="res://assets/bullet/Shoot1Sound.mp3" id="3_ved6o"]
 [ext_resource type="PackedScene" uid="uid://s1r2gg3ipmj4" path="res://scenes/BulletBase/PlayerBullet/PlayerBullet.tscn" id="5_xcisb"]
@@ -25,7 +25,8 @@ shape = SubResource("RectangleShape2D_pm0ju")
 zoom = Vector2(2, 2)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
-texture = ExtResource("2_xcisb")
+scale = Vector2(0.27, 0.27)
+texture = ExtResource("2_ky53y")
 
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=519660857]
 stream = ExtResource("3_ved6o")
