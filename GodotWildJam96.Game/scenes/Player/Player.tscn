@@ -22,6 +22,7 @@ DebugLabel = NodePath("Label")
 shape = SubResource("RectangleShape2D_pm0ju")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1563420108]
+zoom = Vector2(2, 2)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
 scale = Vector2(0.27, 0.27)
