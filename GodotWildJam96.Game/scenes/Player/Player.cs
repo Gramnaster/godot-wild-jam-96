@@ -96,6 +96,12 @@ public partial class Player : CharacterBody2D
         GD.Print("Ship entered " + interactionArea.Name);
         _currentSunInteractionArea = interactionArea;
     }
+
+    public override void _EnterTree()
+    {
+        AddToGroup(GameConstants.GroupPlayer);
+    }
+
     public override void _Ready()
     {
 

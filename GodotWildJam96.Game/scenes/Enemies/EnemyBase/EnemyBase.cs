@@ -14,9 +14,11 @@ public partial class EnemyBase : CharacterBody2D
 
     // Per-enemy child tuning. Protected so sub-classes can read them.
     [Export] protected float Speed = 30f;
-    [Export] protected int _sunPoints = 5;
-    [Export] protected int _lives = 3;
-    [Export] protected int _stolenPower = 0;
+    [Export] protected int SunPoints = 5;
+    [Export] protected int Lives = 3;
+    [Export] protected int Stolenpower = 0;
+    [Export] protected float TargetRotation;
+    [Export] protected float TurnSpeed = Mathf.Tau; // Radians/sec
 
     // Encapsulation: Base class (enemyBase) owns this node,
     // Sub-classes can use it but NOT replace it
@@ -71,9 +73,10 @@ public partial class EnemyBase : CharacterBody2D
     // Subclasses can override this if they need custom hit behaviour
     protected virtual void OnHitBoxAreaEntered(Area2D area)
     {
-        _lives--;
+        GD.Print("You're hitting me: ", nameof(EnemyBase));
+        Lives--;
 
-        if (_lives <= 0)
+        if (Lives <= 0)
         {
             Die();
         }

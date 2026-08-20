@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
 [ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
 [ext_resource type="AudioStream" uid="uid://mqa5o61cfvl7" path="res://assets/bullet/Shoot1Sound.mp3" id="3_ved6o"]
+[ext_resource type="PackedScene" uid="uid://s1r2gg3ipmj4" path="res://scenes/BulletBase/PlayerBullet/PlayerBullet.tscn" id="5_xcisb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pm0ju"]
 size = Vector2(37, 21)
@@ -21,6 +22,7 @@ DebugLabel = NodePath("Label")
 shape = SubResource("RectangleShape2D_pm0ju")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1563420108]
+zoom = Vector2(2, 2)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
 scale = Vector2(0.27, 0.27)
@@ -47,3 +49,4 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Shooter" parent="." unique_id=1648900959 instance=ExtResource("3_bvqhm")]
+_bulletScene = ExtResource("5_xcisb")
