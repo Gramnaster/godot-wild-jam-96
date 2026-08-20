@@ -15,7 +15,7 @@ public partial class Squid : EnemyBase
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
         float dt = (float)delta;
         MoveTo(dt);
