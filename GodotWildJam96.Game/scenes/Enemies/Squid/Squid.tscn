@@ -10,6 +10,7 @@ radius = 17.029387
 
 [node name="Squid" unique_id=1191919949 instance=ExtResource("1_rqs77")]
 script = ExtResource("2_rym83")
+Speed = 500.0
 
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=820005660]
 scale = Vector2(3, 3)
