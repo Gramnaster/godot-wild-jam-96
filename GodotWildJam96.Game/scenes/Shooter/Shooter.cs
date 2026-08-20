@@ -23,9 +23,9 @@ public partial class Shooter : Node2D
     }
 
     // Extension that uses default speed unless given
-    public void Shoot(Vector2[] directions) => Shoot(directions, _speed, _bulletLifetimeSeconds);
+    public void Shoot(Vector2[] directions) => Shoot(directions, _speed, _bulletLifetimeSeconds, _shootTimer.WaitTime);
 
-    public void Shoot(Vector2[] directions, float speed, float lifetimeSeconds)
+    public void Shoot(Vector2[] directions, float speed, float lifetimeSeconds, double waitTime)
     {
         if (!_canShoot) return;
 
@@ -36,6 +36,7 @@ public partial class Shooter : Node2D
 
         _shootSound.Play();
         _canShoot = false;
+        _shootTimer.WaitTime = waitTime;
         _shootTimer.Start();
     }
 
