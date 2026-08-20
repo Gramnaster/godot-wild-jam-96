@@ -7,7 +7,10 @@ namespace GodotWildJam96;
 public partial class Player : CharacterBody2D
 {
     //Ship Properties
-    private const float SHIP_MOVESPEED = 120.0f;
+    private const float MAX_LINEAR_SPEED = 300.0f;
+    private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
+    private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
+
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
 
@@ -17,7 +20,10 @@ public partial class Player : CharacterBody2D
     [Export] private Label DebugLabel { get; set; }
 
     // Radians per scond. Tau is one full revolution per second.
-    [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
+    [Export] private float TurnSpeed { get; set; } = Mathf.Tau / 2;
+    // Acceleration towards FacingDirection while thrusting
+    [Export] private float ThrustAcceleration { get; set; } = 100.0f;
+    [Export] private float ThrustDecceleration { get; set; } = 50.0f;
     [Export] private float _maxChargeSeconds = 1.0f;
 
 
@@ -29,9 +35,6 @@ public partial class Player : CharacterBody2D
 
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
-
-    // Disabled because we have no use for it at the moment
-    // private Vector2 _shipVelocity = new();
     private float _targetRotation;
 
     // Attack properties
@@ -52,14 +55,11 @@ public partial class Player : CharacterBody2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("shoot1"))
-        {
-            _shoot1PressedAtMsec = Time.GetTicksMsec();
-        }
-        if (@event.IsActionReleased("shoot1"))
-        {
-            ShootFront(ChargeRatio(_shoot1PressedAtMsec));
-        }
+
+        // if (@event.IsActionReleased("shoot1"))
+        // {
+        //     ShootFront(ChargeRatio(_shoot1PressedAtMsec));
+        // }
 
         if (@event.IsActionPressed("shoot2"))
         {
@@ -108,8 +108,6 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
         EventBus.Instance.OnSiphonReset += ResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
-        // Set initial _rotation for use in GetInput
-        _targetRotation = Rotation;
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -126,29 +124,72 @@ public partial class Player : CharacterBody2D
     {
         // Converted to float since a lot of methods need deltaTime in float
         float dt = (float)delta;
+
         GetInput(dt);
+        RapidShoot();
         MoveAndSlide();
     }
 
     private void GetInput(float dt)
     {
-        Vector2 shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Velocity = shipVelocity * SHIP_MOVESPEED;
+        // 'A'/'D' sets turn rate. Stops when released.
+        float turnInput = Input.GetAxis("move_left", "move_right");
+        Rotation += turnInput * TurnSpeed * dt;
 
-        // Gives us where ship should be pointing
-        if (shipVelocity != Vector2.Zero)
-        {
-            _targetRotation = shipVelocity.Angle();
-        }
+        // 'W'/'S' apply thrust where facing
+        Thrust(dt);
+        Break(dt);
 
-        // Final ship rotation is what it should be pointed towards
-        Rotation = Mathf.RotateToward(Rotation, _targetRotation, TurnSpeed * dt);
+        // Limit to how fast player goes or they'll zoom too fast
+        Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
 
         // Debug
         DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
         DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
     }
 
+    private void Thrust(float dt)
+    {
+        if (Input.IsActionPressed("move_up"))
+        {
+            Velocity += FacingDirection * ThrustAcceleration * dt;
+        }
+
+        if (Input.IsActionPressed("move_down"))
+        {
+            Velocity -= FacingDirection * ThrustDecceleration * dt;
+        }
+    }
+
+    private void Break(float dt)
+    {
+        if (Input.IsActionPressed("brake")
+            && Velocity.LengthSquared() > RETROGRADE_VELOCITY_TOLERANCE * RETROGRADE_ANGLE_TOLERANCE)
+        {
+            // Point nose retrograde then burn
+            float retrogradeRotation = (-Velocity).Angle();
+            Rotation = Mathf.RotateToward(Rotation, retrogradeRotation, TurnSpeed * dt);
+
+            // Only burn once nose is actually pointed retrograde
+            float angleDiff = Mathf.Abs(Mathf.AngleDifference(Rotation, retrogradeRotation));
+            if (angleDiff < RETROGRADE_ANGLE_TOLERANCE)
+            {
+                Velocity += FacingDirection * ThrustAcceleration * dt * 1.5f;
+                Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
+            }
+
+            return;
+        }
+    }
+
+    private void RapidShoot()
+    {
+        if (Input.IsActionPressed("shoot1"))
+        {
+            _shooter.Shoot([FacingDirection], _primarySpeed, 3.0f, 0.05f);
+        }
+
+    }
 
     private void ShootFront(float chargeRatio)
     {
@@ -156,7 +197,7 @@ public partial class Player : CharacterBody2D
         float adjustedLifetime = Mathf.Lerp(_primaryLifetimeSeconds, _primaryChargedLifetimeSeconds, chargeRatio);
 
         GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime);
+        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime, 0.7f);
     }
 
     private void ShootSide(float chargeRatio)
@@ -167,7 +208,7 @@ public partial class Player : CharacterBody2D
         Vector2 fireRight = FacingDirection.Rotated(Mathf.Pi / 2f);
 
         GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime);
+        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime, 0.7f);
     }
 
     // Determines how much charging you can pull off in the listed charging time
