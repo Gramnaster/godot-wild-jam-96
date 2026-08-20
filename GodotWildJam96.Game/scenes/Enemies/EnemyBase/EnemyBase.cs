@@ -17,6 +17,8 @@ public partial class EnemyBase : CharacterBody2D
     [Export] protected int _sunPoints = 5;
     [Export] protected int _lives = 3;
     [Export] protected int _stolenPower = 0;
+    [Export] protected float _targetRotation;
+    [Export] protected float _turnSpeed = Mathf.Tau; // Radians/sec
 
     // Encapsulation: Base class (enemyBase) owns this node,
     // Sub-classes can use it but NOT replace it

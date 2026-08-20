@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="4_ji8qy"]
 [ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="5_ois7l"]
+[ext_resource type="PackedScene" uid="uid://3qi487l0n5fv" path="res://scenes/Enemies/Squid/Squid.tscn" id="8_ois7l"]
 [ext_resource type="PackedScene" uid="uid://pfw3wix0v1je" path="res://scenes/MainSun/MainSun.tscn" id="11_ji8qy"]
 
 [sub_resource type="Resource" id="Resource_7hghd"]
@@ -29,6 +30,15 @@ _scrollingImages = SubResource("Resource_7hghd")
 [node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
 
 [node name="Enemies" type="Node" parent="." unique_id=1397552595]
+
+[node name="Squid" parent="Enemies" unique_id=1191919949 instance=ExtResource("8_ois7l")]
+position = Vector2(309, -193)
+
+[node name="Squid2" parent="Enemies" unique_id=261660352 instance=ExtResource("8_ois7l")]
+position = Vector2(225, 152)
+
+[node name="Squid3" parent="Enemies" unique_id=1015565776 instance=ExtResource("8_ois7l")]
+position = Vector2(244, 11)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44243129]
 

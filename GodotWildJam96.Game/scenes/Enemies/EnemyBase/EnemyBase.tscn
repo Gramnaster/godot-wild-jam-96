@@ -15,6 +15,8 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_78ajt"]
+
 [node name="EnemyBase" type="CharacterBody2D" unique_id=1191919949 node_paths=PackedStringArray("_screenNotifier", "_animatedSprite2D", "_hitBox", "_timer")]
 script = ExtResource("1_cdhqv")
 _screenNotifier = NodePath("VisibleOnScreenNotifier2D")
@@ -27,12 +29,12 @@ sprite_frames = SubResource("SpriteFrames_cdhqv")
 animation = &"squid"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1058850113]
+shape = SubResource("CircleShape2D_78ajt")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=770898641]
 
 [node name="HitBox" parent="." unique_id=1720138728 instance=ExtResource("1_sam8l")]
 collision_layer = 2
 collision_mask = 16
-script = null
 
 [node name="Timer" type="Timer" parent="." unique_id=1135546172]
