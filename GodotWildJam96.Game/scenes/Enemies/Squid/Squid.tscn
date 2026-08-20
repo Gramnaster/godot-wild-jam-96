@@ -6,9 +6,10 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_sm20f"]
 radius = 17.029387
 
-[node name="Squid" unique_id=1191919949 node_paths=PackedStringArray("_hitBox") instance=ExtResource("1_rqs77")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_xcisb"]
+
+[node name="Squid" unique_id=1191919949 instance=ExtResource("1_rqs77")]
 script = ExtResource("2_rym83")
-_hitBox = NodePath("HitBox")
 
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=820005660]
 scale = Vector2(3, 3)
@@ -18,3 +19,4 @@ shape = SubResource("CircleShape2D_sm20f")
 
 [node name="HitBox" parent="." index="3" unique_id=1720138728]
 scale = Vector2(1.75, 1.75)
+Shape = SubResource("CircleShape2D_xcisb")

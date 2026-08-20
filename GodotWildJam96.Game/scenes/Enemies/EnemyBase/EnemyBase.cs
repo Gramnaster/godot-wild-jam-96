@@ -73,6 +73,7 @@ public partial class EnemyBase : CharacterBody2D
     // Subclasses can override this if they need custom hit behaviour
     protected virtual void OnHitBoxAreaEntered(Area2D area)
     {
+        GD.Print("You're hitting me: ", nameof(EnemyBase));
         _lives--;
 
         if (_lives <= 0)
