@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Godot;
@@ -26,7 +27,7 @@ public partial class Spawner : Node2D
 
     private void Trial()
     {
-        _ = SpawnSuns(25);
+        _ = SpawnSuns(3);
     }
     //Logic for spawning suns
     private async Task SpawnSuns(int spawnCount)
@@ -38,16 +39,19 @@ public partial class Spawner : Node2D
             {
                 SunSpawnCalculator();
                 SPAWN_ATTEMPTS++;
-                GD.Print(_sunPos + " " + SPAWN_ATTEMPTS + " " + i);
+                //GD.Print(_sunPos + " " + SPAWN_ATTEMPTS + " " + i);
             } while (!EnsurePositionValid(_sunPos) && SPAWN_ATTEMPTS < 25);
 
             if (SPAWN_ATTEMPTS == 25)
             {
-                GD.Print("Abort spawning this sun! No suitable place found!");
+                //GD.Print("Abort spawning this sun! No suitable place found!");
                 continue;
             }
 
             Sun newSun = _sunScene.Instantiate<Sun>();
+            //Adding to the Sun group so enemies can see it
+            newSun.AddToGroup(GameConstants.GroupSuns);
+            GD.Print(GameConstants.GroupSuns);
             //Instantiating the new sun as a child of the Main scene so it will be visible in the game
             _levelBase.AddChild(newSun);
             newSun.GlobalPosition = _sunPos;
@@ -69,7 +73,7 @@ public partial class Spawner : Node2D
             CollideWithAreas = true
         };
         var result = spaceState.IntersectShape(query);
-        GD.Print(result.Count == 0);
+        //GD.Print(result.Count == 0);
         return result.Count == 0; // If the result is empty, the position is valid
     }
 
