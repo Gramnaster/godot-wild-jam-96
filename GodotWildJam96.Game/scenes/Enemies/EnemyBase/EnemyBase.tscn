@@ -22,7 +22,7 @@ script = ExtResource("1_cdhqv")
 _screenNotifier = NodePath("VisibleOnScreenNotifier2D")
 _animatedSprite2D = NodePath("AnimatedSprite2D")
 _hitBox = NodePath("HitBox")
-_timer = NodePath("Timer")
+_timer = NodePath("ActionTimer")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=820005660]
 sprite_frames = SubResource("SpriteFrames_cdhqv")
@@ -37,4 +37,4 @@ shape = SubResource("CircleShape2D_78ajt")
 collision_layer = 2
 collision_mask = 16
 
-[node name="Timer" type="Timer" parent="." unique_id=1135546172]
+[node name="ActionTimer" type="Timer" parent="." unique_id=1135546172]

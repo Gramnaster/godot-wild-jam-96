@@ -9,11 +9,14 @@ public partial class EventBus : Node
     public static EventBus Instance { get; private set; }
 
     // Sun events
-    public event Action<Node2D, SunInteractionArea> OnShipEntered;
-    public event Action<Node2D, SunInteractionArea> OnShipExited;
+    public event Action<Player, SunInteractionArea> OnShipEntered;
+    public event Action<Player, SunInteractionArea> OnShipExited;
+    public event Action<Devourer, SunInteractionArea> OnDevourerEntered;
     public event Action<SunInteractionArea, int> OnSiphonStart;
-    public event Action<SunInteractionArea> OnSiphonEnd;
-    public event Action<Boolean> OnSiphonReset;
+    public event Action<SunInteractionArea, Devourer, int> OnEnemySiphonStart;
+    public event Action<SunInteractionArea> OnEnemySiphonStop;
+    public event Action<SunInteractionArea> OnPlayerSiphonEnd;
+    public event Action<Boolean> OnPlayerSiphonReset;
     public event Action<float> OnDamageTakenPlayer;
     public event Action<Player> OnTeleport;
     public event Action OnAllSunsSpawned;
@@ -33,13 +36,13 @@ public partial class EventBus : Node
         Instance = this;
     }
 
-    public void EmitOnShipEntered(Node2D ship, SunInteractionArea interactionArea)
+    public void EmitOnShipEntered(Player ship, SunInteractionArea interactionArea)
     {
         OnShipEntered?.Invoke(ship, interactionArea);
     }
 
 
-    public void EmitOnShipExited(Node2D ship, SunInteractionArea interactionArea)
+    public void EmitOnShipExited(Player ship, SunInteractionArea interactionArea)
     {
         OnShipExited?.Invoke(ship, interactionArea);
     }
@@ -51,18 +54,27 @@ public partial class EventBus : Node
         OnSiphonStart?.Invoke(interactionArea, siphonType);
     }
 
-    public void EmitOnSiphonEnd(SunInteractionArea interactionArea)
+    public static void EmitOnEnemySiphonStart(SunInteractionArea interactionArea, Devourer devourer, int siphonType)
+    {
+        Instance.OnEnemySiphonStart?.Invoke(interactionArea, devourer, siphonType);
+    }
+    public static void EmitOnEnemySiphonStop(SunInteractionArea interactionArea)
+    {
+        Instance.OnEnemySiphonStop?.Invoke(interactionArea);
+    }
+
+    public void EmitOnPlayerSiphonEnd(SunInteractionArea interactionArea)
     {
         //Code to see who is subscribed to this event
         //GD.Print($"Siphon End Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonEnd?.GetInvocationList().Length ?? 0}");
         GD.Print("Siphon End Event Emitted");
-        OnSiphonEnd?.Invoke(interactionArea);
+        OnPlayerSiphonEnd?.Invoke(interactionArea);
     }
 
-    public void EmitOnSiphonReset(Boolean reset)
+    public void EmitOnPlayerSiphonReset(Boolean reset)
     {
         GD.Print("Siphon Reset!");
-        OnSiphonReset?.Invoke(reset);
+        OnPlayerSiphonReset?.Invoke(reset);
     }
     public static void EmitOnDamageTakenPlayer(float dmg)
     {
@@ -90,6 +102,11 @@ public partial class EventBus : Node
     {
         GD.Print("Explosion triggered");
         Instance.OnCreateExplosion?.Invoke(position);
+    }
+
+    public static void EmitOnDevourerEntered(Devourer devourer, SunInteractionArea interactionArea)
+    {
+        Instance.OnDevourerEntered?.Invoke(devourer, interactionArea);
     }
 
 
