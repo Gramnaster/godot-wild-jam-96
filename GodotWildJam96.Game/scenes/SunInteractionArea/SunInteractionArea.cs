@@ -34,17 +34,25 @@ public partial class SunInteractionArea : Area2D
 
     private void OnBodyEntered(Node2D body)
     {
-        if (body is CharacterBody2D characterBody)
+        if (body is Player player)
         {
-            EventBus.Instance.EmitOnShipEntered(characterBody, this);
+            EventBus.Instance.EmitOnShipEntered(player, this);
+        }
+        if (body is Squid squid)
+        {
+            GD.Print(squid.Name + " entered " + this.Name);
+        }
+        if (body is Devourer devourer)
+        {
+            EventBus.EmitOnDevourerEntered(devourer, this);
         }
     }
 
     private void OnBodyExited(Node2D body)
     {
-        if (body is CharacterBody2D characterBody)
+        if (body is Player player)
         {
-            EventBus.Instance.EmitOnShipExited(characterBody, this);
+            EventBus.Instance.EmitOnShipExited(player, this);
         }
     }
 

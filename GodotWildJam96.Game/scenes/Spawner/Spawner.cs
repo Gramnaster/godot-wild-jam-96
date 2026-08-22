@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ public partial class Spawner : Node2D
 
     [Export] public PackedScene _sunScene;
     [Export] public PackedScene _mainSunScene;
+
+    [Export] public PackedScene _devourerScene;
     [Export] public Shape2D SpawnCheckShape;
     //It's main for now, change to level base later
     [Export] public Node _levelBase;
@@ -20,14 +23,17 @@ public partial class Spawner : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        CallDeferred("Trial");
         MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
         CallDeferred("add_child", newMainSun);
+        CallDeferred("Trial");
+        Devourer newDevourer = _devourerScene.Instantiate<Devourer>();
+        newDevourer.GlobalPosition = new Vector2 (100.0f, 100.0f);
+        AddChild(newDevourer);
     }
 
     private void Trial()
     {
-        _ = SpawnSuns(3);
+        _ = SpawnSuns(25);
     }
     //Logic for spawning suns
     private async Task SpawnSuns(int spawnCount)
@@ -50,8 +56,6 @@ public partial class Spawner : Node2D
 
             Sun newSun = _sunScene.Instantiate<Sun>();
             //Adding to the Sun group so enemies can see it
-            newSun.AddToGroup(GameConstants.GroupSuns);
-            GD.Print(GameConstants.GroupSuns);
             //Instantiating the new sun as a child of the Main scene so it will be visible in the game
             _levelBase.AddChild(newSun);
             newSun.GlobalPosition = _sunPos;
@@ -79,7 +83,7 @@ public partial class Spawner : Node2D
 
     private void SunSpawnCalculator()
     {
-        _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-500, 500);
-        _sunPos = new Vector2(_sunPos.X + 512.0f, _sunPos.Y + 384.0f);
+        _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-5000, 5000);
+        _sunPos = new Vector2(_sunPos.X, _sunPos.Y);
     }
 }

@@ -35,7 +35,6 @@ public partial class Sun : Area2D
     {
         EventBus.Instance.OnSiphonStart += StartSiphon;
         EventBus.Instance.OnSiphonEnd += StopSiphon;
-
         EventBus.Instance.OnShipExited += OnPlayerExited;
 
         //Help from Claude to see if EventBus is being subscribed to by this Sun instance
@@ -48,6 +47,7 @@ public partial class Sun : Area2D
         _maxEnergy = _sunLevel + 3;
         _currentEnergy = GD.RandRange(3, _maxEnergy);
         _energyValuebar.InitializeValues(_maxEnergy, _currentEnergy);
+        AddToGroup(GameConstants.GroupSuns);
     }
 
     public override void _ExitTree()
@@ -101,9 +101,8 @@ public partial class Sun : Area2D
 
 
 
-    public void OnPlayerExited(Node2D player, SunInteractionArea interactionArea)
+    public void OnPlayerExited(Player player, SunInteractionArea interactionArea)
     {
-        GD.Print("Ship exited " + interactionArea.Name);
         if (_siphonInOngoing || _siphonOutOngoing)
         {
             GD.Print("Siphon stopped, you lost some energy!");

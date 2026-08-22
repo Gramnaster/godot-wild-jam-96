@@ -3,6 +3,8 @@ using System;
 
 public partial class RestartButton : TextureButton
 {
+    [Export] private PackedScene _mainScene;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
     {
@@ -16,6 +18,6 @@ public partial class RestartButton : TextureButton
 
     private void RestartGame()
     {
-        GetTree().ChangeSceneToFile($"res://Scenes/LevelBase/main.tscn");
+        GetTree().ChangeSceneToFile($"res://Scenes/main/main.tscn");
     }
 }

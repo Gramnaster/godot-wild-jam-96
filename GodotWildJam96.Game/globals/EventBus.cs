@@ -9,8 +9,9 @@ public partial class EventBus : Node
     public static EventBus Instance { get; private set; }
 
     // Sun events
-    public event Action<Node2D, SunInteractionArea> OnShipEntered;
-    public event Action<Node2D, SunInteractionArea> OnShipExited;
+    public event Action<Player, SunInteractionArea> OnShipEntered;
+    public event Action<Player, SunInteractionArea> OnShipExited;
+    public event Action<Devourer, SunInteractionArea> OnDevourerEntered;
     public event Action<SunInteractionArea, int> OnSiphonStart;
     public event Action<SunInteractionArea> OnSiphonEnd;
     public event Action<Boolean> OnSiphonReset;
@@ -33,13 +34,13 @@ public partial class EventBus : Node
         Instance = this;
     }
 
-    public void EmitOnShipEntered(Node2D ship, SunInteractionArea interactionArea)
+    public void EmitOnShipEntered(Player ship, SunInteractionArea interactionArea)
     {
         OnShipEntered?.Invoke(ship, interactionArea);
     }
 
 
-    public void EmitOnShipExited(Node2D ship, SunInteractionArea interactionArea)
+    public void EmitOnShipExited(Player ship, SunInteractionArea interactionArea)
     {
         OnShipExited?.Invoke(ship, interactionArea);
     }
@@ -90,6 +91,11 @@ public partial class EventBus : Node
     {
         GD.Print("Explosion triggered");
         Instance.OnCreateExplosion?.Invoke(position);
+    }
+
+    public static void EmitOnDevourerEntered(Devourer devourer, SunInteractionArea interactionArea)
+    {
+        Instance.OnDevourerEntered?.Invoke(devourer, interactionArea);
     }
 
 

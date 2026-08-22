@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Xml;
 using Godot;
 
@@ -6,6 +7,11 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
+
+    //Tutorial Flags
+
+    //Tutorial Labels
+
     #region Properties
     //Ship Properties
     private const float MAX_LINEAR_SPEED = 300.0f;
@@ -28,6 +34,9 @@ public partial class Player : CharacterBody2D
 
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
+
+    private Vector2 _closestSunVector;
+    [Export] private Sprite2D _closestSunIndicator;
 
     [Export] private Sprite2D _playerSprite;
     [Export] private AnimatedSprite2D _firingSprite;
@@ -133,11 +142,6 @@ public partial class Player : CharacterBody2D
             TakeDamage(5);
         }
     }
-    public void OnPlayerEntered(Node2D player, SunInteractionArea interactionArea)
-    {
-        GD.Print("Ship entered " + interactionArea.Name);
-        _currentSunInteractionArea = interactionArea;
-    }
 
     public override void _EnterTree()
     {
@@ -213,6 +217,16 @@ public partial class Player : CharacterBody2D
         MoveAndSlide();
     }
 
+    public override void _Process(double delta)
+    {
+        FindClosestSun();
+    }
+
+    public void OnPlayerEntered(Player player, SunInteractionArea interactionArea)
+    {
+        GD.Print(player.Name + " entered " + interactionArea.Name);
+        _currentSunInteractionArea = interactionArea;
+    }
     private void GetInput(float dt)
     {
         // 'A'/'D' sets turn rate. Stops when released.
@@ -376,5 +390,24 @@ public partial class Player : CharacterBody2D
         {
             EventBus.Instance.EmitOnSiphonEnd(_currentSunInteractionArea);
         }
+    }
+
+    private void FindClosestSun()
+    {
+        Sun _closestSun = null;
+        float _closestDist = float.MaxValue;
+
+        foreach (Sun sun in GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>())
+        {
+            float _distSquared = GlobalPosition.DistanceSquaredTo(sun.GlobalPosition);
+            if (_distSquared < _closestDist)
+            {
+                _closestDist = _distSquared;
+                _closestSun = sun;
+            }
+        }
+        _closestSunVector = GlobalPosition.DirectionTo(_closestSun.GlobalPosition);
+        _closestSunIndicator.LookAt(_closestSun.GlobalPosition);
+        _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector*50.0f;
     }
 }

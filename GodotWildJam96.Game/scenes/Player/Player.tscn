@@ -15,6 +15,7 @@
 radius = 12.0
 height = 46.0
 
+<<<<<<< HEAD
 [sub_resource type="Animation" id="Animation_tl8lu"]
 length = 0.001
 tracks/0/type = "value"
@@ -406,6 +407,14 @@ _thrustMainSprite = NodePath("ThrustMainSprite")
 _thrustForwardSprite = NodePath("ThrustForwardSprite")
 _thrustLeftSprite = NodePath("ThrustLeftSprite")
 _thrustRightSprite = NodePath("ThrustRightSprite")
+=======
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_shootSound", "_shooter", "DebugLabel")]
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("1_h00vy")
+_closestSunIndicator = NodePath("ClosestSunIndicator")
+_playerSprite = NodePath("Sprite2D")
+>>>>>>> 2083bf8 (Major Update - Suns,Enemies,Menus,Victory/Defeat)
 _shootSound = NodePath("ShootSound")
 _shooter = NodePath("Shooter")
 DebugLabel = NodePath("Label")
@@ -466,3 +475,8 @@ vertical_alignment = 1
 
 [node name="Shooter" parent="." unique_id=1648900959 instance=ExtResource("3_bvqhm")]
 _bulletScene = ExtResource("5_xcisb")
+
+[node name="ClosestSunIndicator" type="Sprite2D" parent="." unique_id=620693116]
+rotation = -1.5707964
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_ky53y")

@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="4_ji8qy"]
 [ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="5_ois7l"]
-[ext_resource type="PackedScene" uid="uid://3qi487l0n5fv" path="res://scenes/Enemies/Squid/Squid.tscn" id="8_ois7l"]
+[ext_resource type="PackedScene" uid="uid://ddadou5y46k54" path="res://scenes/Enemies/Devourer/Devourer.tscn" id="8_ois7l"]
 [ext_resource type="PackedScene" uid="uid://pfw3wix0v1je" path="res://scenes/MainSun/MainSun.tscn" id="11_ji8qy"]
 
 [sub_resource type="Resource" id="Resource_7hghd"]
@@ -19,7 +19,7 @@ Images = Array[Texture2D]([ExtResource("2_4j52w"), ExtResource("2_6hn50"), ExtRe
 metadata/_custom_type_script = "uid://bg2qdbskuvwe"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5nymx"]
-radius = 300.0
+radius = 500.0
 
 [node name="LevelBase" type="Node" unique_id=2017188397]
 
@@ -31,15 +31,6 @@ _scrollingImages = SubResource("Resource_7hghd")
 
 [node name="Enemies" type="Node" parent="." unique_id=1397552595]
 
-[node name="Squid" parent="Enemies" unique_id=1191919949 instance=ExtResource("8_ois7l")]
-position = Vector2(309, -193)
-
-[node name="Squid2" parent="Enemies" unique_id=261660352 instance=ExtResource("8_ois7l")]
-position = Vector2(225, 152)
-
-[node name="Squid3" parent="Enemies" unique_id=1015565776 instance=ExtResource("8_ois7l")]
-position = Vector2(244, 11)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44243129]
 
 [node name="ObjectMaker" parent="." unique_id=144459317 instance=ExtResource("3_ny4ya")]
@@ -47,5 +38,6 @@ position = Vector2(244, 11)
 [node name="Spawner" parent="." unique_id=2107266173 node_paths=PackedStringArray("_levelBase") instance=ExtResource("3_u8cij")]
 _sunScene = ExtResource("4_u8cij")
 _mainSunScene = ExtResource("11_ji8qy")
+_devourerScene = ExtResource("8_ois7l")
 SpawnCheckShape = SubResource("CircleShape2D_5nymx")
 _levelBase = NodePath("..")

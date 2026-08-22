@@ -98,5 +98,9 @@ public partial class EnemyBase : CharacterBody2D
     private void OnAllSunsSpawned()
     {
         SunRefs = GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>().ToArray();
+        OnSunsReady();
     }
+
+    //Here so that enemies can do something with SunRefs when its done
+    protected virtual void OnSunsReady() {}
 }
