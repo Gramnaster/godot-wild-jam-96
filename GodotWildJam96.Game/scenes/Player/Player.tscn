@@ -1,32 +1,448 @@
 [gd_scene format=3 uid="uid://23h8lvgv6cx2"]
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
-[ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
+[ext_resource type="Texture2D" uid="uid://cmcc6uigtt14t" path="res://assets/player/Ship-02.png" id="2_xcisb"]
 [ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
+[ext_resource type="Texture2D" uid="uid://c8opw557joerv" path="res://assets/player/Fire-01-Sheet.png" id="3_dqp0f"]
+[ext_resource type="Texture2D" uid="uid://byoy33o7m46nx" path="res://assets/player/Plume-01-Sheet.png" id="3_socpp"]
 [ext_resource type="AudioStream" uid="uid://mqa5o61cfvl7" path="res://assets/bullet/Shoot1Sound.mp3" id="3_ved6o"]
+[ext_resource type="Texture2D" uid="uid://bjye82o6cxnxh" path="res://assets/player/Thrust-Back-01-Sheet.png" id="4_fxc31"]
+[ext_resource type="Texture2D" uid="uid://buaria5xo3ixi" path="res://assets/player/Thrust-Left-01-Sheet.png" id="5_mmokv"]
+[ext_resource type="Texture2D" uid="uid://4gi80w0n8f1u" path="res://assets/player/Thrust-Right-01-Sheet.png" id="5_puxyr"]
 [ext_resource type="PackedScene" uid="uid://s1r2gg3ipmj4" path="res://scenes/BulletBase/PlayerBullet/PlayerBullet.tscn" id="5_xcisb"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pm0ju"]
-size = Vector2(37, 21)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xcisb"]
+radius = 12.0
+height = 46.0
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_playerSprite", "_shootSound", "_shooter", "DebugLabel")]
+[sub_resource type="Animation" id="Animation_tl8lu"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustRightSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../ThrustLeftSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../ThrustForwardSprite:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../ThrustMainSprite:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../FiringSprite:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_5gcuk"]
+resource_name = "firing"
+length = 0.4
+loop_mode = 1
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../FiringSprite:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_dqp0f"]
+resource_name = "idle"
+length = 0.5
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_lbts4"]
+resource_name = "main-thrust-continuous"
+length = 0.2
+loop_mode = 1
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustMainSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [2, 3, 2]
+}
+
+[sub_resource type="Animation" id="Animation_dqefj"]
+resource_name = "main-thrust-start"
+length = 0.16
+loop_mode = 2
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustMainSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06, 0.12, 0.16),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_8djf2"]
+resource_name = "thrust-forward-start"
+length = 0.2
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustForwardSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.19999999),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 1]
+}
+
+[sub_resource type="Animation" id="Animation_qt7jd"]
+resource_name = "thrust-left-start"
+length = 0.2
+loop_mode = 1
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustLeftSprite:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.19999999),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="Animation" id="Animation_cd157"]
+resource_name = "thrust-right-start"
+length = 0.2
+loop_mode = 1
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ThrustRightSprite:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tl8lu"]
+_data = {
+&"RESET": SubResource("Animation_tl8lu"),
+&"firing": SubResource("Animation_5gcuk"),
+&"idle": SubResource("Animation_dqp0f"),
+&"main-thrust-continuous": SubResource("Animation_lbts4"),
+&"main-thrust-start": SubResource("Animation_dqefj"),
+&"thrust-forward-start": SubResource("Animation_8djf2"),
+&"thrust-left-start": SubResource("Animation_qt7jd"),
+&"thrust-right-start": SubResource("Animation_cd157")
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gcuk"]
+atlas = ExtResource("3_dqp0f")
+region = Rect2(0, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_afv41"]
+atlas = ExtResource("3_dqp0f")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3nxk0"]
+atlas = ExtResource("3_dqp0f")
+region = Rect2(128, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dqp0f"]
+atlas = ExtResource("3_socpp")
+region = Rect2(128, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2aixn"]
+atlas = ExtResource("3_socpp")
+region = Rect2(192, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_miygw"]
+atlas = ExtResource("3_socpp")
+region = Rect2(192, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m1hey"]
+atlas = ExtResource("3_socpp")
+region = Rect2(256, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_socpp"]
+atlas = ExtResource("3_socpp")
+region = Rect2(0, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fxc31"]
+atlas = ExtResource("3_socpp")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_puxyr"]
+atlas = ExtResource("3_socpp")
+region = Rect2(128, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mmokv"]
+atlas = ExtResource("3_socpp")
+region = Rect2(192, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tl8lu"]
+atlas = ExtResource("4_fxc31")
+region = Rect2(0, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qt7jd"]
+atlas = ExtResource("4_fxc31")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5tklm"]
+atlas = ExtResource("4_fxc31")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbts4"]
+atlas = ExtResource("5_mmokv")
+region = Rect2(0, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dqefj"]
+atlas = ExtResource("5_mmokv")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g055u"]
+atlas = ExtResource("5_mmokv")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cd157"]
+atlas = ExtResource("5_puxyr")
+region = Rect2(0, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8djf2"]
+atlas = ExtResource("5_puxyr")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2racp"]
+atlas = ExtResource("5_puxyr")
+region = Rect2(64, 0, 64, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mqbl7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gcuk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_afv41")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3nxk0")
+}],
+"loop": 1,
+"name": &"Firing",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dqp0f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2aixn")
+}],
+"loop": 1,
+"name": &"MainThrustContinuous",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_miygw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m1hey")
+}],
+"loop": 1,
+"name": &"MainThrustPower",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_socpp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fxc31")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_puxyr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mmokv")
+}],
+"loop": 0,
+"name": &"MainThrustStart",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tl8lu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qt7jd")
+}],
+"loop": 0,
+"name": &"ThrustForward",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5tklm")
+}],
+"loop": 1,
+"name": &"ThrustForwardContinuous",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lbts4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dqefj")
+}],
+"loop": 0,
+"name": &"ThrustLeft",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g055u")
+}],
+"loop": 1,
+"name": &"ThrustLeftContinuous",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cd157")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8djf2")
+}],
+"loop": 0,
+"name": &"ThrustRight",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2racp")
+}],
+"loop": 1,
+"name": &"ThrustRightContinuous",
+"speed": 5.0
+}]
+
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_shootSound", "_shooter", "DebugLabel")]
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_h00vy")
-_playerSprite = NodePath("Sprite2D")
+_playerSprite = NodePath("ShipSprite")
+_firingSprite = NodePath("FiringSprite")
+_thrustMainSprite = NodePath("ThrustMainSprite")
+_thrustForwardSprite = NodePath("ThrustForwardSprite")
+_thrustLeftSprite = NodePath("ThrustLeftSprite")
+_thrustRightSprite = NodePath("ThrustRightSprite")
 _shootSound = NodePath("ShootSound")
 _shooter = NodePath("Shooter")
 DebugLabel = NodePath("Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1985309505]
-shape = SubResource("RectangleShape2D_pm0ju")
+position = Vector2(0, -5)
+shape = SubResource("CapsuleShape2D_xcisb")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1563420108]
 zoom = Vector2(2, 2)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=656125678]
-scale = Vector2(0.27, 0.27)
-texture = ExtResource("2_ky53y")
+[node name="ShipSprite" type="Sprite2D" parent="." unique_id=656125678]
+texture = ExtResource("2_xcisb")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1224070645]
+root_node = NodePath("../ShipSprite")
+libraries/ = SubResource("AnimationLibrary_tl8lu")
+
+[node name="FiringSprite" type="AnimatedSprite2D" parent="." unique_id=540361201]
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"Firing"
+
+[node name="ThrustMainSprite" type="AnimatedSprite2D" parent="." unique_id=289300572]
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"ThrustRight"
+
+[node name="ThrustForwardSprite" type="AnimatedSprite2D" parent="." unique_id=1423990088]
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"ThrustForward"
+
+[node name="ThrustLeftSprite" type="AnimatedSprite2D" parent="." unique_id=1543933251]
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"ThrustLeft"
+
+[node name="ThrustRightSprite" type="AnimatedSprite2D" parent="." unique_id=1300057193]
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"ThrustRight"
 
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=519660857]
 stream = ExtResource("3_ved6o")

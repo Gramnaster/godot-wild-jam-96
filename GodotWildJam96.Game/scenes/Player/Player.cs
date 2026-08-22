@@ -6,20 +6,50 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
+    #region Properties
     //Ship Properties
-    private const float SHIP_MOVESPEED = 120.0f;
+    private const float MAX_LINEAR_SPEED = 300.0f;
+    private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
+    private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
+
+    // Animation Names
+    private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
+    private const string ANIM_MAIN_THRUST_CONTINUOUS = "MainThrustContinuous";
+    private const string ANIM_MAIN_THRUST_POWER = "MainThrustPower";
+
+    private const string ANIM_THRUST_FORWARD_START = "ThrustForward";
+    private const string ANIM_THRUST_FORWARD_CONTINUOUS = "ThrustForwardContinuous";
+
+    private const string ANIM_THRUST_LEFT_START = "ThrustLeft";
+    private const string ANIM_THRUST_LEFT_CONTINUOUS = "ThrustLeftContinuous";
+
+    private const string ANIM_THRUST_RIGHT_START = "ThrustRight";
+    private const string ANIM_THRUST_RIGHT_CONTINUOUS = "ThrustRightContinuous";
+
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
 
     [Export] private Sprite2D _playerSprite;
+    [Export] private AnimatedSprite2D _firingSprite;
+    [Export] private AnimatedSprite2D _thrustMainSprite;
+    [Export] private AnimatedSprite2D _thrustForwardSprite;
+    [Export] private AnimatedSprite2D _thrustLeftSprite;
+    [Export] private AnimatedSprite2D _thrustRightSprite;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
     [Export] private Label DebugLabel { get; set; }
 
     // Radians per scond. Tau is one full revolution per second.
-    [Export] private float TurnSpeed { get; set; } = Mathf.Tau;
+    [Export] private float TurnSpeed { get; set; } = Mathf.Tau / 2;
+    // Acceleration towards FacingDirection while thrusting
+    [Export] private float ThrustAcceleration { get; set; } = 100.0f;
+    [Export] private float ThrustDecceleration { get; set; } = 50.0f;
     [Export] private float _maxChargeSeconds = 1.0f;
 
+    // State Properties
+    public bool IsThrusting { get; private set; }
+    public bool StartsThrusting { get; private set; }
+    public bool IsPowerThrusting { get; private set; }
 
     public SunInteractionArea _currentSunInteractionArea;
     public bool _siphonUnderway = false;
@@ -29,9 +59,6 @@ public partial class Player : CharacterBody2D
 
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
-
-    // Disabled because we have no use for it at the moment
-    // private Vector2 _shipVelocity = new();
     private float _targetRotation;
 
     // Attack properties
@@ -49,17 +76,32 @@ public partial class Player : CharacterBody2D
     private ulong _shoot1PressedAtMsec;
     private ulong _shoot2PressedAtMsec;
 
+    // All thruster effects with one shared state machine
+    private Thruster[] _thrusters;
+
+    private sealed class Thruster(
+        AnimatedSprite2D sprite,
+        string actionName,
+        string startAnimation,
+        string continuousAnimation
+        )
+    {
+        public readonly AnimatedSprite2D Sprite = sprite;
+        public readonly string ActionName = actionName;
+        public readonly string StartAnimation = startAnimation;
+        public readonly string ContinuousAnimation = continuousAnimation;
+        public bool WasActive;
+        public Action AnimationFinishedHandler;
+    }
+    #endregion
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("shoot1"))
-        {
-            _shoot1PressedAtMsec = Time.GetTicksMsec();
-        }
-        if (@event.IsActionReleased("shoot1"))
-        {
-            ShootFront(ChargeRatio(_shoot1PressedAtMsec));
-        }
+
+        // if (@event.IsActionReleased("shoot1"))
+        // {
+        //     ShootFront(ChargeRatio(_shoot1PressedAtMsec));
+        // }
 
         if (@event.IsActionPressed("shoot2"))
         {
@@ -104,12 +146,42 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+        _playerSprite.RotationDegrees = 90f;
+        _firingSprite.RotationDegrees = 90f;
+        _thrustMainSprite.RotationDegrees = 90f;
+        _thrustForwardSprite.RotationDegrees = 90f;
+        _thrustLeftSprite.RotationDegrees = 90f;
+        _thrustRightSprite.RotationDegrees = 90f;
+
+        // Effect sprites starts hidden. Show in UpdateThrusterAnimations()
+        _firingSprite.Hide();
+        _thrustMainSprite.Hide();
+        _thrustForwardSprite.Hide();
+        _thrustLeftSprite.Hide();
+        _thrustRightSprite.Hide();
 
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
         EventBus.Instance.OnSiphonReset += ResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
-        // Set initial _rotation for use in GetInput
-        _targetRotation = Rotation;
+
+        // Animation events
+        _thrusters =
+        [
+            new Thruster(_thrustMainSprite, "move_up", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_CONTINUOUS),
+            new Thruster(_thrustForwardSprite, "move_down", ANIM_THRUST_FORWARD_START, ANIM_THRUST_FORWARD_CONTINUOUS),
+            new Thruster(_thrustLeftSprite, "move_left", ANIM_THRUST_LEFT_START, ANIM_THRUST_LEFT_CONTINUOUS),
+            new Thruster(_thrustRightSprite, "move_right", ANIM_THRUST_RIGHT_START, ANIM_THRUST_RIGHT_CONTINUOUS),
+            // new Thruster(_thrustMainSprite, "brake", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_POWER),
+        ];
+
+        // Each thruster has its own AnimationFinished subscription
+        // so it can pass itself from start clip to continuous
+        foreach (Thruster thruster in _thrusters)
+        {
+            Thruster eventThruster = thruster;
+            eventThruster.AnimationFinishedHandler = () => OnThrusterAnimationFinished(eventThruster);
+            eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
+        }
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -120,35 +192,146 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnSiphonReset -= ResetSiphon;
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
         EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
+
+        if (_thrusters != null)
+        {
+            foreach (Thruster thruster in _thrusters)
+            {
+                thruster.Sprite.AnimationFinished -= thruster.AnimationFinishedHandler;
+            }
+        }
     }
 
     public override void _PhysicsProcess(double delta)
     {
         // Converted to float since a lot of methods need deltaTime in float
         float dt = (float)delta;
+
         GetInput(dt);
+        UpdateThrusterAnimations();
+        RapidShoot();
         MoveAndSlide();
     }
 
     private void GetInput(float dt)
     {
-        Vector2 shipVelocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Velocity = shipVelocity * SHIP_MOVESPEED;
+        // 'A'/'D' sets turn rate. Stops when released.
+        float turnInput = Input.GetAxis("move_left", "move_right");
+        Rotation += turnInput * TurnSpeed * dt;
 
-        // Gives us where ship should be pointing
-        if (shipVelocity != Vector2.Zero)
-        {
-            _targetRotation = shipVelocity.Angle();
-        }
+        // 'W'/'S' apply thrust where facing
+        Thrust(dt);
+        Break(dt);
 
-        // Final ship rotation is what it should be pointed towards
-        Rotation = Mathf.RotateToward(Rotation, _targetRotation, TurnSpeed * dt);
+        // Limit to how fast player goes or they'll zoom too fast
+        Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
 
         // Debug
         DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
         DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
     }
 
+    private void Thrust(float dt)
+    {
+        bool wasThrusting = IsThrusting;
+        IsThrusting = Input.IsActionPressed("move_up");
+        StartsThrusting = IsThrusting && !wasThrusting;
+
+        if (IsThrusting)
+        {
+            Velocity += FacingDirection * ThrustAcceleration * dt;
+        }
+
+        if (Input.IsActionPressed("move_down"))
+        {
+            Velocity -= FacingDirection * ThrustDecceleration * dt;
+        }
+    }
+
+    private void Break(float dt)
+    {
+        IsPowerThrusting = false;
+
+        if (Input.IsActionPressed("brake")
+            && Velocity.LengthSquared() > RETROGRADE_VELOCITY_TOLERANCE * RETROGRADE_ANGLE_TOLERANCE)
+        {
+            // Point nose retrograde then burn
+            float retrogradeRotation = (-Velocity).Angle();
+            Rotation = Mathf.RotateToward(Rotation, retrogradeRotation, TurnSpeed * dt);
+
+            // Only burn once nose is actually pointed retrograde
+            float angleDiff = Mathf.Abs(Mathf.AngleDifference(Rotation, retrogradeRotation));
+            if (angleDiff < RETROGRADE_ANGLE_TOLERANCE)
+            {
+                IsPowerThrusting = true;
+
+                Velocity += FacingDirection * ThrustAcceleration * dt * 1.5f;
+                Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
+            }
+
+            return;
+        }
+    }
+
+    private void UpdateThrusterAnimations()
+    {
+        foreach (Thruster thruster in _thrusters)
+        {
+            bool active = Input.IsActionPressed(thruster.ActionName);
+
+            // Std Main thruster gets a higher-priority over Power Main thruster
+            if (thruster.Sprite == _thrustMainSprite && IsPowerThrusting)
+            {
+                thruster.Sprite.Show();
+
+                if (thruster.Sprite.Animation != ANIM_MAIN_THRUST_POWER)
+                {
+                    thruster.Sprite.Play(ANIM_MAIN_THRUST_POWER);
+                }
+
+                thruster.WasActive = true;
+                continue;
+            }
+
+            // Standard thruster handling
+            if (active)
+            {
+                // Because they're all hidden at _Ready
+                thruster.Sprite.Show();
+
+                if (!thruster.WasActive || !thruster.Sprite.IsPlaying())
+                {
+                    thruster.Sprite.Play(thruster.StartAnimation);
+                }
+            }
+            else
+            {
+                thruster.Sprite.Stop();
+                thruster.Sprite.Hide();
+            }
+
+            thruster.WasActive = active;
+        }
+    }
+
+    private static void OnThrusterAnimationFinished(Thruster thruster)
+    {
+        bool active = Input.IsActionPressed(thruster.ActionName);
+
+        if (active && thruster.Sprite.Animation == thruster.StartAnimation)
+        {
+            thruster.Sprite.Play(thruster.ContinuousAnimation);
+        }
+    }
+
+    private void RapidShoot()
+    {
+        if (Input.IsActionPressed("shoot1"))
+        {
+            _shooter.Shoot([FacingDirection], _primarySpeed, 3.0f, 0.05f);
+        }
+
+    }
 
     private void ShootFront(float chargeRatio)
     {
@@ -156,7 +339,7 @@ public partial class Player : CharacterBody2D
         float adjustedLifetime = Mathf.Lerp(_primaryLifetimeSeconds, _primaryChargedLifetimeSeconds, chargeRatio);
 
         GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime);
+        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime, 0.7f);
     }
 
     private void ShootSide(float chargeRatio)
@@ -167,7 +350,7 @@ public partial class Player : CharacterBody2D
         Vector2 fireRight = FacingDirection.Rotated(Mathf.Pi / 2f);
 
         GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime);
+        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime, 0.7f);
     }
 
     // Determines how much charging you can pull off in the listed charging time
