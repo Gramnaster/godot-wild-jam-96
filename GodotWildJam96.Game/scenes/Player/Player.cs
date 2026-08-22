@@ -6,15 +6,35 @@ namespace GodotWildJam96;
 
 public partial class Player : CharacterBody2D
 {
+    #region Properties
     //Ship Properties
     private const float MAX_LINEAR_SPEED = 300.0f;
     private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
     private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
 
+    // Animation Names
+    private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
+    private const string ANIM_MAIN_THRUST_CONTINUOUS = "MainThrustContinuous";
+    private const string ANIM_MAIN_THRUST_POWER = "MainThrustPower";
+
+    private const string ANIM_THRUST_FORWARD_START = "ThrustForward";
+    private const string ANIM_THRUST_FORWARD_CONTINUOUS = "ThrustForwardContinuous";
+
+    private const string ANIM_THRUST_LEFT_START = "ThrustLeft";
+    private const string ANIM_THRUST_LEFT_CONTINUOUS = "ThrustLeftContinuous";
+
+    private const string ANIM_THRUST_RIGHT_START = "ThrustRight";
+    private const string ANIM_THRUST_RIGHT_CONTINUOUS = "ThrustRightContinuous";
+
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
 
     [Export] private Sprite2D _playerSprite;
+    [Export] private AnimatedSprite2D _firingSprite;
+    [Export] private AnimatedSprite2D _thrustMainSprite;
+    [Export] private AnimatedSprite2D _thrustForwardSprite;
+    [Export] private AnimatedSprite2D _thrustLeftSprite;
+    [Export] private AnimatedSprite2D _thrustRightSprite;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
     [Export] private Label DebugLabel { get; set; }
@@ -26,6 +46,10 @@ public partial class Player : CharacterBody2D
     [Export] private float ThrustDecceleration { get; set; } = 50.0f;
     [Export] private float _maxChargeSeconds = 1.0f;
 
+    // State Properties
+    public bool IsThrusting { get; private set; }
+    public bool StartsThrusting { get; private set; }
+    public bool IsPowerThrusting { get; private set; }
 
     public SunInteractionArea _currentSunInteractionArea;
     public bool _siphonUnderway = false;
@@ -52,6 +76,24 @@ public partial class Player : CharacterBody2D
     private ulong _shoot1PressedAtMsec;
     private ulong _shoot2PressedAtMsec;
 
+    // All thruster effects with one shared state machine
+    private Thruster[] _thrusters;
+
+    private sealed class Thruster(
+        AnimatedSprite2D sprite,
+        string actionName,
+        string startAnimation,
+        string continuousAnimation
+        )
+    {
+        public readonly AnimatedSprite2D Sprite = sprite;
+        public readonly string ActionName = actionName;
+        public readonly string StartAnimation = startAnimation;
+        public readonly string ContinuousAnimation = continuousAnimation;
+        public bool WasActive;
+        public Action AnimationFinishedHandler;
+    }
+    #endregion
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -104,10 +146,42 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+        _playerSprite.RotationDegrees = 90f;
+        _firingSprite.RotationDegrees = 90f;
+        _thrustMainSprite.RotationDegrees = 90f;
+        _thrustForwardSprite.RotationDegrees = 90f;
+        _thrustLeftSprite.RotationDegrees = 90f;
+        _thrustRightSprite.RotationDegrees = 90f;
+
+        // Effect sprites starts hidden. Show in UpdateThrusterAnimations()
+        _firingSprite.Hide();
+        _thrustMainSprite.Hide();
+        _thrustForwardSprite.Hide();
+        _thrustLeftSprite.Hide();
+        _thrustRightSprite.Hide();
 
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
         EventBus.Instance.OnSiphonReset += ResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
+
+        // Animation events
+        _thrusters =
+        [
+            new Thruster(_thrustMainSprite, "move_up", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_CONTINUOUS),
+            new Thruster(_thrustForwardSprite, "move_down", ANIM_THRUST_FORWARD_START, ANIM_THRUST_FORWARD_CONTINUOUS),
+            new Thruster(_thrustLeftSprite, "move_left", ANIM_THRUST_LEFT_START, ANIM_THRUST_LEFT_CONTINUOUS),
+            new Thruster(_thrustRightSprite, "move_right", ANIM_THRUST_RIGHT_START, ANIM_THRUST_RIGHT_CONTINUOUS),
+            // new Thruster(_thrustMainSprite, "brake", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_POWER),
+        ];
+
+        // Each thruster has its own AnimationFinished subscription
+        // so it can pass itself from start clip to continuous
+        foreach (Thruster thruster in _thrusters)
+        {
+            Thruster eventThruster = thruster;
+            eventThruster.AnimationFinishedHandler = () => OnThrusterAnimationFinished(eventThruster);
+            eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
+        }
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -118,6 +192,14 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnSiphonReset -= ResetSiphon;
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
         EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
+
+        if (_thrusters != null)
+        {
+            foreach (Thruster thruster in _thrusters)
+            {
+                thruster.Sprite.AnimationFinished -= thruster.AnimationFinishedHandler;
+            }
+        }
     }
 
     public override void _PhysicsProcess(double delta)
@@ -126,6 +208,7 @@ public partial class Player : CharacterBody2D
         float dt = (float)delta;
 
         GetInput(dt);
+        UpdateThrusterAnimations();
         RapidShoot();
         MoveAndSlide();
     }
@@ -150,7 +233,11 @@ public partial class Player : CharacterBody2D
 
     private void Thrust(float dt)
     {
-        if (Input.IsActionPressed("move_up"))
+        bool wasThrusting = IsThrusting;
+        IsThrusting = Input.IsActionPressed("move_up");
+        StartsThrusting = IsThrusting && !wasThrusting;
+
+        if (IsThrusting)
         {
             Velocity += FacingDirection * ThrustAcceleration * dt;
         }
@@ -163,6 +250,8 @@ public partial class Player : CharacterBody2D
 
     private void Break(float dt)
     {
+        IsPowerThrusting = false;
+
         if (Input.IsActionPressed("brake")
             && Velocity.LengthSquared() > RETROGRADE_VELOCITY_TOLERANCE * RETROGRADE_ANGLE_TOLERANCE)
         {
@@ -174,11 +263,64 @@ public partial class Player : CharacterBody2D
             float angleDiff = Mathf.Abs(Mathf.AngleDifference(Rotation, retrogradeRotation));
             if (angleDiff < RETROGRADE_ANGLE_TOLERANCE)
             {
+                IsPowerThrusting = true;
+
                 Velocity += FacingDirection * ThrustAcceleration * dt * 1.5f;
                 Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
             }
 
             return;
+        }
+    }
+
+    private void UpdateThrusterAnimations()
+    {
+        foreach (Thruster thruster in _thrusters)
+        {
+            bool active = Input.IsActionPressed(thruster.ActionName);
+
+            // Std Main thruster gets a higher-priority over Power Main thruster
+            if (thruster.Sprite == _thrustMainSprite && IsPowerThrusting)
+            {
+                thruster.Sprite.Show();
+
+                if (thruster.Sprite.Animation != ANIM_MAIN_THRUST_POWER)
+                {
+                    thruster.Sprite.Play(ANIM_MAIN_THRUST_POWER);
+                }
+
+                thruster.WasActive = true;
+                continue;
+            }
+
+            // Standard thruster handling
+            if (active)
+            {
+                // Because they're all hidden at _Ready
+                thruster.Sprite.Show();
+
+                if (!thruster.WasActive || !thruster.Sprite.IsPlaying())
+                {
+                    thruster.Sprite.Play(thruster.StartAnimation);
+                }
+            }
+            else
+            {
+                thruster.Sprite.Stop();
+                thruster.Sprite.Hide();
+            }
+
+            thruster.WasActive = active;
+        }
+    }
+
+    private static void OnThrusterAnimationFinished(Thruster thruster)
+    {
+        bool active = Input.IsActionPressed(thruster.ActionName);
+
+        if (active && thruster.Sprite.Animation == thruster.StartAnimation)
+        {
+            thruster.Sprite.Play(thruster.ContinuousAnimation);
         }
     }
 
