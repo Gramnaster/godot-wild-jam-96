@@ -1,14 +1,12 @@
+using Godot;
 using System;
 using System.Runtime.CompilerServices;
-using Godot;
 
 
 namespace GodotWildJam96;
 
 public partial class Sun : Area2D
 {
-
-
     //Sun Node Parts
     private Sprite2D _lightRadiusSprite;
     private SunInteractionArea _mySunInteractionArea;
@@ -32,8 +30,8 @@ public partial class Sun : Area2D
     public SunInteractionArea _currentSunInteractionArea;
 
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
     {
         EventBus.Instance.OnSiphonStart += StartSiphon;
         EventBus.Instance.OnSiphonEnd += StopSiphon;
@@ -50,7 +48,6 @@ public partial class Sun : Area2D
         _maxEnergy = _sunLevel + 3;
         _currentEnergy = GD.RandRange(3, _maxEnergy);
         _energyValuebar.InitializeValues(_maxEnergy, _currentEnergy);
-        AddToGroup(GameConstants.GroupSuns);
     }
 
     public override void _ExitTree()
@@ -60,11 +57,11 @@ public partial class Sun : Area2D
         EventBus.Instance.OnShipExited -= OnPlayerExited;
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _PhysicsProcess(double delta)
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _PhysicsProcess(double delta)
     {
 
-        if (_siphonOutOngoing)
+        if(_siphonOutOngoing)
         {
             _siphonTimePassed += (float)delta;
             if (_currentEnergy < 1)
@@ -72,9 +69,9 @@ public partial class Sun : Area2D
                 StopSiphon(null);
                 return;
             }
-            else if (_siphonTimePassed > 1.0f)
+            else if(_siphonTimePassed > 1.0f)
             {
-                _lightRadiusSprite.Scale = new Vector2((_currentEnergy / _maxEnergy), (_currentEnergy / _maxEnergy));
+                _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
                 _currentEnergy -= _sunSiphonRate;
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
@@ -89,9 +86,9 @@ public partial class Sun : Area2D
                 StopSiphon(null);
                 return;
             }
-            else if (_siphonTimePassed > 1.0f)
+            else if(_siphonTimePassed > 1.0f)
             {
-                _lightRadiusSprite.Scale = new Vector2((_currentEnergy / _maxEnergy), (_currentEnergy / _maxEnergy));
+                _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
                 _currentEnergy += _sunSiphonRate;
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
@@ -124,7 +121,7 @@ public partial class Sun : Area2D
                 _siphonInOngoing = false;
                 _siphonOutOngoing = true;
             }
-            else if (siphonType == 1 && !_siphonInOngoing)
+            else if (siphonType == 1 && !_siphonInOngoing )
             {
                 _siphonOutOngoing = false;
                 _siphonInOngoing = true;
