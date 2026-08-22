@@ -106,11 +106,15 @@ public partial class Player : CharacterBody2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (@event.IsActionPressed("shoot1"))
+        {
+            _shoot1PressedAtMsec = Time.GetTicksMsec();
+        }
 
-        // if (@event.IsActionReleased("shoot1"))
-        // {
-        //     ShootFront(ChargeRatio(_shoot1PressedAtMsec));
-        // }
+        if (@event.IsActionReleased("shoot1"))
+        {
+            ShootFront(ChargeRatio(_shoot1PressedAtMsec));
+        }
 
         if (@event.IsActionPressed("shoot2"))
         {
@@ -213,7 +217,7 @@ public partial class Player : CharacterBody2D
 
         GetInput(dt);
         UpdateThrusterAnimations();
-        RapidShoot();
+        // RapidShoot();
         MoveAndSlide();
     }
 
@@ -338,14 +342,14 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    private void RapidShoot()
-    {
-        if (Input.IsActionPressed("shoot1"))
-        {
-            _shooter.Shoot([FacingDirection], _primarySpeed, 3.0f, 0.05f);
-        }
+    // private void RapidShoot()
+    // {
+    //     if (Input.IsActionPressed("shoot1"))
+    //     {
+    //         _shooter.Shoot([FacingDirection], _primarySpeed, 3.0f, 0.05f);
+    //     }
 
-    }
+    // }
 
     private void ShootFront(float chargeRatio)
     {

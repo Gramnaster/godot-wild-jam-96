@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wepqgks7c2ct"
-path="res://.godot/imported/PlayerShip-OLD.png-cbe9119f2c436d4c45e1ea23027df6f3.ctex"
+uid="uid://mlkkiyml6ng6"
+path="res://.godot/imported/sun-direction-small.png-e7aa79060e25f0e733ffc08c940a3474.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/player/PlayerShip-OLD.png"
-dest_files=["res://.godot/imported/PlayerShip-OLD.png-cbe9119f2c436d4c45e1ea23027df6f3.ctex"]
+source_file="res://assets/player/sun-direction-small.png"
+dest_files=["res://.godot/imported/sun-direction-small.png-e7aa79060e25f0e733ffc08c940a3474.ctex"]
 
 [params]
 
