@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://23h8lvgv6cx2"]
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
+[ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
 [ext_resource type="Texture2D" uid="uid://cmcc6uigtt14t" path="res://assets/player/Ship-02.png" id="2_xcisb"]
 [ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
 [ext_resource type="Texture2D" uid="uid://c8opw557joerv" path="res://assets/player/Fire-01-Sheet.png" id="3_dqp0f"]
@@ -396,10 +397,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_shootSound", "_shooter", "DebugLabel")]
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_shootSound", "_shooter", "DebugLabel")]
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_h00vy")
+_closestSunIndicator = NodePath("ClosestSunIndicator")
 _playerSprite = NodePath("ShipSprite")
 _firingSprite = NodePath("FiringSprite")
 _thrustMainSprite = NodePath("ThrustMainSprite")
@@ -466,3 +468,7 @@ vertical_alignment = 1
 
 [node name="Shooter" parent="." unique_id=1648900959 instance=ExtResource("3_bvqhm")]
 _bulletScene = ExtResource("5_xcisb")
+
+[node name="ClosestSunIndicator" type="Sprite2D" parent="." unique_id=228555135]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_ky53y")

@@ -3,5 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://ccqbofhppreoq" path="res://scenes/Enemies/EnemyBase/EnemyBase.tscn" id="1_qa36e"]
 [ext_resource type="Script" uid="uid://tmgqagkj0tvx" path="res://scenes/Enemies/Devourer/Devourer.cs" id="2_g5o5b"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_c3lg8"]
+
 [node name="Devourer" unique_id=1191919949 instance=ExtResource("1_qa36e")]
 script = ExtResource("2_g5o5b")
+
+[node name="HitBox" parent="." index="3" unique_id=1720138728]
+Shape = SubResource("CircleShape2D_c3lg8")

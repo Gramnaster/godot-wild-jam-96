@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Data;
 using System.Runtime.CompilerServices;
 
 
@@ -26,7 +27,8 @@ public partial class Sun : Area2D
     private bool _siphonInOngoing = false;
     private int _sunSiphonRate = 1;
     private float _siphonTimePassed = 0.0f;
-
+    //0 for player siphon, 1 for enemy siphon
+    private int _siphonOwner = 0;
     public SunInteractionArea _currentSunInteractionArea;
 
 
@@ -34,7 +36,9 @@ public partial class Sun : Area2D
 	public override void _Ready()
     {
         EventBus.Instance.OnSiphonStart += StartSiphon;
-        EventBus.Instance.OnSiphonEnd += StopSiphon;
+        EventBus.Instance.OnEnemySiphonStart += EnemyStartSiphon;
+        EventBus.Instance.OnPlayerSiphonEnd += StopPlayerSiphon;
+        EventBus.Instance.OnEnemySiphonStop += EnemyStopSiphon;
         EventBus.Instance.OnShipExited += OnPlayerExited;
 
         //Help from Claude to see if EventBus is being subscribed to by this Sun instance
@@ -53,20 +57,26 @@ public partial class Sun : Area2D
     public override void _ExitTree()
     {
         EventBus.Instance.OnSiphonStart -= StartSiphon;
-        EventBus.Instance.OnSiphonEnd -= StopSiphon;
+        EventBus.Instance.OnEnemySiphonStart -= EnemyStartSiphon;
+        EventBus.Instance.OnPlayerSiphonEnd -= StopPlayerSiphon;
+        EventBus.Instance.OnEnemySiphonStop -= EnemyStopSiphon;
         EventBus.Instance.OnShipExited -= OnPlayerExited;
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _PhysicsProcess(double delta)
     {
+        UpdateEnergy((float)delta);
+    }
 
+    public void UpdateEnergy(float dt)
+    {
         if(_siphonOutOngoing)
         {
-            _siphonTimePassed += (float)delta;
+            _siphonTimePassed += dt;
             if (_currentEnergy < 1)
             {
-                StopSiphon(null);
+                StopPlayerSiphon(null);
                 return;
             }
             else if(_siphonTimePassed > 1.0f)
@@ -80,10 +90,10 @@ public partial class Sun : Area2D
         }
         else if (_siphonInOngoing)
         {
-            _siphonTimePassed += (float)delta;
+            _siphonTimePassed += dt;
             if (_currentEnergy >= _maxEnergy)
             {
-                StopSiphon(null);
+                StopPlayerSiphon(null);
                 return;
             }
             else if(_siphonTimePassed > 1.0f)
@@ -95,11 +105,7 @@ public partial class Sun : Area2D
             }
             GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
         }
-
     }
-
-
-
 
     public void OnPlayerExited(Player player, SunInteractionArea interactionArea)
     {
@@ -109,7 +115,7 @@ public partial class Sun : Area2D
             EventBus.EmitOnDamageTakenPlayer(1);
         }
         _currentSunInteractionArea = null;
-        StopSiphon(interactionArea);
+        StopPlayerSiphon(interactionArea);
     }
     public void StartSiphon(SunInteractionArea sunInteractionArea, int siphonType)
     {
@@ -134,16 +140,31 @@ public partial class Sun : Area2D
         _siphonSound.Play();
     }
 
-    public void StopSiphon(SunInteractionArea sunInteractionArea)
+    private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)
     {
-        if (_siphonOutOngoing || _siphonInOngoing)
+        _siphonOwner = 1;
+        StartSiphon(sunInteractionArea, 0);
+    }
+
+    public void StopPlayerSiphon(SunInteractionArea sunInteractionArea)
+    {
+        if ((_siphonOutOngoing || _siphonInOngoing) && _siphonOwner == 0)
         {
             GD.Print("Siphon Stopped");
             //Can also add code to stop or 'finish' siphoning for other factors
             _siphonOutOngoing = false;
             _siphonInOngoing = false;
             _siphonSound.Playing = false;
-            EventBus.Instance.EmitOnSiphonReset(false);
+            EventBus.Instance.EmitOnPlayerSiphonReset(false);
         }
+    }
+
+    public void EnemyStopSiphon(SunInteractionArea sunInteractionArea)
+    {
+            GD.Print("Siphon Stopped");
+            //Can also add code to stop or 'finish' siphoning for other factors
+            _siphonOutOngoing = false;
+            _siphonInOngoing = false;
+            _siphonSound.Playing = false;
     }
 }

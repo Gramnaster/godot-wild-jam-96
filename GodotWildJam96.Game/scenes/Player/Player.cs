@@ -165,7 +165,7 @@ public partial class Player : CharacterBody2D
         _thrustRightSprite.Hide();
 
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
-        EventBus.Instance.OnSiphonReset += ResetSiphon;
+        EventBus.Instance.OnPlayerSiphonReset += PlayerResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
 
         // Animation events
@@ -193,7 +193,7 @@ public partial class Player : CharacterBody2D
 
     public override void _ExitTree()
     {
-        EventBus.Instance.OnSiphonReset -= ResetSiphon;
+        EventBus.Instance.OnPlayerSiphonReset -= PlayerResetSiphon;
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
         EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
 
@@ -374,7 +374,7 @@ public partial class Player : CharacterBody2D
         return Mathf.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
     }
 
-    private void ResetSiphon(bool reset)
+    private void PlayerResetSiphon(bool reset)
     {
         GD.Print("Siphon Reset!");
         _siphonUnderway = reset;
@@ -388,12 +388,13 @@ public partial class Player : CharacterBody2D
         //If the shield takes too much damage too fast, interrupt the siphoning
         if (dmg > _interruptDamage)
         {
-            EventBus.Instance.EmitOnSiphonEnd(_currentSunInteractionArea);
+            EventBus.Instance.EmitOnPlayerSiphonEnd(_currentSunInteractionArea);
         }
     }
 
     private void FindClosestSun()
     {
+
         Sun _closestSun = null;
         float _closestDist = float.MaxValue;
 

@@ -83,7 +83,7 @@ public partial class EnemyBase : CharacterBody2D
     }
 
     // EventBus -> ObjectMaker -> Create Explosion
-    private void Die()
+    protected virtual void Die()
     {
         if (_isDead) return;
 

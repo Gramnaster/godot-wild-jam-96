@@ -35,7 +35,7 @@ public partial class Devourer : EnemyBase
 
     public void StartSiphoning(SunInteractionArea sunInteractionArea)
     {
-        EventBus.Instance.EmitOnSiphonStart(sunInteractionArea, 0);
+        EventBus.EmitOnEnemySiphonStart(sunInteractionArea, this, 0);
     }
 
     public void DevourerEntered(Devourer devourer, SunInteractionArea interactionArea)
@@ -67,5 +67,11 @@ public partial class Devourer : EnemyBase
     protected override void OnSunsReady()
     {
         FindClosestSun();
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+        EventBus.EmitOnEnemySiphonStop(null);
     }
 }
