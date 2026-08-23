@@ -79,7 +79,12 @@ public partial class Sun : Area2D
         if (_siphonOutOngoing)
         {
             _siphonTimePassed += dt;
-            if (_currentEnergy < 1)
+            // Enemy drains can still empty the sun; a player drain stops at MinPlayerDrainEnergy
+            // so the player can't solo-trigger MainSun's instant game-over by over-absorbing.
+            bool drainedToFloor = _siphonOwner == 0
+                ? _currentEnergy <= MinPlayerDrainEnergy
+                : _currentEnergy < 1;
+            if (drainedToFloor)
             {
                 StopPlayerSiphon(null);
                 return;
@@ -127,6 +132,10 @@ public partial class Sun : Area2D
     // Subclasses (MainSun) can scale their interaction area up independently of the energy ratio.
     protected virtual float InteractionAreaScaleMultiplier => 1f;
 
+    // Lowest energy a player siphon may drain this sun to. Regular suns can be fully
+    // depleted; MainSun overrides this so it can't be player-drained to 0.
+    protected virtual int MinPlayerDrainEnergy => 0;
+
     // Scales the whole interaction area (its collision radius and its light-glow sprite
     // together, since both are children of it) to match the sun's current energy ratio.
     protected void UpdateInteractionAreaScale()
@@ -167,6 +176,11 @@ public partial class Sun : Area2D
             {
                 _siphonInOngoing = false;
                 _siphonOutOngoing = false;
+                // No siphon actually starts/continues here (e.g. an enemy siphon
+                // collided with the player's in-progress one),
+                // so tell the player it's not underway
+                // otherwise _siphonUnderway sticks true forever
+                EventBus.Instance.EmitOnPlayerSiphonReset(false);
             }
         }
 

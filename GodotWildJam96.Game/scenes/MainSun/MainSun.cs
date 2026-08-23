@@ -8,6 +8,7 @@ public partial class MainSun : Sun
     [Export] private PackedScene _gameOverScene;
 
     protected override float InteractionAreaScaleMultiplier => 4.0f;
+    protected override int MinPlayerDrainEnergy => 1;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
