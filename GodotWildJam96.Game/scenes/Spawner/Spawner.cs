@@ -81,6 +81,11 @@ public partial class Spawner : Node2D
         return result.Count == 0; // If the result is empty, the position is valid
     }
 
+    private void SpawnDevourers(int amount)
+    {
+
+    }
+
     private void SunSpawnCalculator()
     {
         _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-5000, 5000);

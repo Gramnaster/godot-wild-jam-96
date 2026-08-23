@@ -86,6 +86,7 @@ public partial class Sun : Area2D
                 _siphonSound.Play();
                 _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
                 _currentEnergy -= _sunSiphonRate;
+                EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
                 _siphonCount++;
@@ -124,6 +125,7 @@ public partial class Sun : Area2D
             GD.Print("Siphon stopped, you lost some energy!");
             EventBus.EmitOnDamageTakenPlayer(1);
         }
+        player._inLightRadius = false;
         _currentSunInteractionArea = null;
         StopPlayerSiphon(interactionArea);
     }

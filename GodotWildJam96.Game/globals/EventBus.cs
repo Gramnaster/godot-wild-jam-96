@@ -17,6 +17,7 @@ public partial class EventBus : Node
     public event Action<SunInteractionArea> OnEnemySiphonStop;
     public event Action<SunInteractionArea> OnPlayerSiphonEnd;
     public event Action<Boolean> OnPlayerSiphonReset;
+    public event Action<int> OnEnergySiphoned;
     public event Action<int> OnDamageTakenPlayer;
     public event Action<Player> OnTeleport;
     public event Action OnAllSunsSpawned;
@@ -109,5 +110,9 @@ public partial class EventBus : Node
         Instance.OnDevourerEntered?.Invoke(devourer, interactionArea);
     }
 
+    public static void EmitOnEnergySiphoned(int energy)
+    {
+        Instance.OnEnergySiphoned?.Invoke(energy);
+    }
 
 }

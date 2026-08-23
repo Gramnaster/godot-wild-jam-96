@@ -35,6 +35,10 @@ public partial class Player : CharacterBody2D
     public int _currentShieldEnergy = 0;
     public int _maxShieldEnergy = 100;
 
+    private int _damageCounter = 0;
+    public bool _inLightRadius = true;
+    public float _safetyTimer = 0.0f;
+
     private Vector2 _closestSunVector;
     [Export] private Sprite2D _closestSunIndicator;
 
@@ -171,6 +175,7 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
         EventBus.Instance.OnPlayerSiphonReset += PlayerResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
+        EventBus.Instance.OnEnergySiphoned += GainEnergyFromSun;
 
         // Animation events
         _thrusters =
@@ -202,6 +207,7 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnPlayerSiphonReset -= PlayerResetSiphon;
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
         EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
+        EventBus.Instance.OnEnergySiphoned -= GainEnergyFromSun;
 
         if (_thrusters != null)
         {
@@ -221,6 +227,7 @@ public partial class Player : CharacterBody2D
         UpdateThrusterAnimations();
         // RapidShoot();
         MoveAndSlide();
+        CheckIfSafe((float) delta);
     }
 
     public override void _Process(double delta)
@@ -232,6 +239,7 @@ public partial class Player : CharacterBody2D
     {
         GD.Print(player.Name + " entered " + interactionArea.Name);
         _currentSunInteractionArea = interactionArea;
+        player._inLightRadius = true;
     }
     private void GetInput(float dt)
     {
@@ -439,8 +447,33 @@ public partial class Player : CharacterBody2D
         return _convertedEnergy;
     }
 
+    private void GainEnergyFromSun(int energyGained)
+    {
+        _currentShieldEnergy += EnergyConversion(energyGained, 1);
+        GD.Print(energyGained);
+        GD.Print("Current Energy: " + _currentShieldEnergy);
+    }
+
         private void GameOver()
     {
         GetTree().ChangeSceneToFile($"res://scenes/GameOverScreen/GameOverScreen.tscn");
+    }
+
+    private void CheckIfSafe(float dt)
+    {
+
+        _safetyTimer += dt;
+        if (!_inLightRadius && _safetyTimer > 1.0f)
+        {
+            int _damageMult = Mathf.PosMod(_damageCounter, 5);
+            GD.Print(_damageMult);
+            TakeDamage(1 + _damageMult);
+            _damageCounter++;
+            _safetyTimer = 0.0f;
+        }
+        else
+        {
+            return;
+        }
     }
 }
