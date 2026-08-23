@@ -17,6 +17,7 @@ public partial class Player : CharacterBody2D
     private const float MAX_LINEAR_SPEED = 300.0f;
     private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
     private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
+    private const float UNSAFE_DAMAGE_INTERVAL = 3.0f;
 
     // Animation Names
     private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
@@ -44,10 +45,6 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public int _currentShieldEnergy = 0;
-    public int _maxShieldEnergy = 100;
-
-    private int _damageCounter = 0;
     public bool _inLightRadius = true;
     public float _safetyTimer = 0.0f;
 
@@ -178,7 +175,7 @@ public partial class Player : CharacterBody2D
         if (@event.IsActionPressed("teleport_home"))
         {
             EventBus.EmitOnTeleport(this);
-            TakeDamage(5);
+            TakeDamage(1);
         }
     }
 
@@ -230,8 +227,8 @@ public partial class Player : CharacterBody2D
             eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
         }
 
-        UpdateEnergySprite();
-        _currentShieldEnergy = 50;
+        // Starting energy levels
+        EnergyLevels = 3;
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -262,7 +259,7 @@ public partial class Player : CharacterBody2D
         UpdateThrusterAnimations();
         // RapidShoot();
         MoveAndSlide();
-        CheckIfSafe((float) delta);
+        CheckIfSafe((float)delta);
     }
 
     public override void _Process(double delta)
@@ -434,10 +431,10 @@ public partial class Player : CharacterBody2D
 
     private void TakeDamage(int dmg)
     {
-        _currentShieldEnergy -= dmg;
+        EnergyLevels -= dmg;
         GD.Print(dmg + " damage taken!");
-        GD.Print("Only " + _currentShieldEnergy + " shield energy left!");
-        if (_currentShieldEnergy <= 0)
+        GD.Print("Only " + _energyLevels + " energy levels left!");
+        if (EnergyLevels <= 0)
         {
             GameOver();
         }
@@ -469,50 +466,25 @@ public partial class Player : CharacterBody2D
         _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector * 50.0f;
     }
 
-    private int EnergyConversion(int energy, int energyType)
-    {
-        int _convertedEnergy;
-        //converting to Sun Energy
-        if (energyType == 0)
-        {
-           _convertedEnergy = energy/10;
-        }
-        //Converting to player energy
-        else
-        {
-            _convertedEnergy = energy*10;
-        }
-
-        return _convertedEnergy;
-    }
-
     private void GainEnergyFromSun(int energyGained)
     {
-        _currentShieldEnergy += EnergyConversion(energyGained, 1);
+        EnergyLevels += energyGained;
         GD.Print(energyGained);
-        GD.Print("Current Energy: " + _currentShieldEnergy);
+        GD.Print("Current Energy Levels: " + _energyLevels);
     }
 
-        private void GameOver()
+    private void GameOver()
     {
         GetTree().ChangeSceneToFile($"res://scenes/GameOverScreen/GameOverScreen.tscn");
     }
 
     private void CheckIfSafe(float dt)
     {
-
         _safetyTimer += dt;
-        if (!_inLightRadius && _safetyTimer > 1.0f)
+        if (!_inLightRadius && _safetyTimer > UNSAFE_DAMAGE_INTERVAL)
         {
-            int _damageMult = Mathf.PosMod(_damageCounter, 5);
-            GD.Print(_damageMult);
-            TakeDamage(1 + _damageMult);
-            _damageCounter++;
+            TakeDamage(1);
             _safetyTimer = 0.0f;
-        }
-        else
-        {
-            return;
         }
     }
 }

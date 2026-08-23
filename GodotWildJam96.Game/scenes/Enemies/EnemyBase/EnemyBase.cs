@@ -78,22 +78,26 @@ public partial class EnemyBase : CharacterBody2D
         GD.Print("Body Entered is: " + body);
         if (body is Player)
         {
-            EventBus.EmitOnDamageTakenPlayer(5);
+            EventBus.EmitOnDamageTakenPlayer(1);
         }
     }
 
-        protected virtual void OnHitBoxAreaEntered(Area2D body)
+    protected virtual void OnHitBoxAreaEntered(Area2D body)
     {
         GD.Print("Body Entered is: " + body);
         if (body is BulletBase)
         {
             GD.Print("You're hitting me: ", nameof(EnemyBase));
             Lives--;
-            GlobalPosition = GlobalPosition + (GlobalPosition.Normalized() * 15.0f);
+            GlobalPosition += (GlobalPosition.Normalized() * 15.0f);
             if (Lives <= 0)
             {
                 Die();
             }
+        }
+        else
+        {
+            GD.Print("Entered a random body!");
         }
     }
 
@@ -117,5 +121,5 @@ public partial class EnemyBase : CharacterBody2D
     }
 
     //Here so that enemies can do something with SunRefs when its done
-    protected virtual void OnSunsReady() {}
+    protected virtual void OnSunsReady() { }
 }

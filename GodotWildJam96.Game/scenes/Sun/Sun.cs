@@ -1,7 +1,7 @@
-using Godot;
 using System;
 using System.Data;
 using System.Runtime.CompilerServices;
+using Godot;
 
 
 namespace GodotWildJam96;
@@ -34,8 +34,8 @@ public partial class Sun : Area2D
     public SunInteractionArea _currentSunInteractionArea;
 
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
     {
         EventBus.Instance.OnSiphonStart += StartSiphon;
         EventBus.Instance.OnEnemySiphonStart += EnemyStartSiphon;
@@ -65,15 +65,15 @@ public partial class Sun : Area2D
         EventBus.Instance.OnShipExited -= OnPlayerExited;
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _PhysicsProcess(double delta)
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _PhysicsProcess(double delta)
     {
         UpdateEnergy((float)delta);
     }
 
     public void UpdateEnergy(float dt)
     {
-        if(_siphonOutOngoing)
+        if (_siphonOutOngoing)
         {
             _siphonTimePassed += dt;
             if (_currentEnergy < 1)
@@ -81,12 +81,15 @@ public partial class Sun : Area2D
                 StopPlayerSiphon(null);
                 return;
             }
-            else if(_siphonTimePassed > 1.8f)
+            else if (_siphonTimePassed > 1.8f)
             {
                 _siphonSound.Play();
-                _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
+                _lightRadiusSprite.Scale = new Vector2((_currentEnergy / _maxEnergy), (_currentEnergy / _maxEnergy));
                 _currentEnergy -= _sunSiphonRate;
-                EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
+                if (_siphonOwner == 0)
+                {
+                    EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
+                }
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
                 _siphonCount++;
@@ -101,10 +104,10 @@ public partial class Sun : Area2D
                 StopPlayerSiphon(null);
                 return;
             }
-            else if(_siphonTimePassed > 1.8f)
+            else if (_siphonTimePassed > 1.8f)
             {
                 _siphonSound.Play();
-                _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
+                _lightRadiusSprite.Scale = new Vector2((_currentEnergy / _maxEnergy), (_currentEnergy / _maxEnergy));
                 _currentEnergy += _sunSiphonRate;
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
@@ -132,12 +135,15 @@ public partial class Sun : Area2D
     {
         if (sunInteractionArea != null && sunInteractionArea == _mySunInteractionArea)
         {
+            // any direct call to StartSiphon is the player's path
+            _siphonOwner = 0;
+
             if (siphonType == 0 && !_siphonOutOngoing)
             {
                 _siphonInOngoing = false;
                 _siphonOutOngoing = true;
             }
-            else if (siphonType == 1 && !_siphonInOngoing )
+            else if (siphonType == 1 && !_siphonInOngoing)
             {
                 _siphonOutOngoing = false;
                 _siphonInOngoing = true;
@@ -148,13 +154,16 @@ public partial class Sun : Area2D
                 _siphonOutOngoing = false;
             }
         }
-            _siphonSound.Play();
+
+        _siphonSound.Play();
     }
 
     private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)
     {
-        _siphonOwner = 1;
+        if (sunInteractionArea is null || sunInteractionArea != _mySunInteractionArea) return;
+
         StartSiphon(sunInteractionArea, 0);
+        _siphonOwner = 1;
     }
 
     public void StopPlayerSiphon(SunInteractionArea sunInteractionArea)
@@ -172,9 +181,10 @@ public partial class Sun : Area2D
 
     public void EnemyStopSiphon(SunInteractionArea sunInteractionArea)
     {
-            GD.Print("Siphon Stopped");
-            //Can also add code to stop or 'finish' siphoning for other factors
-            _siphonOutOngoing = false;
-            _siphonInOngoing = false;
+        GD.Print("Siphon Stopped");
+        //Can also add code to stop or 'finish' siphoning for other factors
+        _siphonOutOngoing = false;
+        _siphonInOngoing = false;
+        _siphonOwner = 0;
     }
 }
