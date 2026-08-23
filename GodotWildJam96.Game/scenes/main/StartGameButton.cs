@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using GodotWildJam96;
 
 public partial class StartGameButton : TextureButton
 {
@@ -17,6 +18,7 @@ public partial class StartGameButton : TextureButton
 
     private void StartGame()
     {
+        MusicPlayer.Instance.Stop();
         GetTree().ChangeSceneToFile($"res://scenes/LevelBase/LevelBase.tscn");
     }
 }

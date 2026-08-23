@@ -7,25 +7,19 @@
 [ext_resource type="Script" uid="uid://b0kwhxeyd6tb5" path="res://scenes/main/StartGameButton.cs" id="5_6q06x"]
 [ext_resource type="Texture2D" uid="uid://c0hf2t4350x0v" path="res://assets/backgrounds/stars-02.png" id="5_7smn1"]
 [ext_resource type="PackedScene" uid="uid://dtnpot34cv61j" path="res://scenes/ScrollingBackground/ScrollingBackground.tscn" id="6_hujxm"]
-[ext_resource type="AudioStream" uid="uid://7u17ultr5ju6" path="res://assets/backgrounds/MainBGM.mp3" id="6_ow5a4"]
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="6_raeie"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="7_hxu8e"]
-[ext_resource type="FontFile" uid="uid://dn5xs3hdgbyrj" path="res://resources/Fonts/IBMPlexMono-Bold.ttf" id="9_blune"]
+[ext_resource type="LabelSettings" uid="uid://nfondibk0uvi" path="res://resources/IBMPlexMono-Title-150.tres" id="9_th5th"]
 [ext_resource type="FontFile" uid="uid://bjt4ysr0lq5ne" path="res://resources/Fonts/IBMPlexMono-Medium.ttf" id="10_th5th"]
 [ext_resource type="Texture2D" uid="uid://dh8ltycwmtnjv" path="res://assets/menubuttons/play-button.png" id="11_th5th"]
+[ext_resource type="Texture2D" uid="uid://b6uxjhfgkwwjw" path="res://assets/menubuttons/credits-button.png" id="13_7smn1"]
+[ext_resource type="Script" uid="uid://twpaqaksttso" path="res://scenes/main/CreditsButton.cs" id="14_raeie"]
+[ext_resource type="PackedScene" uid="uid://dvtg65vqrkiyp" path="res://scenes/CreditScreen/CreditScreen.tscn" id="15_crdts"]
 
 [sub_resource type="Resource" id="Resource_ow5a4"]
 script = ExtResource("3_hujxm")
 Images = Array[Texture2D]([ExtResource("3_blune"), ExtResource("4_th5th"), ExtResource("5_7smn1"), ExtResource("6_raeie"), ExtResource("7_hxu8e")])
 metadata/_custom_type_script = "uid://bg2qdbskuvwe"
-
-[sub_resource type="LabelSettings" id="LabelSettings_pm0ju"]
-font = ExtResource("9_blune")
-font_size = 150
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 50
-shadow_color = Color(0.17211545, 0.1721153, 0.1721153, 1)
-shadow_offset = Vector2(0, 13.475)
 
 [sub_resource type="LabelSettings" id="LabelSettings_blune"]
 font = ExtResource("10_th5th")
@@ -34,7 +28,7 @@ shadow_size = 20
 shadow_color = Color(0.13755062, 0.13755065, 0.13755062, 0.827451)
 shadow_offset = Vector2(0, 4.97)
 
-[node name="Main" type="Control" unique_id=1767999679 node_paths=PackedStringArray("_backgroundMusic")]
+[node name="Main" type="Control" unique_id=1767999679]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +38,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_hyk8p")
-_backgroundMusic = NodePath("BGM")
 
 [node name="ScrollingBackground" parent="." unique_id=548645227 instance=ExtResource("6_hujxm")]
 _scrollingImages = SubResource("Resource_ow5a4")
@@ -80,7 +73,7 @@ size_flags_vertical = 4
 layout_mode = 2
 text = "SOLAR
 DEFENCE"
-label_settings = SubResource("LabelSettings_pm0ju")
+label_settings = ExtResource("9_th5th")
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=61507991]
@@ -114,6 +107,35 @@ offset_transform_scale = Vector2(2.5, 2.5)
 texture_normal = ExtResource("11_th5th")
 script = ExtResource("5_6q06x")
 
+[node name="HSpacer2" type="Control" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1305394034]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="CreditsButton" type="TextureButton" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1045990245]
+custom_minimum_size = Vector2(250, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(192.84, 95.935)
+offset_transform_scale = Vector2(2.5, 2.5)
+texture_normal = ExtResource("13_7smn1")
+script = ExtResource("14_raeie")
+_creditScreen = ExtResource("15_crdts")
+
+[node name="VSpacer3" type="Control" parent="HBoxContainer/VBoxContainer" unique_id=298870092]
+custom_minimum_size = Vector2(25, 50)
+layout_mode = 2
+
+[node name="VSpacer4" type="Control" parent="HBoxContainer/VBoxContainer" unique_id=1191613435]
+custom_minimum_size = Vector2(25, 50)
+layout_mode = 2
+
+[node name="VSpacer5" type="Control" parent="HBoxContainer/VBoxContainer" unique_id=1609216972]
+custom_minimum_size = Vector2(25, 50)
+layout_mode = 2
+
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer" unique_id=364750545]
 visible = false
 custom_minimum_size = Vector2(274, 0)
@@ -124,7 +146,3 @@ visible = false
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-
-[node name="BGM" type="AudioStreamPlayer2D" parent="." unique_id=345330196]
-stream = ExtResource("6_ow5a4")
-autoplay = true
