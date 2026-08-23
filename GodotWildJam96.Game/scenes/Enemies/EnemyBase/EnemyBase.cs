@@ -30,6 +30,7 @@ public partial class EnemyBase : CharacterBody2D
     protected Sun[] SunRefs { get; private set; }
 
     private bool _isDead;
+    private Tween _hitFlashTween;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -89,15 +90,31 @@ public partial class EnemyBase : CharacterBody2D
         {
             GD.Print("You're hitting me: ", nameof(EnemyBase));
             Lives--;
-            GlobalPosition += (GlobalPosition.Normalized() * 15.0f);
             if (Lives <= 0)
             {
                 Die();
+            }
+            else
+            {
+                GlobalPosition += (GlobalPosition.Normalized() * 6.0f);
+                FlashOnHit();
             }
         }
         else
         {
             GD.Print("Entered a random body!");
+        }
+    }
+
+    // Purely cosmetic hit feedback. Enemies stay hittable while flashing (no i-frames).
+    private void FlashOnHit()
+    {
+        _hitFlashTween?.Kill();
+        _hitFlashTween = CreateTween();
+        for (int i = 0; i < 13; i++)
+        {
+            _hitFlashTween.TweenProperty(_animatedSprite2D, "modulate:a", 0.2f, 0.05f);
+            _hitFlashTween.TweenProperty(_animatedSprite2D, "modulate:a", 1.0f, 0.05f);
         }
     }
 
