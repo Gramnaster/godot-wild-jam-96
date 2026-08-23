@@ -7,8 +7,10 @@
 [ext_resource type="AudioStream" uid="uid://bfbj4o15onh7j" path="res://assets/playersiphon/SiphonSound.mp3" id="5_1nwk5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
+radius = 31.257
 
 [node name="Sun" type="Area2D" unique_id=1970878653 node_paths=PackedStringArray("_energyValuebar", "_siphonSound")]
+scale = Vector2(1.5, 1.5)
 collision_mask = 5
 script = ExtResource("1_5cq3v")
 _energyValuebar = NodePath("EnergyBar")
