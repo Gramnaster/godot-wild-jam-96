@@ -47,6 +47,7 @@ public partial class EnemyBase : CharacterBody2D
         EventBus.Instance.OnAllSunsSpawned += OnAllSunsSpawned;
         _screenNotifier.ScreenEntered += OnScreenEntered;
         _timer.Timeout += OnTimeout;
+        _hitBox.AreaEntered += OnHitBoxAreaEntered;
         _hitBox.BodyEntered += OnHitBoxBodyEntered;
     }
 
@@ -54,6 +55,7 @@ public partial class EnemyBase : CharacterBody2D
     {
         EventBus.Instance.OnAllSunsSpawned -= OnAllSunsSpawned;
         _timer.Timeout -= OnTimeout;
+        _hitBox.AreaEntered -= OnHitBoxAreaEntered;
         _hitBox.BodyEntered -= OnHitBoxBodyEntered;
     }
 
@@ -74,6 +76,15 @@ public partial class EnemyBase : CharacterBody2D
     protected virtual void OnHitBoxBodyEntered(Node2D body)
     {
         GD.Print("Body Entered is: " + body);
+        if (body is Player)
+        {
+            EventBus.EmitOnDamageTakenPlayer(5);
+        }
+    }
+
+        protected virtual void OnHitBoxAreaEntered(Area2D body)
+    {
+        GD.Print("Body Entered is: " + body);
         if (body is BulletBase)
         {
             GD.Print("You're hitting me: ", nameof(EnemyBase));
@@ -83,14 +94,6 @@ public partial class EnemyBase : CharacterBody2D
             {
                 Die();
             }
-        }
-        else if (body is Player)
-        {
-            EventBus.EmitOnDamageTakenPlayer(5);
-        }
-        else
-        {
-            GD.Print("Entered a random body!");
         }
     }
 
@@ -107,7 +110,7 @@ public partial class EnemyBase : CharacterBody2D
     }
 
     // Only gets the suns in the map once they've all spawned
-    private void OnAllSunsSpawned()
+    protected void OnAllSunsSpawned()
     {
         SunRefs = GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>().ToArray();
         OnSunsReady();

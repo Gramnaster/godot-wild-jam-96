@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="4_ji8qy"]
 [ext_resource type="PackedScene" uid="uid://bq18a0mp544pe" path="res://scenes/Sun/Sun.tscn" id="4_u8cij"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="5_ois7l"]
+[ext_resource type="PackedScene" uid="uid://3qi487l0n5fv" path="res://scenes/Enemies/Squid/Squid.tscn" id="8_ois7l"]
 [ext_resource type="PackedScene" uid="uid://pfw3wix0v1je" path="res://scenes/MainSun/MainSun.tscn" id="11_ji8qy"]
 [ext_resource type="PackedScene" uid="uid://ddadou5y46k54" path="res://scenes/Enemies/Devourer/Devourer.tscn" id="13_ymbih"]
 
@@ -28,6 +29,7 @@ z_index = -10
 _scrollingImages = SubResource("Resource_7hghd")
 
 [node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
+_energyLevels = 0
 
 [node name="Enemies" type="Node" parent="." unique_id=1397552595]
 
@@ -35,9 +37,11 @@ _scrollingImages = SubResource("Resource_7hghd")
 
 [node name="ObjectMaker" parent="." unique_id=144459317 instance=ExtResource("3_ny4ya")]
 
-[node name="Spawner" parent="." unique_id=2107266173 node_paths=PackedStringArray("_levelBase") instance=ExtResource("3_u8cij")]
+[node name="Spawner" parent="." unique_id=2107266173 node_paths=PackedStringArray("_levelBase", "_player") instance=ExtResource("3_u8cij")]
 _sunScene = ExtResource("4_u8cij")
 _mainSunScene = ExtResource("11_ji8qy")
 _devourerScene = ExtResource("13_ymbih")
+_squidScene = ExtResource("8_ois7l")
 SpawnCheckShape = SubResource("CircleShape2D_5nymx")
 _levelBase = NodePath("..")
+_player = NodePath("../Player")

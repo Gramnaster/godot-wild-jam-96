@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://dvtg65vqrkiyp"]
+
+[node name="CreditScreen" type="Control" unique_id=816483866]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1477673065]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1511535244]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Programming" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=379426854]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Programming: JP and Nicholas Chan"
+horizontal_alignment = 1
+
+[node name="Art" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=88490065]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Art Director & Designer: JP"
+horizontal_alignment = 1
+
+[node name="Sound" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=34750129]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sound Design: Nicholas Chan
+Credit to:
+mutliple bubbles bursting by florianreichelt -- https://freesound.org/s/683100/ -- License: Creative Commons 0
+Power_Up by gulfstreamav -- https://freesound.org/s/843330/ -- License: Creative Commons 0
+shoot01.mp3 by Taira Komori -- https://freesound.org/s/215439/ -- License: Attribution 4.0"
+horizontal_alignment = 1
+
+[node name="Music" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=326832556]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Main Menu BGM:
+tunetank-sci-fi-action-music-414656 by TuneTank -- https://pixabay.com/music/build-up-scenes-sci-fi-action-music-414656/"
+horizontal_alignment = 1
