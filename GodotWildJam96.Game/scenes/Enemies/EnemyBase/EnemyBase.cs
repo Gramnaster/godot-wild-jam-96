@@ -95,6 +95,14 @@ public partial class EnemyBase : CharacterBody2D
                 Die();
             }
         }
+        else if (body is Player)
+        {
+            EventBus.EmitOnDamageTakenPlayer(1);
+        }
+        else
+        {
+            GD.Print("Entered a random body!");
+        }
     }
 
     // EventBus -> ObjectMaker -> Create Explosion
