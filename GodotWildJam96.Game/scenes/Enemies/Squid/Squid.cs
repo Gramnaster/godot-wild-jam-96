@@ -7,9 +7,7 @@ public partial class Squid : EnemyBase
 {
     [Export] Timer _moveTimer;
     private double _thrustTimer = 1.8f;
-
     private Vector2 _direction;
-
     private int _moveState = 0;
 
     // Called when the node enters the scene tree for the first time.

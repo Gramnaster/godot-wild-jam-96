@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://di6847s8dgnuc" path="res://assets/menubuttons/16.png" id="3_k2fmo"]
 [ext_resource type="FontFile" uid="uid://0nh7m0i76h65" path="res://resources/Fonts/Wumslaw-Regular.ttf" id="3_l3cfh"]
 [ext_resource type="Script" uid="uid://b0kwhxeyd6tb5" path="res://scenes/main/StartGameButton.cs" id="5_6q06x"]
+[ext_resource type="AudioStream" uid="uid://dyq2dkgtrxsff" path="res://assets/backgrounds/the_mountain-sci-fi-512284.mp3" id="6_ow5a4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pm0ju"]
 font = ExtResource("3_l3cfh")
@@ -12,7 +13,7 @@ font_size = 150
 outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Main" type="Control" unique_id=1767999679]
+[node name="Main" type="Control" unique_id=1767999679 node_paths=PackedStringArray("_backgroundMusic")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +23,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_hyk8p")
+_backgroundMusic = NodePath("BGM")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=926839979]
 layout_mode = 0
@@ -76,3 +78,7 @@ script = ExtResource("5_6q06x")
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+
+[node name="BGM" type="AudioStreamPlayer2D" parent="." unique_id=345330196]
+stream = ExtResource("6_ow5a4")
+volume_db = -10.0

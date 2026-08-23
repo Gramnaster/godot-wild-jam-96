@@ -32,8 +32,8 @@ public partial class Player : CharacterBody2D
     private const string ANIM_THRUST_RIGHT_START = "ThrustRight";
     private const string ANIM_THRUST_RIGHT_CONTINUOUS = "ThrustRightContinuous";
 
-    public float _currentShieldEnergy = 0.0f;
-    public float _maxShieldEnergy = 100.0f;
+    public int _currentShieldEnergy = 0;
+    public int _maxShieldEnergy = 100;
 
     private Vector2 _closestSunVector;
     [Export] private Sprite2D _closestSunIndicator;
@@ -186,6 +186,8 @@ public partial class Player : CharacterBody2D
             eventThruster.AnimationFinishedHandler = () => OnThrusterAnimationFinished(eventThruster);
             eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
         }
+
+        _currentShieldEnergy = 50;
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -380,11 +382,15 @@ public partial class Player : CharacterBody2D
         _siphonUnderway = reset;
     }
 
-    private void TakeDamage(float dmg)
+    private void TakeDamage(int dmg)
     {
+        _currentShieldEnergy -= dmg;
         GD.Print(dmg + " damage taken!");
         GD.Print("Only " + _currentShieldEnergy + " shield energy left!");
-        _currentShieldEnergy -= dmg;
+        if (_currentShieldEnergy <= 0)
+        {
+            GameOver();
+        }
         //If the shield takes too much damage too fast, interrupt the siphoning
         if (dmg > _interruptDamage)
         {
@@ -410,5 +416,27 @@ public partial class Player : CharacterBody2D
         _closestSunVector = GlobalPosition.DirectionTo(_closestSun.GlobalPosition);
         _closestSunIndicator.LookAt(_closestSun.GlobalPosition);
         _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector*50.0f;
+    }
+
+    private int EnergyConversion(int energy, int energyType)
+    {
+        int _convertedEnergy;
+        //converting to Sun Energy
+        if (energyType == 0)
+        {
+           _convertedEnergy = energy/10;
+        }
+        //Converting to player energy
+        else
+        {
+            _convertedEnergy = energy*10;
+        }
+
+        return _convertedEnergy;
+    }
+
+        private void GameOver()
+    {
+        GetTree().ChangeSceneToFile($"res://scenes/GameOverScreen/GameOverScreen.tscn");
     }
 }

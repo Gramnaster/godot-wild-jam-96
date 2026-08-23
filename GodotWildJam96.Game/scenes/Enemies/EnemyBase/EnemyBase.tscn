@@ -35,6 +35,6 @@ shape = SubResource("CircleShape2D_78ajt")
 
 [node name="HitBox" parent="." unique_id=1720138728 instance=ExtResource("1_sam8l")]
 collision_layer = 2
-collision_mask = 16
+collision_mask = 20
 
 [node name="ActionTimer" type="Timer" parent="." unique_id=1135546172]
