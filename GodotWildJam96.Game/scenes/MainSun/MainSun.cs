@@ -41,6 +41,6 @@ public partial class MainSun : Sun
 
     private void WinTheGame()
     {
-        GD.Print("You win!");
+        GetTree().ChangeSceneToFile($"res://scenes/VictoryScreen/VictoryScreen.tscn");
     }
 }
