@@ -312,7 +312,7 @@ public partial class Player : CharacterBody2D
         IsPowerThrusting = false;
 
         if (Input.IsActionPressed("brake")
-            && Velocity.LengthSquared() > RETROGRADE_VELOCITY_TOLERANCE * RETROGRADE_ANGLE_TOLERANCE)
+            && Velocity.LengthSquared() > RETROGRADE_VELOCITY_TOLERANCE)
         {
             // Point nose retrograde then burn
             float retrogradeRotation = (-Velocity).Angle();
