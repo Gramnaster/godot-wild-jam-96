@@ -10,7 +10,6 @@
 [ext_resource type="FontFile" uid="uid://dnlp6pg0x2x" path="res://resources/Fonts/IBMPlexMono-SemiBold.ttf" id="8_ltj17"]
 [ext_resource type="Texture2D" uid="uid://dgygvog70lki7" path="res://assets/menubuttons/home-button.png" id="9_8iqx6"]
 [ext_resource type="Script" uid="uid://c0jw88tpg7epq" path="res://scenes/CreditScreen/HomeButton.cs" id="10_o3m2h"]
-[ext_resource type="PackedScene" uid="uid://bq536l6vkmtjv" path="res://scenes/main/main.tscn" id="11_crdts"]
 
 [sub_resource type="Resource" id="Resource_hxu8e"]
 script = ExtResource("7_8uqck")
@@ -105,4 +104,3 @@ offset_transform_position = Vector2(192.84, 95.935)
 offset_transform_scale = Vector2(2.5, 2.5)
 texture_normal = ExtResource("9_8iqx6")
 script = ExtResource("10_o3m2h")
-_mainScene = ExtResource("11_crdts")
