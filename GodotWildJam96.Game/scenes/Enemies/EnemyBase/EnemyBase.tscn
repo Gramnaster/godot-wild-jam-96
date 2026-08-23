@@ -2,20 +2,141 @@
 
 [ext_resource type="Script" uid="uid://b2obm0lqejwts" path="res://scenes/Enemies/EnemyBase/EnemyBase.cs" id="1_cdhqv"]
 [ext_resource type="PackedScene" uid="uid://brru0pk0gojxt" path="res://scenes/HitBox/HitBox.tscn" id="1_sam8l"]
-[ext_resource type="Texture2D" uid="uid://dp6tixu3npv0b" path="res://assets/enemies/Enemy-01.png" id="2_p6nij"]
+[ext_resource type="Texture2D" uid="uid://d2h3qe1l2jolj" path="res://assets/enemies/Devourer-Sheet-01.png" id="2_0wmef"]
+[ext_resource type="Texture2D" uid="uid://cw411q42thweo" path="res://assets/enemies/Devourer-Mouth-Sheet-01.png" id="3_rryqm"]
+[ext_resource type="Texture2D" uid="uid://dd1arvf80nug" path="res://assets/enemies/Squid-01-Sheet.png" id="3_vacrl"]
+[ext_resource type="Texture2D" uid="uid://b2ge4an3atsxu" path="res://assets/enemies/Squid-Mouth-Sheet-01.png" id="4_rryqm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_035qh"]
+atlas = ExtResource("2_0wmef")
+region = Rect2(0, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s3ywm"]
+atlas = ExtResource("2_0wmef")
+region = Rect2(96, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_owtm6"]
+atlas = ExtResource("2_0wmef")
+region = Rect2(192, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rw6ve"]
+atlas = ExtResource("3_rryqm")
+region = Rect2(0, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbe5j"]
+atlas = ExtResource("3_rryqm")
+region = Rect2(96, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1x34u"]
+atlas = ExtResource("3_rryqm")
+region = Rect2(192, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g05e0"]
+atlas = ExtResource("3_rryqm")
+region = Rect2(288, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqjuy"]
+atlas = ExtResource("3_vacrl")
+region = Rect2(0, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjesx"]
+atlas = ExtResource("3_vacrl")
+region = Rect2(96, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eg37h"]
+atlas = ExtResource("3_vacrl")
+region = Rect2(192, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mmisi"]
+atlas = ExtResource("3_vacrl")
+region = Rect2(288, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jw87x"]
+atlas = ExtResource("4_rryqm")
+region = Rect2(0, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_828b3"]
+atlas = ExtResource("4_rryqm")
+region = Rect2(96, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dw8ec"]
+atlas = ExtResource("4_rryqm")
+region = Rect2(192, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ns68a"]
+atlas = ExtResource("4_rryqm")
+region = Rect2(288, 0, 96, 160)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_cdhqv"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_p6nij")
+"texture": SubResource("AtlasTexture_035qh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s3ywm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_owtm6")
+}],
+"loop": 1,
+"name": &"devourer",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rw6ve")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbe5j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1x34u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g05e0")
+}],
+"loop": 1,
+"name": &"devourer_mouth",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mqjuy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cjesx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eg37h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mmisi")
 }],
 "loop": 1,
 "name": &"squid",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jw87x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_828b3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dw8ec")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ns68a")
+}],
+"loop": 1,
+"name": &"squid_mouth",
+"speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_78ajt"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_2tt5s"]
+radius = 53.009434
 
 [node name="EnemyBase" type="CharacterBody2D" unique_id=1191919949 node_paths=PackedStringArray("_screenNotifier", "_animatedSprite2D", "_hitBox", "_timer")]
 script = ExtResource("1_cdhqv")
@@ -25,11 +146,12 @@ _hitBox = NodePath("HitBox")
 _timer = NodePath("ActionTimer")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=820005660]
+rotation = 1.5707964
 sprite_frames = SubResource("SpriteFrames_cdhqv")
 animation = &"squid"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1058850113]
-shape = SubResource("CircleShape2D_78ajt")
+shape = SubResource("CircleShape2D_2tt5s")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=770898641]
 

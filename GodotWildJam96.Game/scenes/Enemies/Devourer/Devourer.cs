@@ -1,14 +1,21 @@
-using Godot;
 using System;
 using System.Diagnostics;
+using Godot;
 
 namespace GodotWildJam96;
 
 public partial class Devourer : EnemyBase
 {
+    [Export] private AnimatedSprite2D _mouthSprite;
     private const float MOVE_SPEED = 50.0f;
+    // SunInteractionArea's own radius (~127) is the shared player light radius, too wide
+    // for the Devourer's actual draining range, so it must close to within this first.
+    private const float SIPHON_RANGE = 60.0f;
+
+    protected override AnimatedSprite2D[] FlashSprites => [AnimateSprite, _mouthSprite];
 
     private Sun _currentClosestSun;
+    private SunInteractionArea _pendingInteractionArea;
 
     private bool _siphoning = false;
 
@@ -25,14 +32,41 @@ public partial class Devourer : EnemyBase
         EventBus.Instance.OnDevourerEntered -= DevourerEntered;
     }
 
-	public override void _PhysicsProcess(double delta)
-	{
+    public override void _PhysicsProcess(double delta)
+    {
         if (!_siphoning)
         {
             MoveToClosestSun((float)delta);
             MoveAndSlide();
+            TryStartSiphoning();
         }
-	}
+        UpdateMouthAnimation();
+    }
+
+    private void TryStartSiphoning()
+    {
+        if (_pendingInteractionArea is null || _currentClosestSun is null) return;
+        if (GlobalPosition.DistanceTo(_currentClosestSun.GlobalPosition) > SIPHON_RANGE) return;
+
+        _siphoning = true;
+        StartSiphoning(_pendingInteractionArea);
+        _pendingInteractionArea = null;
+    }
+
+    // Body pulses while cruising toward a sun; mouth takes over once it's actually feeding.
+    private void UpdateMouthAnimation()
+    {
+        if (_siphoning)
+        {
+            AnimateSprite.Stop();
+            _mouthSprite.Play();
+        }
+        else
+        {
+            AnimateSprite.Play();
+            _mouthSprite.Stop();
+        }
+    }
 
     public void StartSiphoning(SunInteractionArea sunInteractionArea)
     {
@@ -41,8 +75,8 @@ public partial class Devourer : EnemyBase
 
     public void DevourerEntered(Devourer devourer, SunInteractionArea interactionArea)
     {
-        _siphoning = true;
-        StartSiphoning(interactionArea);
+        if (devourer != this) return;
+        _pendingInteractionArea = interactionArea;
     }
     private void FindClosestSun()
     {

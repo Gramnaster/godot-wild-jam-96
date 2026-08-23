@@ -29,8 +29,11 @@ public partial class EnemyBase : CharacterBody2D
     protected Player PlayerRef { get; private set; }
     protected Sun[] SunRefs { get; private set; }
 
+    // Sprites flashed on hit. Subclasses with extra sprites (e.g. a mouth) override this.
+    protected virtual AnimatedSprite2D[] FlashSprites => [_animatedSprite2D];
+
     private bool _isDead;
-    private Tween _hitFlashTween;
+    private Tween[] _hitFlashTweens = [];
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -107,14 +110,25 @@ public partial class EnemyBase : CharacterBody2D
     }
 
     // Purely cosmetic hit feedback. Enemies stay hittable while flashing (no i-frames).
+    // Each sprite gets its own tween so they blink in sync instead of one after another.
     private void FlashOnHit()
     {
-        _hitFlashTween?.Kill();
-        _hitFlashTween = CreateTween();
-        for (int i = 0; i < 13; i++)
+        foreach (Tween tween in _hitFlashTweens)
         {
-            _hitFlashTween.TweenProperty(_animatedSprite2D, "modulate:a", 0.2f, 0.05f);
-            _hitFlashTween.TweenProperty(_animatedSprite2D, "modulate:a", 1.0f, 0.05f);
+            tween?.Kill();
+        }
+
+        AnimatedSprite2D[] sprites = FlashSprites;
+        _hitFlashTweens = new Tween[sprites.Length];
+        for (int s = 0; s < sprites.Length; s++)
+        {
+            Tween tween = CreateTween();
+            for (int i = 0; i < 13; i++)
+            {
+                tween.TweenProperty(sprites[s], "modulate:a", 0.2f, 0.05f);
+                tween.TweenProperty(sprites[s], "modulate:a", 1.0f, 0.05f);
+            }
+            _hitFlashTweens[s] = tween;
         }
     }
 

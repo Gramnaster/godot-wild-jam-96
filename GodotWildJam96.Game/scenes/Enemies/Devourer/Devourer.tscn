@@ -2,11 +2,64 @@
 
 [ext_resource type="PackedScene" uid="uid://ccqbofhppreoq" path="res://scenes/Enemies/EnemyBase/EnemyBase.tscn" id="1_qa36e"]
 [ext_resource type="Script" uid="uid://tmgqagkj0tvx" path="res://scenes/Enemies/Devourer/Devourer.cs" id="2_g5o5b"]
+[ext_resource type="Texture2D" uid="uid://cw411q42thweo" path="res://assets/enemies/Devourer-Mouth-Sheet-01.png" id="3_2tt5s"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_c3lg8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_07pfv"]
+atlas = ExtResource("3_2tt5s")
+region = Rect2(0, 0, 96, 144)
 
-[node name="Devourer" unique_id=1191919949 instance=ExtResource("1_qa36e")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_cf37h"]
+atlas = ExtResource("3_2tt5s")
+region = Rect2(96, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4j8ag"]
+atlas = ExtResource("3_2tt5s")
+region = Rect2(192, 0, 96, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0nxmr"]
+atlas = ExtResource("3_2tt5s")
+region = Rect2(288, 0, 96, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mqbl7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_07pfv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cf37h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4j8ag")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0nxmr")
+}],
+"loop": 1,
+"name": &"devourer_mouth",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ymbih"]
+radius = 48.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uw25i"]
+
+[node name="Devourer" unique_id=1191919949 node_paths=PackedStringArray("_mouthSprite") instance=ExtResource("1_qa36e")]
 script = ExtResource("2_g5o5b")
+_mouthSprite = NodePath("MouthSprite2D")
 
-[node name="HitBox" parent="." index="3" unique_id=1720138728]
-Shape = SubResource("CircleShape2D_c3lg8")
+[node name="MouthSprite2D" type="AnimatedSprite2D" parent="." index="0" unique_id=1668717209]
+rotation = 1.5707964
+sprite_frames = SubResource("SpriteFrames_mqbl7")
+animation = &"devourer_mouth"
+
+[node name="AnimatedSprite2D" parent="." index="1" unique_id=820005660]
+animation = &"devourer"
+
+[node name="CollisionShape2D" parent="." index="2" unique_id=1058850113]
+shape = SubResource("CircleShape2D_ymbih")
+
+[node name="HitBox" parent="." index="4" unique_id=1720138728]
+scale = Vector2(4.8399982, 4.8399982)
+Shape = SubResource("CircleShape2D_uw25i")

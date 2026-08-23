@@ -2,27 +2,89 @@
 
 [ext_resource type="PackedScene" uid="uid://ccqbofhppreoq" path="res://scenes/Enemies/EnemyBase/EnemyBase.tscn" id="1_rqs77"]
 [ext_resource type="Script" uid="uid://cq3isgih035f3" path="res://scenes/Enemies/Squid/Squid.cs" id="2_rym83"]
+[ext_resource type="Texture2D" uid="uid://b2ge4an3atsxu" path="res://assets/enemies/Squid-Mouth-Sheet-01.png" id="3_3bka4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sm20f"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(0, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x66n3"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(96, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bnxe5"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(192, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yjytt"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(288, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3bka4"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(0, 0, 96, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ujgp8"]
+atlas = ExtResource("3_3bka4")
+region = Rect2(96, 0, 96, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rym83"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sm20f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x66n3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bnxe5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yjytt")
+}],
+"loop": 1,
+"name": &"Biting",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3bka4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ujgp8")
+}],
+"loop": 1,
+"name": &"Idle",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sm20f"]
-radius = 17.029387
+radius = 59.008472
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_xcisb"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2tt5s"]
 
-[node name="Squid" unique_id=1191919949 node_paths=PackedStringArray("_moveTimer") instance=ExtResource("1_rqs77")]
+[node name="Squid" unique_id=1191919949 node_paths=PackedStringArray("_squidMouthSprite", "_moveTimer") instance=ExtResource("1_rqs77")]
 script = ExtResource("2_rym83")
+_squidMouthSprite = NodePath("SquidMouth")
 _moveTimer = NodePath("MoveTimer")
 
-[node name="AnimatedSprite2D" parent="." index="0" unique_id=820005660]
-scale = Vector2(3, 3)
+[node name="SquidMouth" type="AnimatedSprite2D" parent="." index="0" unique_id=1263603881]
+rotation = 1.5707964
+sprite_frames = SubResource("SpriteFrames_rym83")
+animation = &"Biting"
+frame_progress = 0.56987536
 
-[node name="CollisionShape2D" parent="." index="1" unique_id=1058850113]
+[node name="CollisionShape2D" parent="." index="2" unique_id=1058850113]
 shape = SubResource("CircleShape2D_sm20f")
 
-[node name="HitBox" parent="." index="3" unique_id=1720138728]
-scale = Vector2(1.75, 1.75)
-Shape = SubResource("CircleShape2D_xcisb")
+[node name="HitBox" parent="." index="4" unique_id=1720138728]
+position = Vector2(0, -2.3841858e-07)
+rotation = 1.5707964
+scale = Vector2(3.7900002, 3.7900002)
+Shape = SubResource("CapsuleShape2D_2tt5s")
 
-[node name="MoveTimer" type="Timer" parent="." index="5" unique_id=1123690449]
+[node name="MoveTimer" type="Timer" parent="." index="6" unique_id=1123690449]
 process_callback = 0
 wait_time = 0.5
 autostart = true

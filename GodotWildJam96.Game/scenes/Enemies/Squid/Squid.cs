@@ -5,10 +5,15 @@ namespace GodotWildJam96;
 
 public partial class Squid : EnemyBase
 {
+    private const float BiteRange = 150f;
+
+    [Export] AnimatedSprite2D _squidMouthSprite;
     [Export] Timer _moveTimer;
     private double _thrustTimer = 1.8f;
     private Vector2 _direction;
     private int _moveState = 0;
+
+    protected override AnimatedSprite2D[] FlashSprites => [AnimateSprite, _squidMouthSprite];
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -35,8 +40,11 @@ public partial class Squid : EnemyBase
 
     private void ChooseDiretcion(float dt)
     {
-            _direction = (PlayerRef.GlobalPosition - GlobalPosition).Normalized();
-            Rotation = Mathf.RotateToward(Rotation, _direction.Angle(), TurnSpeed * dt);
+        Vector2 toPlayer = PlayerRef.GlobalPosition - GlobalPosition;
+        _direction = toPlayer.Normalized();
+        Rotation = Mathf.RotateToward(Rotation, _direction.Angle(), TurnSpeed * dt);
+
+        _squidMouthSprite.Play(toPlayer.Length() <= BiteRange ? "Biting" : "Idle");
     }
 
 
@@ -71,10 +79,12 @@ public partial class Squid : EnemyBase
         {
             _moveState = 1;
             _thrustTimer = 0.15f;
+            AnimateSprite.Play();
         }
         else if (_moveState == 1)
         {
             _moveState = 2;
+            AnimateSprite.Stop();
         }
         else if (_moveState == 2)
         {
