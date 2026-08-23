@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://23h8lvgv6cx2"]
 
 [ext_resource type="Script" uid="uid://cubnlamepwyt0" path="res://scenes/Player/Player.cs" id="1_h00vy"]
-[ext_resource type="Texture2D" uid="uid://d22b17m0wtfaa" path="res://assets/player/PlayerShip.png" id="2_ky53y"]
 [ext_resource type="Texture2D" uid="uid://cmcc6uigtt14t" path="res://assets/player/Ship-02.png" id="2_xcisb"]
 [ext_resource type="PackedScene" uid="uid://bmu4ml8ay1ikh" path="res://scenes/Shooter/Shooter.tscn" id="3_bvqhm"]
 [ext_resource type="Texture2D" uid="uid://c8opw557joerv" path="res://assets/player/Fire-01-Sheet.png" id="3_dqp0f"]
@@ -11,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://4gi80w0n8f1u" path="res://assets/player/Thrust-Right-01-Sheet.png" id="5_puxyr"]
 [ext_resource type="PackedScene" uid="uid://s1r2gg3ipmj4" path="res://scenes/BulletBase/PlayerBullet/PlayerBullet.tscn" id="5_xcisb"]
 [ext_resource type="AudioStream" uid="uid://b50mtqqxlccxa" path="res://assets/bullet/Shoot01.mp3" id="8_tl8lu"]
+[ext_resource type="Texture2D" uid="uid://mlkkiyml6ng6" path="res://assets/player/sun-direction-small.png" id="11_tl8lu"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xcisb"]
 radius = 12.0
@@ -441,7 +441,7 @@ animation = &"ThrustForward"
 
 [node name="ThrustLeftSprite" type="AnimatedSprite2D" parent="." unique_id=1543933251]
 sprite_frames = SubResource("SpriteFrames_mqbl7")
-animation = &"ThrustLeft"
+animation = &"ThrustRightContinuous"
 
 [node name="ThrustRightSprite" type="AnimatedSprite2D" parent="." unique_id=1300057193]
 sprite_frames = SubResource("SpriteFrames_mqbl7")
@@ -472,5 +472,4 @@ vertical_alignment = 1
 _bulletScene = ExtResource("5_xcisb")
 
 [node name="ClosestSunIndicator" type="Sprite2D" parent="." unique_id=228555135]
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("2_ky53y")
+texture = ExtResource("11_tl8lu")
