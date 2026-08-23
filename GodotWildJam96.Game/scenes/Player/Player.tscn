@@ -347,9 +347,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_3nxk0")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"Firing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -448,7 +448,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_energySprite", "_shootSound", "_shooter", "DebugLabel")]
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_energySprite", "_shootSound", "_shooter", "DebugLabel", "_leftMarker", "_rightMarker")]
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_h00vy")
@@ -464,6 +464,8 @@ _energySprite = NodePath("EnergySprite")
 _shootSound = NodePath("ShootSound")
 _shooter = NodePath("Shooter")
 DebugLabel = NodePath("Label")
+_leftMarker = NodePath("LeftGunMarker2D")
+_rightMarker = NodePath("RightGunMarker2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1985309505]
 position = Vector2(0, -5)
@@ -534,7 +536,7 @@ _bulletScene = ExtResource("5_xcisb")
 texture = ExtResource("11_tl8lu")
 
 [node name="LeftGunMarker2D" type="Marker2D" parent="." unique_id=87316416]
-position = Vector2(-7, -15)
+position = Vector2(15, -7)
 
 [node name="RightGunMarker2D" type="Marker2D" parent="." unique_id=2077457259]
-position = Vector2(7, -15)
+position = Vector2(15, 7)

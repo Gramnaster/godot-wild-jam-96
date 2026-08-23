@@ -17,7 +17,7 @@ public partial class Player : CharacterBody2D
     private const float MAX_LINEAR_SPEED = 300.0f;
     private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
     private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
-    private const float UNSAFE_DAMAGE_INTERVAL = 7.0f;
+    private const float UNSAFE_DAMAGE_INTERVAL = 10.0f;
 
     // Animation Names
     private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
@@ -32,6 +32,8 @@ public partial class Player : CharacterBody2D
 
     private const string ANIM_THRUST_RIGHT_START = "ThrustRight";
     private const string ANIM_THRUST_RIGHT_CONTINUOUS = "ThrustRightContinuous";
+
+    private const string ANIM_FIRING = "Firing";
 
     [Export] private int _energyLevels = 0;
     private int EnergyLevels
@@ -93,14 +95,8 @@ public partial class Player : CharacterBody2D
     private float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
     private float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
 
-    private float _secondarySpeed = 750f;
-    private float _secondaryChargedSpeed = 2200f;           // (unused)
-    private float _secondaryLifetimeSeconds = 0.25f;
-    private float _secondaryChargedLifetimeSeconds = 1.0f;
-
     // Measure of time for the charge attack
     private ulong _shoot1PressedAtMsec;
-    private ulong _shoot2PressedAtMsec;
 
     // All thruster effects with one shared state machine
     private Thruster[] _thrusters;
@@ -131,16 +127,6 @@ public partial class Player : CharacterBody2D
         if (@event.IsActionReleased("shoot1"))
         {
             ShootFront(ChargeRatio(_shoot1PressedAtMsec));
-        }
-
-        if (@event.IsActionPressed("shoot2"))
-        {
-            _shoot2PressedAtMsec = Time.GetTicksMsec();
-        }
-
-        if (@event.IsActionReleased("shoot2"))
-        {
-            ShootSide(ChargeRatio(_shoot2PressedAtMsec));
         }
 
         if (@event.IsActionPressed("siphon_out") && _currentSunInteractionArea != null)
@@ -230,6 +216,8 @@ public partial class Player : CharacterBody2D
             eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
         }
 
+        _firingSprite.AnimationFinished += OnFiringAnimationFinished;
+
         // Starting energy levels
         EnergyLevels = 3;
 
@@ -251,6 +239,14 @@ public partial class Player : CharacterBody2D
                 thruster.Sprite.AnimationFinished -= thruster.AnimationFinishedHandler;
             }
         }
+
+        _firingSprite.AnimationFinished -= OnFiringAnimationFinished;
+    }
+
+    // "Firing" loops, so treat one loop as a single muzzle-flash flash
+    private void OnFiringAnimationFinished()
+    {
+        _firingSprite.Hide();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -405,18 +401,10 @@ public partial class Player : CharacterBody2D
         float adjustedLifetime = Mathf.Lerp(_primaryLifetimeSeconds, _primaryChargedLifetimeSeconds, chargeRatio);
 
         GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([FacingDirection], _primarySpeed, adjustedLifetime, 0.7f);
-    }
+        _shooter.Shoot([(_leftMarker.GlobalPosition, FacingDirection), (_rightMarker.GlobalPosition, FacingDirection)], _primarySpeed, adjustedLifetime, 0.7f);
 
-    private void ShootSide(float chargeRatio)
-    {
-        float adjustedLifetime = Mathf.Lerp(_secondaryLifetimeSeconds, _secondaryChargedLifetimeSeconds, chargeRatio);
-
-        Vector2 fireLeft = FacingDirection.Rotated(-Mathf.Pi / 2f);
-        Vector2 fireRight = FacingDirection.Rotated(Mathf.Pi / 2f);
-
-        GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
-        _shooter.Shoot([fireLeft, fireRight], _secondarySpeed, adjustedLifetime, 0.7f);
+        _firingSprite.Show();
+        _firingSprite.Play(ANIM_FIRING);
     }
 
     // Determines how much charging you can pull off in the listed charging time
