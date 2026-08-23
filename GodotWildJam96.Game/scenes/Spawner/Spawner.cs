@@ -99,10 +99,37 @@ public partial class Spawner : Node2D
     private void SpawnSquid()
     {
         Squid _newSquid = _squidScene.Instantiate<Squid>();
-        _newSquid.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(100, 200);
+        _newSquid.GlobalPosition = _player.GlobalPosition + OffscreenSpawnOffset();
         AddChild(_newSquid);
         GD.Print("Spawning Squid!");
         _spawnSquidTimer.Start();
+    }
+
+    // Picks a point just outside the camera's visible rectangle, on a random edge,
+    // so squids spawn out of sight instead of popping in mid-screen.
+    private Vector2 OffscreenSpawnOffset()
+    {
+        Camera2D camera = GetViewport().GetCamera2D();
+        Vector2 halfExtent = camera is null
+            ? new Vector2(480f, 360f)
+            : GetViewport().GetVisibleRect().Size / 2f / camera.Zoom;
+
+        float buffer = (float)GD.RandRange(50, 200);
+
+        if (GD.Randf() < 0.5f)
+        {
+            float x = (float)GD.RandRange(-halfExtent.X, halfExtent.X);
+            float y = halfExtent.Y + buffer;
+            if (GD.Randf() < 0.5f) y = -y;
+            return new Vector2(x, y);
+        }
+        else
+        {
+            float y = (float)GD.RandRange(-halfExtent.Y, halfExtent.Y);
+            float x = halfExtent.X + buffer;
+            if (GD.Randf() < 0.5f) x = -x;
+            return new Vector2(x, y);
+        }
     }
 
     private void SunSpawnCalculator()
