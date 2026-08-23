@@ -78,7 +78,7 @@ public partial class EnemyBase : CharacterBody2D
         GD.Print("Body Entered is: " + body);
         if (body is Player)
         {
-            EventBus.EmitOnDamageTakenPlayer(5);
+            EventBus.EmitOnDamageTakenPlayer(1);
         }
     }
 
@@ -94,10 +94,6 @@ public partial class EnemyBase : CharacterBody2D
             {
                 Die();
             }
-        }
-        else if (body is Player)
-        {
-            EventBus.EmitOnDamageTakenPlayer(1);
         }
         else
         {
