@@ -123,7 +123,6 @@ public partial class Sun : Area2D
         if (_siphonInOngoing || _siphonOutOngoing)
         {
             GD.Print("Siphon stopped, you lost some energy!");
-            EventBus.EmitOnDamageTakenPlayer(1);
         }
         player._inLightRadius = false;
         _currentSunInteractionArea = null;
@@ -149,8 +148,7 @@ public partial class Sun : Area2D
                 _siphonOutOngoing = false;
             }
         }
-
-                _siphonSound.Play();
+            _siphonSound.Play();
     }
 
     private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)

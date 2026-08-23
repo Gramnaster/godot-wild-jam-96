@@ -16,6 +16,7 @@ public partial class Devourer : EnemyBase
     {
         base._Ready();
         EventBus.Instance.OnDevourerEntered += DevourerEntered;
+        base.OnAllSunsSpawned();
     }
 
     public override void _ExitTree()

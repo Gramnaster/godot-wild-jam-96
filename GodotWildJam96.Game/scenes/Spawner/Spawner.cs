@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Godot;
+using Microsoft.VisualBasic;
 
 namespace GodotWildJam96;
 
@@ -12,23 +13,29 @@ public partial class Spawner : Node2D
 
     [Export] public PackedScene _sunScene;
     [Export] public PackedScene _mainSunScene;
-
     [Export] public PackedScene _devourerScene;
+    [Export] public PackedScene _squidScene;
     [Export] public Shape2D SpawnCheckShape;
     //It's main for now, change to level base later
     [Export] public Node _levelBase;
-
+    [Export] private Timer _spawnSquidTimer;
+    [Export] private Player _player;
     private Vector2 _sunPos;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        EventBus.Instance.OnSpawnDevourers += SpawnDevourers;
         MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
         CallDeferred("add_child", newMainSun);
         CallDeferred("Trial");
-        //Devourer newDevourer = _devourerScene.Instantiate<Devourer>();
-        //newDevourer.GlobalPosition = new Vector2 (100.0f, 100.0f);
-        //AddChild(newDevourer);
+        _spawnSquidTimer.Timeout += SpawnSquid;
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Instance.OnSpawnDevourers -= SpawnDevourers;
+        _spawnSquidTimer.Timeout -= SpawnSquid;
     }
 
     private void Trial()
@@ -81,9 +88,21 @@ public partial class Spawner : Node2D
         return result.Count == 0; // If the result is empty, the position is valid
     }
 
-    private void SpawnDevourers(int amount)
+    private void SpawnDevourers(SunInteractionArea interactionArea)
     {
+        Devourer _newDevourer = _devourerScene.Instantiate<Devourer>();
+        _newDevourer.GlobalPosition = interactionArea.GlobalPosition + new Vector2 (300.0f, 300.0f);
+        AddChild(_newDevourer);
 
+    }
+
+    private void SpawnSquid()
+    {
+        Squid _newSquid = _squidScene.Instantiate<Squid>();
+        _newSquid.GlobalPosition = _player.GlobalPosition + Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(100, 200);
+        AddChild(_newSquid);
+        GD.Print("Spawning Squid!");
+        _spawnSquidTimer.Start();
     }
 
     private void SunSpawnCalculator()

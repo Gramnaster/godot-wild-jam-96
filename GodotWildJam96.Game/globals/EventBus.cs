@@ -21,6 +21,7 @@ public partial class EventBus : Node
     public event Action<int> OnDamageTakenPlayer;
     public event Action<Player> OnTeleport;
     public event Action OnAllSunsSpawned;
+    public event Action<SunInteractionArea> OnSpawnDevourers;
 
     // Shooting events
     public event Action<Vector2, Vector2, float, float, PackedScene> OnCreateBullet;
@@ -113,6 +114,11 @@ public partial class EventBus : Node
     public static void EmitOnEnergySiphoned(int energy)
     {
         Instance.OnEnergySiphoned?.Invoke(energy);
+    }
+
+    public static void EmitOnSpawnDevourers(SunInteractionArea interactionArea)
+    {
+        Instance.OnSpawnDevourers?.Invoke(interactionArea);
     }
 
 }

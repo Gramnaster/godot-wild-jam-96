@@ -145,17 +145,35 @@ public partial class Player : CharacterBody2D
 
         if (@event.IsActionPressed("siphon_out") && _currentSunInteractionArea != null)
         {
-            _siphonType = 0;
-            GD.Print("Start siphoning energy out of Sun");
-            //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
+            if (!_siphonUnderway)
+            {
+                _siphonType = 0;
+                GD.Print("Start siphoning energy out of Sun");
+                //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
+                EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
+                _siphonUnderway = true;
+            }
+            else
+            {
+                GD.Print("Already Siphoning!");
+            }
         }
         else if (@event.IsActionPressed("siphon_in") && _currentSunInteractionArea != null)
         {
-            _siphonType = 1;
-            GD.Print("Start siphoning energy into Sun");
-            //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-            EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
+            if (!_siphonUnderway)
+            {
+                _siphonType = 1;
+                GD.Print("Start siphoning energy into Sun");
+                //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
+                EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
+                _siphonUnderway = true;
+            }
+            else
+            {
+                GD.Print("Already Siphoning!");
+            }
         }
         if (@event.IsActionPressed("teleport_home"))
         {
@@ -427,6 +445,7 @@ public partial class Player : CharacterBody2D
         if (dmg > _interruptDamage)
         {
             EventBus.Instance.EmitOnPlayerSiphonEnd(_currentSunInteractionArea);
+            _siphonUnderway = false;
         }
     }
 

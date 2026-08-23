@@ -2,5 +2,10 @@
 
 [ext_resource type="Script" uid="uid://c3ihl1ujbxb1h" path="res://scenes/Spawner/Spawner.cs" id="1_5nymx"]
 
-[node name="Spawner" type="Node2D" unique_id=2107266173]
+[node name="Spawner" type="Node2D" unique_id=2107266173 node_paths=PackedStringArray("_spawnSquidTimer")]
 script = ExtResource("1_5nymx")
+_spawnSquidTimer = NodePath("SquidSpawnTimer")
+
+[node name="SquidSpawnTimer" type="Timer" parent="." unique_id=1589975363]
+wait_time = 5.0
+autostart = true

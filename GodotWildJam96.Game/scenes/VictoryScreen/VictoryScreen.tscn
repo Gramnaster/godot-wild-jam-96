@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bly7i66c08nb6"]
+
+[ext_resource type="FontFile" uid="uid://bynssskn6fnb6" path="res://resources/Fonts/Wumslaw-Regular.otf" id="1_6pduo"]
+[ext_resource type="Texture2D" uid="uid://b8c4vw64ljmi" path="res://assets/menubuttons/49.png" id="2_8wjah"]
+[ext_resource type="Script" uid="uid://cdla0kiosxq53" path="res://scenes/VictoryScreen/MainMenuButton.cs" id="3_8l6sa"]
+[ext_resource type="PackedScene" uid="uid://bq536l6vkmtjv" path="res://scenes/main/main.tscn" id="4_b7vdc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pm0ju"]
+font = ExtResource("1_6pduo")
+font_size = 300
+outline_size = 15
+outline_color = Color(0, 0, 0, 1)
+
+[node name="VictoryScreen" type="Control" unique_id=684589917]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VictoryLabel" type="Label" parent="." unique_id=873594151]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "You Win!"
+label_settings = SubResource("LabelSettings_pm0ju")
+
+[node name="MainMenuButton" type="TextureButton" parent="." unique_id=2032568043]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("2_8wjah")
+script = ExtResource("3_8l6sa")
+_mainScene = ExtResource("4_b7vdc")
