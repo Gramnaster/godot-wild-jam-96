@@ -532,3 +532,9 @@ _bulletScene = ExtResource("5_xcisb")
 
 [node name="ClosestSunIndicator" type="Sprite2D" parent="." unique_id=228555135]
 texture = ExtResource("11_tl8lu")
+
+[node name="LeftGunMarker2D" type="Marker2D" parent="." unique_id=87316416]
+position = Vector2(-7, -15)
+
+[node name="RightGunMarker2D" type="Marker2D" parent="." unique_id=2077457259]
+position = Vector2(7, -15)

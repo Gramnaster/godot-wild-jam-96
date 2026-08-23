@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://c82eb5al872j6"]
 
 [ext_resource type="Script" uid="uid://d1xq5aai8vjy7" path="res://scenes/SunInteractionArea/SunInteractionArea.cs" id="1_7bfc8"]
-[ext_resource type="Texture2D" uid="uid://hgi8xl4hxu0c" path="res://assets/sun/LightRadius.png" id="2_b1n1a"]
+[ext_resource type="Texture2D" uid="uid://kmimo044exhr" path="res://assets/sun/sun-interaction-area.png" id="2_7bfc8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
-radius = 45.0
+radius = 126.77539
 
 [node name="SunInteractionArea" type="Area2D" unique_id=368012975]
 collision_mask = 5
@@ -12,8 +12,8 @@ script = ExtResource("1_7bfc8")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=51866083]
 modulate = Color(1, 1, 1, 0.20392157)
-scale = Vector2(0.3217509, 0.31964663)
-texture = ExtResource("2_b1n1a")
+scale = Vector2(0.8498698, 0.8443114)
+texture = ExtResource("2_7bfc8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=474087322]
 shape = SubResource("CircleShape2D_pm0ju")

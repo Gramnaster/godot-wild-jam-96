@@ -17,7 +17,7 @@ public partial class Player : CharacterBody2D
     private const float MAX_LINEAR_SPEED = 300.0f;
     private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
     private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
-    private const float UNSAFE_DAMAGE_INTERVAL = 3.0f;
+    private const float UNSAFE_DAMAGE_INTERVAL = 7.0f;
 
     // Animation Names
     private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
@@ -61,6 +61,9 @@ public partial class Player : CharacterBody2D
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
     [Export] private Label DebugLabel { get; set; }
+    [Export] private Marker2D _leftMarker;
+    [Export] private Marker2D _rightMarker;
+
 
     // Radians per scond. Tau is one full revolution per second.
     [Export] private float TurnSpeed { get; set; } = Mathf.Tau / 2;
@@ -475,7 +478,7 @@ public partial class Player : CharacterBody2D
 
     private void GameOver()
     {
-        GetTree().ChangeSceneToFile($"res://scenes/GameOverScreen/GameOverScreen.tscn");
+        GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://scenes/GameOverScreen/GameOverScreen.tscn");
     }
 
     private void CheckIfSafe(float dt)
