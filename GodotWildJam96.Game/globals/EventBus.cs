@@ -17,7 +17,8 @@ public partial class EventBus : Node
     public event Action<SunInteractionArea> OnEnemySiphonStop;
     public event Action<SunInteractionArea> OnPlayerSiphonEnd;
     public event Action<Boolean> OnPlayerSiphonReset;
-    public event Action<float> OnDamageTakenPlayer;
+    public event Action<int> OnEnergySiphoned;
+    public event Action<int> OnDamageTakenPlayer;
     public event Action<Player> OnTeleport;
     public event Action OnAllSunsSpawned;
 
@@ -76,7 +77,7 @@ public partial class EventBus : Node
         GD.Print("Siphon Reset!");
         OnPlayerSiphonReset?.Invoke(reset);
     }
-    public static void EmitOnDamageTakenPlayer(float dmg)
+    public static void EmitOnDamageTakenPlayer(int dmg)
     {
         GD.Print("Player taking damage!");
         Instance.OnDamageTakenPlayer?.Invoke(dmg);
@@ -109,5 +110,9 @@ public partial class EventBus : Node
         Instance.OnDevourerEntered?.Invoke(devourer, interactionArea);
     }
 
+    public static void EmitOnEnergySiphoned(int energy)
+    {
+        Instance.OnEnergySiphoned?.Invoke(energy);
+    }
 
 }

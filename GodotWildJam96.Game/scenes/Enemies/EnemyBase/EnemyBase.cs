@@ -47,14 +47,14 @@ public partial class EnemyBase : CharacterBody2D
         EventBus.Instance.OnAllSunsSpawned += OnAllSunsSpawned;
         _screenNotifier.ScreenEntered += OnScreenEntered;
         _timer.Timeout += OnTimeout;
-        _hitBox.AreaEntered += OnHitBoxAreaEntered;
+        _hitBox.BodyEntered += OnHitBoxBodyEntered;
     }
 
     public override void _ExitTree()
     {
         EventBus.Instance.OnAllSunsSpawned -= OnAllSunsSpawned;
         _timer.Timeout -= OnTimeout;
-        _hitBox.AreaEntered -= OnHitBoxAreaEntered;
+        _hitBox.BodyEntered -= OnHitBoxBodyEntered;
     }
 
     // Subclass decides response when ActionTimer fires
@@ -71,14 +71,26 @@ public partial class EnemyBase : CharacterBody2D
 
     // Area2D entering this hitbox kills the enemy
     // Subclasses can override this if they need custom hit behaviour
-    protected virtual void OnHitBoxAreaEntered(Area2D area)
+    protected virtual void OnHitBoxBodyEntered(Node2D body)
     {
-        GD.Print("You're hitting me: ", nameof(EnemyBase));
-        Lives--;
-
-        if (Lives <= 0)
+        GD.Print("Body Entered is: " + body);
+        if (body is BulletBase)
         {
-            Die();
+            GD.Print("You're hitting me: ", nameof(EnemyBase));
+            Lives--;
+            GlobalPosition = GlobalPosition + (GlobalPosition.Normalized() * 15.0f);
+            if (Lives <= 0)
+            {
+                Die();
+            }
+        }
+        else if (body is Player)
+        {
+            EventBus.EmitOnDamageTakenPlayer(5);
+        }
+        else
+        {
+            GD.Print("Entered a random body!");
         }
     }
 

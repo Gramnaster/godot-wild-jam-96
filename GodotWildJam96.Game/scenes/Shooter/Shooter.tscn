@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vypr0ju2vnox" path="res://scenes/Shooter/Shooter.cs" id="1_fg1hh"]
 [ext_resource type="PackedScene" uid="uid://dv4x838xcci2f" path="res://scenes/BulletBase/BulletBase.tscn" id="2_56sud"]
-[ext_resource type="AudioStream" uid="uid://mqa5o61cfvl7" path="res://assets/bullet/Shoot1Sound.mp3" id="3_e0xjn"]
+[ext_resource type="AudioStream" uid="uid://b50mtqqxlccxa" path="res://assets/bullet/Shoot01.mp3" id="3_e0xjn"]
 
 [node name="Shooter" type="Node2D" unique_id=1648900959 node_paths=PackedStringArray("_shootSound", "_shootTimer")]
 script = ExtResource("1_fg1hh")
@@ -12,5 +12,6 @@ _shootTimer = NodePath("ShootTimer")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=2054159572]
 stream = ExtResource("3_e0xjn")
+pitch_scale = 2.0
 
 [node name="ShootTimer" type="Timer" parent="." unique_id=638180358]
