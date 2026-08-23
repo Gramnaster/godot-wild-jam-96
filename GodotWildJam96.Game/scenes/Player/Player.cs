@@ -34,6 +34,17 @@ public partial class Player : CharacterBody2D
 
     public float _currentShieldEnergy = 0.0f;
     public float _maxShieldEnergy = 100.0f;
+    [Export] private int _energyLevels = 0;
+    private int EnergyLevels
+    {
+        get => _energyLevels;
+        set
+        {
+            // 0 to 6 (7 levels total)
+            _energyLevels = Mathf.Clamp(value, 0, 6);
+            UpdateEnergySprite();
+        }
+    }
 
     private Vector2 _closestSunVector;
     [Export] private Sprite2D _closestSunIndicator;
@@ -44,6 +55,7 @@ public partial class Player : CharacterBody2D
     [Export] private AnimatedSprite2D _thrustForwardSprite;
     [Export] private AnimatedSprite2D _thrustLeftSprite;
     [Export] private AnimatedSprite2D _thrustRightSprite;
+    [Export] private AnimatedSprite2D _energySprite;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
     [Export] private Label DebugLabel { get; set; }
@@ -160,6 +172,8 @@ public partial class Player : CharacterBody2D
         _thrustForwardSprite.RotationDegrees = 90f;
         _thrustLeftSprite.RotationDegrees = 90f;
         _thrustRightSprite.RotationDegrees = 90f;
+        _energySprite.RotationDegrees = 90f;
+        // _energySprite.
 
         // Effect sprites starts hidden. Show in UpdateThrusterAnimations()
         _firingSprite.Hide();
@@ -167,6 +181,7 @@ public partial class Player : CharacterBody2D
         _thrustForwardSprite.Hide();
         _thrustLeftSprite.Hide();
         _thrustRightSprite.Hide();
+        _energySprite.Hide();
 
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
         EventBus.Instance.OnPlayerSiphonReset += PlayerResetSiphon;
@@ -190,6 +205,8 @@ public partial class Player : CharacterBody2D
             eventThruster.AnimationFinishedHandler = () => OnThrusterAnimationFinished(eventThruster);
             eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
         }
+
+        UpdateEnergySprite();
 
         // Makes the label independent of Player transformations
         DebugLabel.TopLevel = true;
@@ -342,14 +359,17 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    // private void RapidShoot()
-    // {
-    //     if (Input.IsActionPressed("shoot1"))
-    //     {
-    //         _shooter.Shoot([FacingDirection], _primarySpeed, 3.0f, 0.05f);
-    //     }
+    private void UpdateEnergySprite()
+    {
+        if (_energyLevels == 0)
+        {
+            _energySprite.Hide();
+            return;
+        }
 
-    // }
+        _energySprite.Show();
+        _energySprite.Frame = _energyLevels - 1;
+    }
 
     private void ShootFront(float chargeRatio)
     {
@@ -413,6 +433,6 @@ public partial class Player : CharacterBody2D
         }
         _closestSunVector = GlobalPosition.DirectionTo(_closestSun.GlobalPosition);
         _closestSunIndicator.LookAt(_closestSun.GlobalPosition);
-        _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector*50.0f;
+        _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector * 50.0f;
     }
 }
