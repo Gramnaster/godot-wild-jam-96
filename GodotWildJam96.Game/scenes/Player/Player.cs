@@ -62,7 +62,7 @@ public partial class Player : CharacterBody2D
     [Export] private AnimatedSprite2D _energySprite;
     [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
-    [Export] private Label DebugLabel { get; set; }
+    // [Export] private Label DebugLabel { get; set; }
     [Export] private Marker2D _leftMarker;
     [Export] private Marker2D _rightMarker;
 
@@ -134,7 +134,7 @@ public partial class Player : CharacterBody2D
             if (!_siphonUnderway)
             {
                 _siphonType = 0;
-                GD.Print("Start siphoning energy out of Sun");
+                // GD.Print("Start siphoning energy out of Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
                 EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
@@ -142,7 +142,7 @@ public partial class Player : CharacterBody2D
             }
             else
             {
-                GD.Print("Already Siphoning!");
+                // GD.Print("Already Siphoning!");
             }
         }
         else if (@event.IsActionPressed("siphon_in") && _currentSunInteractionArea != null)
@@ -150,7 +150,7 @@ public partial class Player : CharacterBody2D
             if (!_siphonUnderway)
             {
                 _siphonType = 1;
-                GD.Print("Start siphoning energy into Sun");
+                // GD.Print("Start siphoning energy into Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
                 EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
@@ -158,7 +158,7 @@ public partial class Player : CharacterBody2D
             }
             else
             {
-                GD.Print("Already Siphoning!");
+                // GD.Print("Already Siphoning!");
             }
         }
         if (@event.IsActionPressed("teleport_home"))
@@ -222,7 +222,7 @@ public partial class Player : CharacterBody2D
         EnergyLevels = 3;
 
         // Makes the label independent of Player transformations
-        DebugLabel.TopLevel = true;
+        // DebugLabel.TopLevel = true;
     }
 
     public override void _ExitTree()
@@ -268,7 +268,7 @@ public partial class Player : CharacterBody2D
 
     public void OnPlayerEntered(Player player, SunInteractionArea interactionArea)
     {
-        GD.Print(player.Name + " entered " + interactionArea.Name);
+        // GD.Print(player.Name + " entered " + interactionArea.Name);
         _currentSunInteractionArea = interactionArea;
         player._inLightRadius = true;
     }
@@ -286,8 +286,8 @@ public partial class Player : CharacterBody2D
         Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
 
         // Debug
-        DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
-        DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
+        // DebugLabel.GlobalPosition = GlobalPosition + new Vector2(0, -50);
+        // DebugLabel.Text = $"{Velocity.ToString("F2")}-{Rotation:F2}";
     }
 
     private void Thrust(float dt)
@@ -400,7 +400,7 @@ public partial class Player : CharacterBody2D
         // Charging time between the attacks determines how far the projectile goes
         float adjustedLifetime = Mathf.Lerp(_primaryLifetimeSeconds, _primaryChargedLifetimeSeconds, chargeRatio);
 
-        GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
+        // GD.Print($"Adjusted Lifetime: {adjustedLifetime}");
         _shooter.Shoot([(_leftMarker.GlobalPosition, FacingDirection), (_rightMarker.GlobalPosition, FacingDirection)], _primarySpeed, adjustedLifetime, 0.7f);
 
         _firingSprite.Show();
@@ -416,15 +416,15 @@ public partial class Player : CharacterBody2D
 
     private void PlayerResetSiphon(bool reset)
     {
-        GD.Print("Siphon Reset!");
+        // GD.Print("Siphon Reset!");
         _siphonUnderway = reset;
     }
 
     private void TakeDamage(int dmg)
     {
         EnergyLevels -= dmg;
-        GD.Print(dmg + " damage taken!");
-        GD.Print("Only " + _energyLevels + " energy levels left!");
+        // GD.Print(dmg + " damage taken!");
+        // GD.Print("Only " + _energyLevels + " energy levels left!");
         if (EnergyLevels <= 0)
         {
             GameOver();
@@ -460,8 +460,8 @@ public partial class Player : CharacterBody2D
     private void GainEnergyFromSun(int energyGained)
     {
         EnergyLevels += energyGained;
-        GD.Print(energyGained);
-        GD.Print("Current Energy Levels: " + _energyLevels);
+        // GD.Print(energyGained);
+        // GD.Print("Current Energy Levels: " + _energyLevels);
     }
 
     private void GameOver()
