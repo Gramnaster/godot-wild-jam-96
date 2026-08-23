@@ -14,6 +14,8 @@ public partial class Sun : Area2D
     [Export] public EnergyBar _energyValuebar;
     [Export] public AudioStreamPlayer2D _siphonSound;
 
+    private int _siphonCount;
+
     //Standard Sun Values
     private int _sunLevel = 0;
     public int _maxEnergy;
@@ -79,14 +81,17 @@ public partial class Sun : Area2D
                 StopPlayerSiphon(null);
                 return;
             }
-            else if(_siphonTimePassed > 1.0f)
+            else if(_siphonTimePassed > 1.8f)
             {
+                _siphonSound.Play();
                 _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
                 _currentEnergy -= _sunSiphonRate;
+                EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
+                _siphonCount++;
             }
-            GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
+            //GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
         }
         else if (_siphonInOngoing)
         {
@@ -96,14 +101,20 @@ public partial class Sun : Area2D
                 StopPlayerSiphon(null);
                 return;
             }
-            else if(_siphonTimePassed > 1.0f)
+            else if(_siphonTimePassed > 1.8f)
             {
+                _siphonSound.Play();
                 _lightRadiusSprite.Scale = new Vector2 ((_currentEnergy/_maxEnergy),(_currentEnergy/_maxEnergy));
                 _currentEnergy += _sunSiphonRate;
                 _energyValuebar.UpdateValue(_currentEnergy);
                 _siphonTimePassed = 0.0f;
+                _siphonCount++;
             }
             GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
+        }
+        if (_siphonCount > 0)
+        {
+            _siphonSound.PitchScale = 1.0f + (0.15f * _siphonCount);
         }
     }
 
@@ -114,6 +125,7 @@ public partial class Sun : Area2D
             GD.Print("Siphon stopped, you lost some energy!");
             EventBus.EmitOnDamageTakenPlayer(1);
         }
+        player._inLightRadius = false;
         _currentSunInteractionArea = null;
         StopPlayerSiphon(interactionArea);
     }
@@ -137,7 +149,8 @@ public partial class Sun : Area2D
                 _siphonOutOngoing = false;
             }
         }
-        _siphonSound.Play();
+
+                _siphonSound.Play();
     }
 
     private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)
@@ -154,7 +167,7 @@ public partial class Sun : Area2D
             //Can also add code to stop or 'finish' siphoning for other factors
             _siphonOutOngoing = false;
             _siphonInOngoing = false;
-            _siphonSound.Playing = false;
+            _siphonCount = 0;
             EventBus.Instance.EmitOnPlayerSiphonReset(false);
         }
     }
@@ -165,6 +178,5 @@ public partial class Sun : Area2D
             //Can also add code to stop or 'finish' siphoning for other factors
             _siphonOutOngoing = false;
             _siphonInOngoing = false;
-            _siphonSound.Playing = false;
     }
 }

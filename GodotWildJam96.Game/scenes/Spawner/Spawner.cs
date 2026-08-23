@@ -26,9 +26,9 @@ public partial class Spawner : Node2D
         MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
         CallDeferred("add_child", newMainSun);
         CallDeferred("Trial");
-        Devourer newDevourer = _devourerScene.Instantiate<Devourer>();
-        newDevourer.GlobalPosition = new Vector2 (100.0f, 100.0f);
-        AddChild(newDevourer);
+        //Devourer newDevourer = _devourerScene.Instantiate<Devourer>();
+        //newDevourer.GlobalPosition = new Vector2 (100.0f, 100.0f);
+        //AddChild(newDevourer);
     }
 
     private void Trial()
@@ -79,6 +79,11 @@ public partial class Spawner : Node2D
         var result = spaceState.IntersectShape(query);
         //GD.Print(result.Count == 0);
         return result.Count == 0; // If the result is empty, the position is valid
+    }
+
+    private void SpawnDevourers(int amount)
+    {
+
     }
 
     private void SunSpawnCalculator()
