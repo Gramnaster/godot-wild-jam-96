@@ -21,9 +21,10 @@ EventBus="*uid://w8vh3j4r7513"
 
 [display]
 
-window/size/viewport_width=1024
-window/size/viewport_height=768
+window/size/viewport_width=1920
+window/size/viewport_height=1440
 window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 
 [dotnet]
 
