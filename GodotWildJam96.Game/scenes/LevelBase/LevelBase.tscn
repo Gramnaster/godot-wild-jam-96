@@ -29,6 +29,7 @@ z_index = -10
 _scrollingImages = SubResource("Resource_7hghd")
 
 [node name="Player" parent="." unique_id=153989784 instance=ExtResource("2_e7jje")]
+position = Vector2(0, 72)
 _energyLevels = 0
 
 [node name="Enemies" type="Node" parent="." unique_id=1397552595]

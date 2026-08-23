@@ -14,7 +14,7 @@ public partial class Player : CharacterBody2D
 
     #region Properties
     //Ship Properties
-    private const float MAX_LINEAR_SPEED = 300.0f;
+    private const float MAX_LINEAR_SPEED = 200.0f;
     private const float RETROGRADE_ANGLE_TOLERANCE = 0.05f;
     private const float RETROGRADE_VELOCITY_TOLERANCE = 10.0f;
     private const float UNSAFE_DAMAGE_INTERVAL = 10.0f;
