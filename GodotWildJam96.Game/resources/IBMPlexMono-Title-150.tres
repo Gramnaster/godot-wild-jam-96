@@ -1,0 +1,11 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://nfondibk0uvi"]
+
+[ext_resource type="FontFile" uid="uid://dn5xs3hdgbyrj" path="res://resources/Fonts/IBMPlexMono-Bold.ttf" id="1_4dvfa"]
+
+[resource]
+font = ExtResource("1_4dvfa")
+font_size = 150
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 50
+shadow_color = Color(0.17211545, 0.1721153, 0.1721153, 1)
+shadow_offset = Vector2(0, 13.475)

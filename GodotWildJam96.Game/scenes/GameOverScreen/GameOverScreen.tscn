@@ -1,15 +1,31 @@
 [gd_scene format=3 uid="uid://bly7i66c08nb6"]
 
-[ext_resource type="FontFile" uid="uid://bynssskn6fnb6" path="res://resources/Fonts/Wumslaw-Regular.otf" id="1_6pduo"]
-[ext_resource type="Texture2D" uid="uid://b8c4vw64ljmi" path="res://assets/menubuttons/49.png" id="2_8wjah"]
+[ext_resource type="PackedScene" uid="uid://dtnpot34cv61j" path="res://scenes/ScrollingBackground/ScrollingBackground.tscn" id="1_f58e3"]
+[ext_resource type="Texture2D" uid="uid://c8blw0ermlv8m" path="res://assets/backgrounds/empty-01.png" id="2_a83ve"]
+[ext_resource type="Texture2D" uid="uid://b8su8ntml16qu" path="res://assets/backgrounds/stars-01.png" id="3_8kwt4"]
 [ext_resource type="Script" uid="uid://bopwv5h400cea" path="res://scenes/GameOverScreen/RestartButton.cs" id="3_8wjah"]
 [ext_resource type="PackedScene" uid="uid://bq536l6vkmtjv" path="res://scenes/main/main.tscn" id="4_b7vdc"]
+[ext_resource type="Texture2D" uid="uid://c0hf2t4350x0v" path="res://assets/backgrounds/stars-02.png" id="4_ln87b"]
+[ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="5_cqdlt"]
+[ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="6_w5twh"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/ScrollingBackgroundImages.cs" id="7_ojqkd"]
+[ext_resource type="LabelSettings" uid="uid://nfondibk0uvi" path="res://resources/IBMPlexMono-Title-150.tres" id="8_f58e3"]
+[ext_resource type="FontFile" uid="uid://bjt4ysr0lq5ne" path="res://resources/Fonts/IBMPlexMono-Medium.ttf" id="9_ln87b"]
+[ext_resource type="Texture2D" uid="uid://dh8ltycwmtnjv" path="res://assets/menubuttons/play-button.png" id="10_cqdlt"]
+[ext_resource type="Texture2D" uid="uid://qywivaf7bg5v" path="res://assets/menubuttons/restart-button.png" id="10_ln87b"]
+[ext_resource type="Script" uid="uid://b0kwhxeyd6tb5" path="res://scenes/main/StartGameButton.cs" id="11_w5twh"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_pm0ju"]
-font = ExtResource("1_6pduo")
-font_size = 300
-outline_size = 15
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="Resource" id="Resource_mqbl7"]
+script = ExtResource("7_ojqkd")
+Images = Array[Texture2D]([ExtResource("2_a83ve"), ExtResource("3_8kwt4"), ExtResource("4_ln87b"), ExtResource("5_cqdlt"), ExtResource("6_w5twh")])
+metadata/_custom_type_script = "uid://bg2qdbskuvwe"
+
+[sub_resource type="LabelSettings" id="LabelSettings_ojqkd"]
+font = ExtResource("9_ln87b")
+font_size = 96
+shadow_size = 20
+shadow_color = Color(0.13755062, 0.13755065, 0.13755062, 0.827451)
+shadow_offset = Vector2(0, 4.97)
 
 [node name="GameOverScreen" type="Control" unique_id=684589917]
 layout_mode = 3
@@ -19,31 +35,73 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GameOverLabel" type="Label" parent="." unique_id=873594151]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
-grow_horizontal = 2
-text = "Game Over!"
-label_settings = SubResource("LabelSettings_pm0ju")
+[node name="ScrollingBackground" parent="." unique_id=548645227 instance=ExtResource("1_f58e3")]
+_scrollingImages = SubResource("Resource_mqbl7")
 
-[node name="RestartButton" type="TextureButton" parent="." unique_id=2043458708]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1605125873]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -123.0
+offset_left = -532.0
 offset_top = -125.0
-offset_right = 127.0
+offset_right = 532.0
 offset_bottom = 125.0
 grow_horizontal = 2
 grow_vertical = 2
-texture_normal = ExtResource("2_8wjah")
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=325934705]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=873594151]
+layout_mode = 2
+text = "GAME OVER"
+label_settings = ExtResource("8_f58e3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=121748031]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+
+[node name="VSpacer3" type="Control" parent="HBoxContainer/VBoxContainer/VBoxContainer" unique_id=1760565302]
+custom_minimum_size = Vector2(25, 50)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=2113270628]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlayLabel" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1909616784]
+visible = false
+layout_mode = 2
+text = "PLAY"
+label_settings = SubResource("LabelSettings_ojqkd")
+
+[node name="RestartButton" type="TextureButton" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2043458708]
+custom_minimum_size = Vector2(250, 125)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(192.84, 95.935)
+offset_transform_scale = Vector2(2.5, 2.5)
+texture_normal = ExtResource("10_ln87b")
 script = ExtResource("3_8wjah")
 _mainScene = ExtResource("4_b7vdc")
+
+[node name="StartGameButton" type="TextureButton" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1031520193]
+visible = false
+custom_minimum_size = Vector2(250, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(192.84, 95.935)
+offset_transform_scale = Vector2(2.5, 2.5)
+texture_normal = ExtResource("10_cqdlt")
+script = ExtResource("11_w5twh")
