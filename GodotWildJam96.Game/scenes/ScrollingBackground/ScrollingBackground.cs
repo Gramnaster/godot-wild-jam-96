@@ -23,7 +23,7 @@ public partial class ScrollingBackground : Node2D
         Parallax2D parallax2D = new()
         {
             RepeatSize = _baseSize,
-            RepeatTimes = 3,
+            RepeatTimes = 6,
             ScrollScale = new(currentScrollScale, currentScrollScale),
         };
 
