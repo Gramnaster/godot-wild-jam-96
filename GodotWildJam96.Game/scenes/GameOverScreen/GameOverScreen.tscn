@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c0hf2t4350x0v" path="res://assets/backgrounds/stars-02.png" id="4_ln87b"]
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="5_cqdlt"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="6_w5twh"]
-[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/ScrollingBackgroundImages.cs" id="7_ojqkd"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/images/ScrollingBackgroundImages.cs" id="7_ojqkd"]
 [ext_resource type="LabelSettings" uid="uid://nfondibk0uvi" path="res://resources/IBMPlexMono-Title-150.tres" id="8_f58e3"]
 [ext_resource type="FontFile" uid="uid://bjt4ysr0lq5ne" path="res://resources/Fonts/IBMPlexMono-Medium.ttf" id="9_ln87b"]
 [ext_resource type="Texture2D" uid="uid://dh8ltycwmtnjv" path="res://assets/menubuttons/play-button.png" id="10_cqdlt"]

@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c0hf2t4350x0v" path="res://assets/backgrounds/stars-02.png" id="4_8iqx6"]
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="5_o3m2h"]
 [ext_resource type="Texture2D" uid="uid://qaqaftkhfd1i" path="res://assets/backgrounds/stars-04.png" id="6_cvju8"]
-[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/ScrollingBackgroundImages.cs" id="7_8uqck"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/images/ScrollingBackgroundImages.cs" id="7_8uqck"]
 [ext_resource type="FontFile" uid="uid://dnlp6pg0x2x" path="res://resources/Fonts/IBMPlexMono-SemiBold.ttf" id="8_ltj17"]
 [ext_resource type="Texture2D" uid="uid://dgygvog70lki7" path="res://assets/menubuttons/home-button.png" id="9_8iqx6"]
 [ext_resource type="Script" uid="uid://c0jw88tpg7epq" path="res://scenes/CreditScreen/HomeButton.cs" id="10_o3m2h"]

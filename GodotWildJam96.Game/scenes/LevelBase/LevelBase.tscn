@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b8kn3ilxf54dm" path="res://assets/backgrounds/empty-02.png" id="2_4j52w"]
 [ext_resource type="Texture2D" uid="uid://b8su8ntml16qu" path="res://assets/backgrounds/stars-01.png" id="2_6hn50"]
 [ext_resource type="PackedScene" uid="uid://23h8lvgv6cx2" path="res://scenes/Player/Player.tscn" id="2_e7jje"]
-[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/ScrollingBackgroundImages.cs" id="3_efum6"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/images/ScrollingBackgroundImages.cs" id="3_efum6"]
 [ext_resource type="PackedScene" uid="uid://b1hho6jsoyoui" path="res://scenes/ObjectMaker/ObjectMaker.tscn" id="3_ny4ya"]
 [ext_resource type="PackedScene" uid="uid://1y66bjuenyw8" path="res://scenes/Spawner/Spawner.tscn" id="3_u8cij"]
 [ext_resource type="Texture2D" uid="uid://cn7wwfyphttlm" path="res://assets/backgrounds/stars-03.png" id="4_ji8qy"]
