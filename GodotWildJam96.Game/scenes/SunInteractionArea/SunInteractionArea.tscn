@@ -6,9 +6,10 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
 radius = 126.77539
 
-[node name="SunInteractionArea" type="Area2D" unique_id=368012975]
+[node name="SunInteractionArea" type="Area2D" unique_id=368012975 node_paths=PackedStringArray("LightRadiusSprite")]
 collision_mask = 5
 script = ExtResource("1_7bfc8")
+LightRadiusSprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=51866083]
 modulate = Color(1, 1, 1, 0.20392157)

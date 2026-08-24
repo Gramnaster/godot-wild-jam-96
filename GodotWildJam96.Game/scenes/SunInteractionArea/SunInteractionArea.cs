@@ -5,15 +5,13 @@ namespace GodotWildJam96;
 
 public partial class SunInteractionArea : Area2D
 {
-    public Sprite2D LightRadiusSprite { get; set; }
+    [Export] public Sprite2D LightRadiusSprite { get; set; }
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
     {
         BodyEntered += OnBodyEntered;
         BodyExited += OnBodyExited;
-
-        LightRadiusSprite = GetChild<Sprite2D>(0);
     }
 
     public override void _ExitTree()

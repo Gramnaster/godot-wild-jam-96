@@ -5,7 +5,7 @@ namespace GodotWildJam96;
 public partial class Sun : Area2D
 {
     //Sun Node Parts
-    private SunInteractionArea _mySunInteractionArea;
+    [Export] private SunInteractionArea _mySunInteractionArea;
     [Export] public EnergyBar EnergyValuebar { get; set; }
     [Export] public AudioStreamPlayer2D SiphonSound { get; set; }
 
@@ -45,7 +45,6 @@ public partial class Sun : Area2D
         //Help from Claude to see if EventBus is being subscribed to by this Sun instance
         //GD.Print($"[{GetPath()}] Subscribed to EventBus {EventBus.Instance.GetInstanceId()}");
 
-        _mySunInteractionArea = GetChild<SunInteractionArea>(0);
         //Random range for sun level, this will be used to determine the max energy of the sun
         _sunLevel = GD.RandRange(1, 6);
         MaxEnergy = _sunLevel + 3;

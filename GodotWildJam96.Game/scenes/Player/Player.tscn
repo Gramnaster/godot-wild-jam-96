@@ -452,7 +452,6 @@ animations = [{
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_h00vy")
-_energyLevels = 4
 _closestSunIndicator = NodePath("ClosestSunIndicator")
 _playerSprite = NodePath("ShipSprite")
 _firingSprite = NodePath("FiringSprite")

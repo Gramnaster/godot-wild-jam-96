@@ -14,7 +14,7 @@ public partial class EnemyBase : CharacterBody2D
     [Export] protected float Speed = 30f;
     [Export] protected int SunPoints = 5;
     [Export] protected int Lives = 3;
-    [Export] protected int Stolenpower = 0;
+    [Export] protected int StolenPower = 0;
     [Export] protected float TargetRotation;
     [Export] protected float TurnSpeed = Mathf.Tau; // Radians/sec
 

@@ -9,10 +9,11 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_pm0ju"]
 radius = 31.257
 
-[node name="Sun" type="Area2D" unique_id=1970878653 node_paths=PackedStringArray("EnergyValuebar", "SiphonSound")]
+[node name="Sun" type="Area2D" unique_id=1970878653 node_paths=PackedStringArray("_mySunInteractionArea", "EnergyValuebar", "SiphonSound")]
 scale = Vector2(1.5, 1.5)
 collision_mask = 5
 script = ExtResource("1_5cq3v")
+_mySunInteractionArea = NodePath("SunInteractionArea")
 EnergyValuebar = NodePath("EnergyBar")
 SiphonSound = NodePath("SiphonSound")
 
