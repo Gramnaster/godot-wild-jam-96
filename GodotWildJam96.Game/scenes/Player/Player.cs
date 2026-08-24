@@ -47,8 +47,8 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public bool _inLightRadius = true;
-    public float _safetyTimer = 0.0f;
+    public bool InLightRadius { get; set; } = true;
+    public float SafetyTimer { get; set; } = 0.0f;
 
     private Vector2 _closestSunVector;
     [Export] private Sprite2D _closestSunIndicator;
@@ -79,8 +79,8 @@ public partial class Player : CharacterBody2D
     public bool StartsThrusting { get; private set; }
     public bool IsPowerThrusting { get; private set; }
 
-    public SunInteractionArea _currentSunInteractionArea;
-    public bool _siphonUnderway = false;
+    public SunInteractionArea CurrentSunInteractionArea { get; set; }
+    public bool SiphonUnderway { get; set; } = false;
     //If _siphonType = 0, siphoning out of sun, if _siphonType = 1, siphoning in
     private int _siphonType = 0;
     private float _interruptDamage;
@@ -129,32 +129,32 @@ public partial class Player : CharacterBody2D
             ShootFront(ChargeRatio(_shoot1PressedAtMsec));
         }
 
-        if (@event.IsActionPressed("siphon_out") && _currentSunInteractionArea != null)
+        if (@event.IsActionPressed("siphon_out") && CurrentSunInteractionArea != null)
         {
-            if (!_siphonUnderway)
+            if (!SiphonUnderway)
             {
                 _siphonType = 0;
                 // GD.Print("Start siphoning energy out of Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-                EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
-                EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
-                _siphonUnderway = true;
+                EventBus.Instance.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
+                SiphonUnderway = true;
             }
             else
             {
                 // GD.Print("Already Siphoning!");
             }
         }
-        else if (@event.IsActionPressed("siphon_in") && _currentSunInteractionArea != null)
+        else if (@event.IsActionPressed("siphon_in") && CurrentSunInteractionArea != null)
         {
-            if (!_siphonUnderway)
+            if (!SiphonUnderway)
             {
                 _siphonType = 1;
                 // GD.Print("Start siphoning energy into Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-                EventBus.Instance.EmitOnSiphonStart(_currentSunInteractionArea, _siphonType);
-                EventBus.EmitOnSpawnDevourers(_currentSunInteractionArea);
-                _siphonUnderway = true;
+                EventBus.Instance.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
+                SiphonUnderway = true;
             }
             else
             {
@@ -269,8 +269,8 @@ public partial class Player : CharacterBody2D
     public void OnPlayerEntered(Player player, SunInteractionArea interactionArea)
     {
         // GD.Print(player.Name + " entered " + interactionArea.Name);
-        _currentSunInteractionArea = interactionArea;
-        player._inLightRadius = true;
+        CurrentSunInteractionArea = interactionArea;
+        player.InLightRadius = true;
     }
     private void GetInput(float dt)
     {
@@ -327,8 +327,6 @@ public partial class Player : CharacterBody2D
                 Velocity += FacingDirection * ThrustAcceleration * dt * 1.5f;
                 Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
             }
-
-            return;
         }
     }
 
@@ -417,7 +415,7 @@ public partial class Player : CharacterBody2D
     private void PlayerResetSiphon(bool reset)
     {
         // GD.Print("Siphon Reset!");
-        _siphonUnderway = reset;
+        SiphonUnderway = reset;
     }
 
     private void TakeDamage(int dmg)
@@ -432,8 +430,8 @@ public partial class Player : CharacterBody2D
         //If the shield takes too much damage too fast, interrupt the siphoning
         if (dmg > _interruptDamage)
         {
-            EventBus.Instance.EmitOnPlayerSiphonEnd(_currentSunInteractionArea);
-            _siphonUnderway = false;
+            EventBus.Instance.EmitOnPlayerSiphonEnd(CurrentSunInteractionArea);
+            SiphonUnderway = false;
         }
     }
 
@@ -471,11 +469,11 @@ public partial class Player : CharacterBody2D
 
     private void CheckIfSafe(float dt)
     {
-        _safetyTimer += dt;
-        if (!_inLightRadius && _safetyTimer > UNSAFE_DAMAGE_INTERVAL)
+        SafetyTimer += dt;
+        if (!InLightRadius && SafetyTimer > UNSAFE_DAMAGE_INTERVAL)
         {
             TakeDamage(1);
-            _safetyTimer = 0.0f;
+            SafetyTimer = 0.0f;
         }
     }
 }

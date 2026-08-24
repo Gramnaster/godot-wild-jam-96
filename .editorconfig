@@ -97,3 +97,12 @@ dotnet_diagnostic.CA1859.severity = suggestion
 
 # Temporary suppression
 dotnet_diagnostic.CS0579.severity = none
+
+# S125: this project deliberately keeps disabled debug scaffolding (DebugLabel
+# readout, GD.Print traces) commented out rather than deleted, so it can be
+# re-enabled later. Don't flag or auto-remove intentionally-kept comments.
+dotnet_diagnostic.S125.severity = none
+
+# S1075: Godot's res:// scheme is a virtual resource path, not an OS-level
+# absolute path or URI — this rule has no signal in a Godot project.
+dotnet_diagnostic.S1075.severity = none

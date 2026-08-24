@@ -11,13 +11,13 @@ namespace GodotWildJam96;
 public partial class Spawner : Node2D
 {
 
-    [Export] public PackedScene _sunScene;
-    [Export] public PackedScene _mainSunScene;
-    [Export] public PackedScene _devourerScene;
-    [Export] public PackedScene _squidScene;
-    [Export] public Shape2D SpawnCheckShape;
+    [Export] public PackedScene SunScene { get; set; }
+    [Export] public PackedScene MainSunScene { get; set; }
+    [Export] public PackedScene DevourerScene { get; set; }
+    [Export] public PackedScene SquidScene { get; set; }
+    [Export] public Shape2D SpawnCheckShape { get; set; }
     //It's main for now, change to level base later
-    [Export] public Node _levelBase;
+    [Export] public Node LevelBase { get; set; }
     [Export] private Timer _spawnSquidTimer;
     [Export] private Player _player;
     private Vector2 _sunPos;
@@ -26,7 +26,7 @@ public partial class Spawner : Node2D
     public override void _Ready()
     {
         EventBus.Instance.OnSpawnDevourers += SpawnDevourers;
-        MainSun newMainSun = _mainSunScene.Instantiate<MainSun>();
+        MainSun newMainSun = MainSunScene.Instantiate<MainSun>();
         CallDeferred("add_child", newMainSun);
         CallDeferred("Trial");
         _spawnSquidTimer.Timeout += SpawnSquid;
@@ -61,10 +61,10 @@ public partial class Spawner : Node2D
                 continue;
             }
 
-            Sun newSun = _sunScene.Instantiate<Sun>();
+            Sun newSun = SunScene.Instantiate<Sun>();
             //Adding to the Sun group so enemies can see it
             //Instantiating the new sun as a child of the Main scene so it will be visible in the game
-            _levelBase.AddChild(newSun);
+            LevelBase.AddChild(newSun);
             newSun.GlobalPosition = _sunPos;
 
             await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
@@ -90,7 +90,7 @@ public partial class Spawner : Node2D
 
     private void SpawnDevourers(SunInteractionArea interactionArea)
     {
-        Devourer _newDevourer = _devourerScene.Instantiate<Devourer>();
+        Devourer _newDevourer = DevourerScene.Instantiate<Devourer>();
         _newDevourer.GlobalPosition = interactionArea.GlobalPosition + new Vector2 (300.0f, 300.0f);
         AddChild(_newDevourer);
 
@@ -98,7 +98,7 @@ public partial class Spawner : Node2D
 
     private void SpawnSquid()
     {
-        Squid _newSquid = _squidScene.Instantiate<Squid>();
+        Squid _newSquid = SquidScene.Instantiate<Squid>();
         _newSquid.GlobalPosition = _player.GlobalPosition + OffscreenSpawnOffset();
         AddChild(_newSquid);
         GD.Print("Spawning Squid!");

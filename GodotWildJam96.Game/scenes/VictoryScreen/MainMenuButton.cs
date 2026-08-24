@@ -1,6 +1,8 @@
 using Godot;
 using System;
 
+namespace GodotWildJam96;
+
 public partial class MainMenuButton : TextureButton
 {
     [Export] private PackedScene _mainScene;
@@ -10,10 +12,6 @@ public partial class MainMenuButton : TextureButton
         Pressed += BackToMainMenu;
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
     private void BackToMainMenu()
     {
         GetTree().ChangeSceneToFile($"res://scenes/main/main.tscn");

@@ -36,7 +36,7 @@ public partial class Devourer : EnemyBase
     {
         if (!_siphoning)
         {
-            MoveToClosestSun((float)delta);
+            MoveToClosestSun();
             MoveAndSlide();
             TryStartSiphoning();
         }
@@ -92,7 +92,7 @@ public partial class Devourer : EnemyBase
         }
     }
 
-    private void MoveToClosestSun(float dt)
+    private void MoveToClosestSun()
     {
         if (_currentClosestSun is null) return;
         LookAt(_currentClosestSun.GlobalPosition);

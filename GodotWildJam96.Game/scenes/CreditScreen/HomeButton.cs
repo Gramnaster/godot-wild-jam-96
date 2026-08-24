@@ -1,6 +1,8 @@
 using System;
 using Godot;
 
+namespace GodotWildJam96;
+
 public partial class HomeButton : TextureButton
 {
     [Export] private PackedScene _mainScene;
@@ -9,11 +11,6 @@ public partial class HomeButton : TextureButton
     public override void _Ready()
     {
         Pressed += GoHome;
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
     }
 
     private void GoHome()

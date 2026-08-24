@@ -1,6 +1,7 @@
 using System;
 using Godot;
-using GodotWildJam96;
+
+namespace GodotWildJam96;
 
 public partial class StartGameButton : TextureButton
 {
@@ -9,11 +10,6 @@ public partial class StartGameButton : TextureButton
     public override void _Ready()
     {
         Pressed += StartGame;
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
     }
 
     private void StartGame()

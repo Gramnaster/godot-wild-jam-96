@@ -1,6 +1,8 @@
 using System;
 using Godot;
 
+namespace GodotWildJam96;
+
 /// <summary>
 /// Manages lifetimes of objects that need to disappear after awhile
 /// </summary>

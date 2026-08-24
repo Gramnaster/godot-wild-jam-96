@@ -10,15 +10,15 @@ public partial class Sun : Area2D
 {
     //Sun Node Parts
     private SunInteractionArea _mySunInteractionArea;
-    [Export] public EnergyBar _energyValuebar;
-    [Export] public AudioStreamPlayer2D _siphonSound;
+    [Export] public EnergyBar EnergyValuebar { get; set; }
+    [Export] public AudioStreamPlayer2D SiphonSound { get; set; }
 
     private int _siphonCount;
 
     //Standard Sun Values
     private int _sunLevel = 0;
-    public int _maxEnergy;
-    public int _currentEnergy;
+    public int MaxEnergy { get; set; }
+    public int CurrentEnergy { get; set; }
 
     // Interaction area never scales below this much energy's worth of size,
     // so a depleted sun stays reachable instead of shrinking to an uninteractable point.
@@ -34,7 +34,7 @@ public partial class Sun : Area2D
     private float _siphonTimePassed = 0.0f;
     //0 for player siphon, 1 for enemy siphon
     private int _siphonOwner = 0;
-    public SunInteractionArea _currentSunInteractionArea;
+    public SunInteractionArea CurrentSunInteractionArea { get; set; }
 
 
     // Called when the node enters the scene tree for the first time.
@@ -52,9 +52,9 @@ public partial class Sun : Area2D
         _mySunInteractionArea = GetChild<SunInteractionArea>(0);
         //Random range for sun level, this will be used to determine the max energy of the sun
         _sunLevel = GD.RandRange(1, 6);
-        _maxEnergy = _sunLevel + 3;
-        _currentEnergy = GD.RandRange(3, _maxEnergy);
-        _energyValuebar.InitializeValues(_maxEnergy, _currentEnergy);
+        MaxEnergy = _sunLevel + 3;
+        CurrentEnergy = GD.RandRange(3, MaxEnergy);
+        EnergyValuebar.InitializeValues(MaxEnergy, CurrentEnergy);
         UpdateInteractionAreaScale();
         AddToGroup(GameConstants.GroupSuns);
     }
@@ -82,8 +82,8 @@ public partial class Sun : Area2D
             // Enemy drains can still empty the sun; a player drain stops at MinPlayerDrainEnergy
             // so the player can't solo-trigger MainSun's instant game-over by over-absorbing.
             bool drainedToFloor = _siphonOwner == 0
-                ? _currentEnergy <= MinPlayerDrainEnergy
-                : _currentEnergy < 1;
+                ? CurrentEnergy <= MinPlayerDrainEnergy
+                : CurrentEnergy < 1;
             if (drainedToFloor)
             {
                 StopPlayerSiphon(null);
@@ -91,41 +91,41 @@ public partial class Sun : Area2D
             }
             else if (_siphonTimePassed > 1.8f)
             {
-                _siphonSound.Play();
-                _currentEnergy -= _sunSiphonRate;
+                SiphonSound.Play();
+                CurrentEnergy -= _sunSiphonRate;
                 UpdateInteractionAreaScale();
                 if (_siphonOwner == 0)
                 {
                     EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
                 }
-                _energyValuebar.UpdateValue(_currentEnergy);
+                EnergyValuebar.UpdateValue(CurrentEnergy);
                 _siphonTimePassed = 0.0f;
                 _siphonCount++;
             }
-            //GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
+            //GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
         }
         else if (_siphonInOngoing)
         {
             _siphonTimePassed += dt;
-            if (_currentEnergy >= _maxEnergy)
+            if (CurrentEnergy >= MaxEnergy)
             {
                 StopPlayerSiphon(null);
                 return;
             }
             else if (_siphonTimePassed > 1.8f)
             {
-                _siphonSound.Play();
-                _currentEnergy += _sunSiphonRate;
+                SiphonSound.Play();
+                CurrentEnergy += _sunSiphonRate;
                 UpdateInteractionAreaScale();
-                _energyValuebar.UpdateValue(_currentEnergy);
+                EnergyValuebar.UpdateValue(CurrentEnergy);
                 _siphonTimePassed = 0.0f;
                 _siphonCount++;
             }
-            GD.Print("Current Energy:" + _currentEnergy + " Max Energy:" + _maxEnergy);
+            GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
         }
         if (_siphonCount > 0)
         {
-            _siphonSound.PitchScale = 1.0f + (0.15f * _siphonCount);
+            SiphonSound.PitchScale = 1.0f + (0.15f * _siphonCount);
         }
     }
 
@@ -140,7 +140,7 @@ public partial class Sun : Area2D
     // together, since both are children of it) to match the sun's current energy ratio.
     protected void UpdateInteractionAreaScale()
     {
-        float energyRatio = Mathf.Max(_currentEnergy, MinInteractionEnergy) / _maxEnergy;
+        float energyRatio = Mathf.Max(CurrentEnergy, MinInteractionEnergy) / MaxEnergy;
         float scale = energyRatio * InteractionAreaScaleMultiplier;
         _mySunInteractionArea.Scale = new Vector2(scale, scale);
     }
@@ -151,8 +151,8 @@ public partial class Sun : Area2D
         {
             GD.Print("Siphon stopped, you lost some energy!");
         }
-        player._inLightRadius = false;
-        _currentSunInteractionArea = null;
+        player.InLightRadius = false;
+        CurrentSunInteractionArea = null;
         StopPlayerSiphon(interactionArea);
     }
     public void StartSiphon(SunInteractionArea sunInteractionArea, int siphonType)
@@ -179,12 +179,12 @@ public partial class Sun : Area2D
                 // No siphon actually starts/continues here (e.g. an enemy siphon
                 // collided with the player's in-progress one),
                 // so tell the player it's not underway
-                // otherwise _siphonUnderway sticks true forever
+                // otherwise SiphonUnderway sticks true forever
                 EventBus.Instance.EmitOnPlayerSiphonReset(false);
             }
         }
 
-        _siphonSound.Play();
+        SiphonSound.Play();
     }
 
     private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)

@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Game", "Godo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Sim", "GodotWildJam96.Sim\GodotWildJam96.Sim.csproj", "{876C5A9B-DE0E-4CF6-BFE7-CA5E1F7E2759}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotWildJam96.Tests", "GodotWildJam96.Tests\GodotWildJam96.Tests.csproj", "{C4E704D7-0728-4496-87DC-AFED578C1B2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,30 @@ Global
 		{876C5A9B-DE0E-4CF6-BFE7-CA5E1F7E2759}.Release|x64.Build.0 = Release|Any CPU
 		{876C5A9B-DE0E-4CF6-BFE7-CA5E1F7E2759}.Release|x86.ActiveCfg = Release|Any CPU
 		{876C5A9B-DE0E-4CF6-BFE7-CA5E1F7E2759}.Release|x86.Build.0 = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|x64.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|x64.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|x64.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|x86.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportDebug|x86.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|x64.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|x64.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|x86.ActiveCfg = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.ExportRelease|x86.Build.0 = Debug|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|x64.ActiveCfg = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|x64.Build.0 = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4E704D7-0728-4496-87DC-AFED578C1B2A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

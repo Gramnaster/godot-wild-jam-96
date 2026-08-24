@@ -1,6 +1,7 @@
 using System;
 using Godot;
-using GodotWildJam96;
+
+namespace GodotWildJam96;
 
 public partial class MainSun : Sun
 {
@@ -14,25 +15,20 @@ public partial class MainSun : Sun
     public override void _Ready()
     {
         base._Ready();
-        _maxEnergy = 15;
-        _currentEnergy = 3;
-        _energyValuebar.InitializeValues(_maxEnergy, _currentEnergy);
+        MaxEnergy = 15;
+        CurrentEnergy = 3;
+        EnergyValuebar.InitializeValues(MaxEnergy, CurrentEnergy);
         UpdateInteractionAreaScale();
-    }
-
-    public override void _ExitTree()
-    {
-        base._ExitTree();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        if (_currentEnergy == 0)
+        if (CurrentEnergy == 0)
         {
             GameOver();
         }
-        else if (_currentEnergy == _maxEnergy)
+        else if (CurrentEnergy == MaxEnergy)
         {
             WinTheGame();
         }

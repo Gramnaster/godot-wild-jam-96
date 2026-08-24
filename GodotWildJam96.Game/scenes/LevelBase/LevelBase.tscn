@@ -38,11 +38,11 @@ _energyLevels = 0
 
 [node name="ObjectMaker" parent="." unique_id=144459317 instance=ExtResource("3_ny4ya")]
 
-[node name="Spawner" parent="." unique_id=2107266173 node_paths=PackedStringArray("_levelBase", "_player") instance=ExtResource("3_u8cij")]
-_sunScene = ExtResource("4_u8cij")
-_mainSunScene = ExtResource("11_ji8qy")
-_devourerScene = ExtResource("13_ymbih")
-_squidScene = ExtResource("8_ois7l")
+[node name="Spawner" parent="." unique_id=2107266173 node_paths=PackedStringArray("LevelBase", "_player") instance=ExtResource("3_u8cij")]
+SunScene = ExtResource("4_u8cij")
+MainSunScene = ExtResource("11_ji8qy")
+DevourerScene = ExtResource("13_ymbih")
+SquidScene = ExtResource("8_ois7l")
 SpawnCheckShape = SubResource("CircleShape2D_5nymx")
-_levelBase = NodePath("..")
+LevelBase = NodePath("..")
 _player = NodePath("../Player")
