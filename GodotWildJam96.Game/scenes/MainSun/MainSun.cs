@@ -19,9 +19,8 @@ public sealed partial class MainSun : Sun
     public override void _Ready()
     {
         base._Ready();
-        MaxEnergy = 15;
-        CurrentEnergy = 3;
-        EnergyValuebar.InitializeValues(MaxEnergy, CurrentEnergy);
+        Energy.OverrideEnergy(maxEnergy: 15, currentEnergy: 3);
+        EnergyValuebar.InitializeValues(Energy.MaxEnergy, Energy.CurrentEnergy);
         UpdateInteractionAreaScale();
     }
 
@@ -30,12 +29,12 @@ public sealed partial class MainSun : Sun
     {
         if (_gameEndTriggered) return;
 
-        if (CurrentEnergy == 0)
+        if (Energy.IsDepleted)
         {
             _gameEndTriggered = true;
             GameOver();
         }
-        else if (CurrentEnergy == MaxEnergy)
+        else if (Energy.IsFull)
         {
             _gameEndTriggered = true;
             WinTheGame();
