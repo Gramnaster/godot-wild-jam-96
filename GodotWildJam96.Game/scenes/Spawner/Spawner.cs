@@ -16,7 +16,7 @@ public partial class Spawner : Node2D
     [Export] public Node LevelBase { get; set; }
     [Export] private Timer _spawnSquidTimer;
     [Export] private Player _player;
-    private Vector2 _sunPos;
+    private readonly Random _rng = new();
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -43,15 +43,15 @@ public partial class Spawner : Node2D
     {
         for (int i = 0; i < spawnCount; i++)
         {
-            int spawnAttempts = 0;
-            do
+            Vector2 sunPos = Vector2.Zero;
+            bool positionFound = false;
+            for (int attempt = 0; attempt < 25 && !positionFound; attempt++)
             {
-                SunSpawnCalculator();
-                spawnAttempts++;
-                //GD.Print(_sunPos + " " + spawnAttempts + " " + i);
-            } while (!EnsurePositionValid(_sunPos) && spawnAttempts < 25);
+                sunPos = SpawnPlacement.RandomSunPosition(_rng);
+                positionFound = EnsurePositionValid(sunPos);
+            }
 
-            if (spawnAttempts == 25)
+            if (!positionFound)
             {
                 //GD.Print("Abort spawning this sun! No suitable place found!");
                 continue;
@@ -61,7 +61,7 @@ public partial class Spawner : Node2D
             //Instantiating the new sun as a child of the Main scene so it will be visible in the game.
             //The sun group itself is assigned in Sun._Ready, not here.
             LevelBase.AddChild(newSun);
-            newSun.GlobalPosition = _sunPos;
+            newSun.GlobalPosition = sunPos;
 
             await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
         }
@@ -110,26 +110,6 @@ public partial class Spawner : Node2D
             ? new Vector2(480f, 360f)
             : GetViewport().GetVisibleRect().Size / 2f / camera.Zoom;
 
-        float buffer = (float)GD.RandRange(50, 200);
-
-        if (GD.Randf() < 0.5f)
-        {
-            float x = (float)GD.RandRange(-halfExtent.X, halfExtent.X);
-            float y = halfExtent.Y + buffer;
-            if (GD.Randf() < 0.5f) y = -y;
-            return new Vector2(x, y);
-        }
-        else
-        {
-            float y = (float)GD.RandRange(-halfExtent.Y, halfExtent.Y);
-            float x = halfExtent.X + buffer;
-            if (GD.Randf() < 0.5f) x = -x;
-            return new Vector2(x, y);
-        }
-    }
-
-    private void SunSpawnCalculator()
-    {
-        _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-5000, 5000);
+        return SpawnPlacement.OffscreenOffset(_rng, halfExtent);
     }
 }
