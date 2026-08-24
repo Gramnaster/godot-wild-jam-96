@@ -4,7 +4,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class Spawner : Node2D
+public sealed partial class Spawner : Node2D
 {
 
     [Export] public PackedScene SunScene { get; set; }

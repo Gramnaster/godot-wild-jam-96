@@ -3,7 +3,7 @@ using System;
 
 namespace GodotWildJam96;
 
-public partial class SpatialAnchor : Area2D
+public sealed partial class SpatialAnchor : Area2D
 {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()

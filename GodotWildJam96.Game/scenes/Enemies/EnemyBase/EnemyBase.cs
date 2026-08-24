@@ -11,12 +11,12 @@ public partial class EnemyBase : CharacterBody2D
     [Export] private Timer _timer;
 
     // Per-enemy child tuning. Protected so sub-classes can read them.
-    [Export] protected float Speed = 30f;
-    [Export] protected int SunPoints = 5;
-    [Export] protected int Lives = 3;
-    [Export] protected int StolenPower = 0;
-    [Export] protected float TargetRotation;
-    [Export] protected float TurnSpeed = Mathf.Tau; // Radians/sec
+    [Export] protected float Speed { get; set; } = 30f;
+    [Export] protected int SunPoints { get; set; } = 5;
+    [Export] protected int Lives { get; set; } = 3;
+    [Export] protected int StolenPower { get; set; }
+    [Export] protected float TargetRotation { get; set; }
+    [Export] protected float TurnSpeed { get; set; } = Mathf.Tau; // Radians/sec
 
     // Encapsulation: Base class (enemyBase) owns this node,
     // Sub-classes can use it but NOT replace it

@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class HomeButton : TextureButton
+public sealed partial class HomeButton : TextureButton
 {
     [Export] private PackedScene _mainScene;
 

@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class CreditsButton : TextureButton
+public sealed partial class CreditsButton : TextureButton
 {
     [Export] private PackedScene _creditScreen;
 

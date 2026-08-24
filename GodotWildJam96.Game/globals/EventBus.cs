@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class EventBus : Node
+public sealed partial class EventBus : Node
 {
 
     public static EventBus Instance { get; private set; }

@@ -2,7 +2,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class Squid : EnemyBase
+public sealed partial class Squid : EnemyBase
 {
     private const float BiteRange = 150f;
 

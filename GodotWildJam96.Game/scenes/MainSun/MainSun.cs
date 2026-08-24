@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class MainSun : Sun
+public sealed partial class MainSun : Sun
 {
 
     [Export] private PackedScene _gameOverScene;

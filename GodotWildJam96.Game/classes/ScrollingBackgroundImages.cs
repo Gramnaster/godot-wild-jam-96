@@ -5,7 +5,7 @@ using Godot.Collections;
 namespace GodotWildJam96;
 
 [GlobalClass]
-public partial class ScrollingBackgroundImages : Resource
+public sealed partial class ScrollingBackgroundImages : Resource
 {
     [Export] public Array<Texture2D> Images { get; set; } = new();
 

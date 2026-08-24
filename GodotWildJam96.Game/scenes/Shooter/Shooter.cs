@@ -2,7 +2,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class Shooter : Node2D
+public sealed partial class Shooter : Node2D
 {
     [Export] private PackedScene _bulletScene;
     [Export] private float _speed = 500.0f;

@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class StartGameButton : TextureButton
+public sealed partial class StartGameButton : TextureButton
 {
     [Export] private PackedScene _levelBase;
     // Called when the node enters the scene tree for the first time.

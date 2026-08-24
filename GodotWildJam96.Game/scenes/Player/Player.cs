@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class Player : CharacterBody2D
+public sealed partial class Player : CharacterBody2D
 {
 
     //Tutorial Flags
@@ -63,9 +63,9 @@ public partial class Player : CharacterBody2D
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
 
     // Attack properties
-    private float _primarySpeed = 450f;                     // How fast the bullet moves
-    private float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
-    private float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
+    private readonly float _primarySpeed = 450f;                     // How fast the bullet moves
+    private readonly float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
+    private readonly float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
 
     private EnergyPool _energyPool;
     private ChargeMeter _chargeMeter;

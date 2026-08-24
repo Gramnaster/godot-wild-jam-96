@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class ScrollingBackground : Node2D
+public sealed partial class ScrollingBackground : Node2D
 {
     [Export] private ScrollingBackgroundImages _scrollingImages;
     [Export] private Vector2 _baseSize = new(1024f, 768f);

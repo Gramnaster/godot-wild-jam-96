@@ -4,7 +4,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class Devourer : EnemyBase
+public sealed partial class Devourer : EnemyBase
 {
     [Export] private AnimatedSprite2D _mouthSprite;
     private const float MOVE_SPEED = 50.0f;

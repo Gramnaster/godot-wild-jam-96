@@ -26,7 +26,7 @@ public partial class Sun : Area2D
     //Checking variables
     private bool _siphonOutOngoing = false;
     private bool _siphonInOngoing = false;
-    private int _sunSiphonRate = 1;
+    private readonly int _sunSiphonRate = 1;
     private float _siphonTimePassed = 0.0f;
     private const float SiphonTickIntervalSeconds = 1.8f;
     private SiphonOwner _siphonOwner = SiphonOwner.Player;

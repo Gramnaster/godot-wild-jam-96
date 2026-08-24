@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class BulletBase : Area2D
+public sealed partial class BulletBase : Area2D
 {
     [Export] private AnimatedSprite2D _bulletSprite;
 

@@ -3,7 +3,7 @@ using System;
 
 namespace GodotWildJam96;
 
-public partial class EnergyBar : ProgressBar
+public sealed partial class EnergyBar : ProgressBar
 {
     public void InitializeValues(float maxValue, float currentValue)
     {

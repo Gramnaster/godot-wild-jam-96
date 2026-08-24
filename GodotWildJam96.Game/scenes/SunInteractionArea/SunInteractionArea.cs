@@ -3,7 +3,7 @@ using System;
 
 namespace GodotWildJam96;
 
-public partial class SunInteractionArea : Area2D
+public sealed partial class SunInteractionArea : Area2D
 {
     [Export] public Sprite2D LightRadiusSprite { get; set; }
 

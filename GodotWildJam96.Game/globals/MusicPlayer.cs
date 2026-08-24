@@ -2,7 +2,7 @@ using Godot;
 
 namespace GodotWildJam96;
 
-public partial class MusicPlayer : AudioStreamPlayer
+public sealed partial class MusicPlayer : AudioStreamPlayer
 {
 
     public static MusicPlayer Instance { get; private set; }

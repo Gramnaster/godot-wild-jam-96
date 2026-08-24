@@ -3,7 +3,7 @@ using System;
 
 namespace GodotWildJam96;
 
-public partial class MainMenuButton : TextureButton
+public sealed partial class MainMenuButton : TextureButton
 {
     [Export] private PackedScene _mainScene;
 	// Called when the node enters the scene tree for the first time.
