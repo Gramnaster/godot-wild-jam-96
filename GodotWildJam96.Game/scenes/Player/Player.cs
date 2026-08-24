@@ -79,8 +79,7 @@ public partial class Player : CharacterBody2D
 
     public SunInteractionArea CurrentSunInteractionArea { get; set; }
     public bool SiphonUnderway { get; set; } = false;
-    //If _siphonType = 0, siphoning out of sun, if _siphonType = 1, siphoning in
-    private int _siphonType = 0;
+    private SiphonDirection _siphonType = SiphonDirection.Out;
     private float _interruptDamage;
 
     // Weapons will use this to query the angle
@@ -129,9 +128,8 @@ public partial class Player : CharacterBody2D
         {
             if (!SiphonUnderway)
             {
-                _siphonType = 0;
+                _siphonType = SiphonDirection.Out;
                 // GD.Print("Start siphoning energy out of Sun");
-                //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
                 EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
                 SiphonUnderway = true;
@@ -145,9 +143,8 @@ public partial class Player : CharacterBody2D
         {
             if (!SiphonUnderway)
             {
-                _siphonType = 1;
+                _siphonType = SiphonDirection.In;
                 // GD.Print("Start siphoning energy into Sun");
-                //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
                 EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
                 SiphonUnderway = true;

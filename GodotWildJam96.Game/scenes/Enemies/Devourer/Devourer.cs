@@ -70,7 +70,7 @@ public partial class Devourer : EnemyBase
 
     public void StartSiphoning(SunInteractionArea sunInteractionArea)
     {
-        EventBus.EmitOnEnemySiphonStart(sunInteractionArea, this, 0);
+        EventBus.EmitOnEnemySiphonStart(sunInteractionArea, this, SiphonDirection.Out);
     }
 
     public void DevourerEntered(Devourer devourer, SunInteractionArea interactionArea)

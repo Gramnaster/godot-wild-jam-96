@@ -10,7 +10,7 @@ public partial class Squid : EnemyBase
     [Export] private Timer _moveTimer;
     private double _thrustTimer = 1.8f;
     private Vector2 _direction;
-    private int _moveState = 0;
+    private SquidMoveState _moveState = SquidMoveState.Waiting;
 
     protected override AnimatedSprite2D[] FlashSprites => [AnimateSprite, _squidMouthSprite];
 
@@ -50,44 +50,39 @@ public partial class Squid : EnemyBase
     private void MoveTo(float dt)
     {
         ChooseDirection(dt);
-        //0 means Squid is waiting for the ability to move
-        if (_moveState == 0)
+        switch (_moveState)
         {
-            Velocity = Vector2.Zero;
-        }
-        //1 means squid can move
-        else if (_moveState == 1)
-        {
-            _thrustTimer -= dt;
-            float t = 1f - Mathf.Max((float)_thrustTimer / 0.15f, 0f);
-            float eased = 1f - Mathf.Pow(1f - t, 3f);
-            Velocity = _direction * Speed * eased;
-
-        }
-        //1 means squid can move
-        else if (_moveState == 2)
-        {
-            Velocity -= Velocity * 2.5f * dt;
+            case SquidMoveState.Waiting:
+                Velocity = Vector2.Zero;
+                break;
+            case SquidMoveState.Thrusting:
+                _thrustTimer -= dt;
+                float t = 1f - Mathf.Max((float)_thrustTimer / 0.15f, 0f);
+                float eased = 1f - Mathf.Pow(1f - t, 3f);
+                Velocity = _direction * Speed * eased;
+                break;
+            case SquidMoveState.Coasting:
+                Velocity -= Velocity * 2.5f * dt;
+                break;
         }
     }
 
     private void MoveCalled()
     {
-        //can probably do switch case here
-        if (_moveState == 0)
+        switch (_moveState)
         {
-            _moveState = 1;
-            _thrustTimer = 0.15f;
-            AnimateSprite.Play();
-        }
-        else if (_moveState == 1)
-        {
-            _moveState = 2;
-            AnimateSprite.Stop();
-        }
-        else if (_moveState == 2)
-        {
-            _moveState = 0;
+            case SquidMoveState.Waiting:
+                _moveState = SquidMoveState.Thrusting;
+                _thrustTimer = 0.15f;
+                AnimateSprite.Play();
+                break;
+            case SquidMoveState.Thrusting:
+                _moveState = SquidMoveState.Coasting;
+                AnimateSprite.Stop();
+                break;
+            case SquidMoveState.Coasting:
+                _moveState = SquidMoveState.Waiting;
+                break;
         }
     }
 }

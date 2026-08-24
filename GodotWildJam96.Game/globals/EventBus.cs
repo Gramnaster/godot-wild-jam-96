@@ -12,8 +12,8 @@ public partial class EventBus : Node
     public event Action<Player, SunInteractionArea> OnShipEntered;
     public event Action<Player, SunInteractionArea> OnShipExited;
     public event Action<Devourer, SunInteractionArea> OnDevourerEntered;
-    public event Action<SunInteractionArea, int> OnSiphonStart;
-    public event Action<SunInteractionArea, Devourer, int> OnEnemySiphonStart;
+    public event Action<SunInteractionArea, SiphonDirection> OnSiphonStart;
+    public event Action<SunInteractionArea, Devourer, SiphonDirection> OnEnemySiphonStart;
     public event Action<SunInteractionArea> OnEnemySiphonStop;
     public event Action<SunInteractionArea> OnPlayerSiphonEnd;
     public event Action<Boolean> OnPlayerSiphonReset;
@@ -49,16 +49,16 @@ public partial class EventBus : Node
         Instance.OnShipExited?.Invoke(ship, interactionArea);
     }
 
-    public static void EmitOnSiphonStart(SunInteractionArea interactionArea, int siphonType)
+    public static void EmitOnSiphonStart(SunInteractionArea interactionArea, SiphonDirection siphonDirection)
     {
         //Code to see who is subscribed to this event
         //GD.Print($"Siphon Start Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonStart?.GetInvocationList().Length ?? 0}");
-        Instance.OnSiphonStart?.Invoke(interactionArea, siphonType);
+        Instance.OnSiphonStart?.Invoke(interactionArea, siphonDirection);
     }
 
-    public static void EmitOnEnemySiphonStart(SunInteractionArea interactionArea, Devourer devourer, int siphonType)
+    public static void EmitOnEnemySiphonStart(SunInteractionArea interactionArea, Devourer devourer, SiphonDirection siphonDirection)
     {
-        Instance.OnEnemySiphonStart?.Invoke(interactionArea, devourer, siphonType);
+        Instance.OnEnemySiphonStart?.Invoke(interactionArea, devourer, siphonDirection);
     }
     public static void EmitOnEnemySiphonStop(SunInteractionArea interactionArea)
     {

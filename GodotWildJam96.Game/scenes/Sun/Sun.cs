@@ -28,8 +28,7 @@ public partial class Sun : Area2D
     private bool _siphonInOngoing = false;
     private int _sunSiphonRate = 1;
     private float _siphonTimePassed = 0.0f;
-    //0 for player siphon, 1 for enemy siphon
-    private int _siphonOwner = 0;
+    private SiphonOwner _siphonOwner = SiphonOwner.Player;
     public SunInteractionArea CurrentSunInteractionArea { get; set; }
 
 
@@ -77,7 +76,7 @@ public partial class Sun : Area2D
             _siphonTimePassed += dt;
             // Enemy drains can still empty the sun; a player drain stops at MinPlayerDrainEnergy
             // so the player can't solo-trigger MainSun's instant game-over by over-absorbing.
-            bool drainedToFloor = _siphonOwner == 0
+            bool drainedToFloor = _siphonOwner == SiphonOwner.Player
                 ? CurrentEnergy <= MinPlayerDrainEnergy
                 : CurrentEnergy < 1;
             if (drainedToFloor)
@@ -90,7 +89,7 @@ public partial class Sun : Area2D
                 SiphonSound.Play();
                 CurrentEnergy -= _sunSiphonRate;
                 UpdateInteractionAreaScale();
-                if (_siphonOwner == 0)
+                if (_siphonOwner == SiphonOwner.Player)
                 {
                     EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
                 }
@@ -151,19 +150,19 @@ public partial class Sun : Area2D
         CurrentSunInteractionArea = null;
         StopPlayerSiphon(interactionArea);
     }
-    public void StartSiphon(SunInteractionArea sunInteractionArea, int siphonType)
+    public void StartSiphon(SunInteractionArea sunInteractionArea, SiphonDirection siphonDirection)
     {
         if (sunInteractionArea != null && sunInteractionArea == _mySunInteractionArea)
         {
             // any direct call to StartSiphon is the player's path
-            _siphonOwner = 0;
+            _siphonOwner = SiphonOwner.Player;
 
-            if (siphonType == 0 && !_siphonOutOngoing)
+            if (siphonDirection == SiphonDirection.Out && !_siphonOutOngoing)
             {
                 _siphonInOngoing = false;
                 _siphonOutOngoing = true;
             }
-            else if (siphonType == 1 && !_siphonInOngoing)
+            else if (siphonDirection == SiphonDirection.In && !_siphonInOngoing)
             {
                 _siphonOutOngoing = false;
                 _siphonInOngoing = true;
@@ -183,17 +182,17 @@ public partial class Sun : Area2D
         SiphonSound.Play();
     }
 
-    private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, int siphonType)
+    private void EnemyStartSiphon(SunInteractionArea sunInteractionArea, Devourer devourer, SiphonDirection siphonDirection)
     {
         if (sunInteractionArea is null || sunInteractionArea != _mySunInteractionArea) return;
 
-        StartSiphon(sunInteractionArea, 0);
-        _siphonOwner = 1;
+        StartSiphon(sunInteractionArea, SiphonDirection.Out);
+        _siphonOwner = SiphonOwner.Enemy;
     }
 
     public void StopPlayerSiphon(SunInteractionArea sunInteractionArea)
     {
-        if ((_siphonOutOngoing || _siphonInOngoing) && _siphonOwner == 0)
+        if ((_siphonOutOngoing || _siphonInOngoing) && _siphonOwner == SiphonOwner.Player)
         {
             // GD.Print("Siphon Stopped");
             //Can also add code to stop or 'finish' siphoning for other factors
@@ -210,6 +209,6 @@ public partial class Sun : Area2D
         //Can also add code to stop or 'finish' siphoning for other factors
         _siphonOutOngoing = false;
         _siphonInOngoing = false;
-        _siphonOwner = 0;
+        _siphonOwner = SiphonOwner.Player;
     }
 }
