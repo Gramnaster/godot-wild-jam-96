@@ -60,7 +60,18 @@ If a codebase's own doctrine documents this style of architecture for a
 that hasn't stated the same networking/determinism requirements — name the
 mismatch and stay with the doctrine that matches the actual project.
 
-## Sim-View separation is earned, not default
+## Sim-View separation: adopted project-wide
+
+> [!IMPORTANT]
+> **This project has adopted sim-view separation.** The general guidance
+> below — that the split is earned, not default — is why it was *not* the
+> original architecture, and is still the right default advice for a new
+> project. Solar Defense migrated anyway, as a deliberate owner decision
+> recorded in
+> [ADR-009](../knowledge/decisions/009-sim-view-separation.md). Don't cite
+> the paragraphs below to argue new gameplay logic should go back into a
+> Node script here: in *this* codebase, gameplay rules go in
+> `GodotWildJam96.Sim` and Node scripts are bridges.
 
 A full sim-view-bridge architecture — a pure-C# simulation layer, a bridge
 node, a fixed-tick loop independent of Godot's own `_Process`/
@@ -77,6 +88,12 @@ one already-incomplete subsystem rather than retrofitting a working game,
 and don't reach for a DI/state-machine package to do it: the sim/view
 boundary is a hand-written architectural discipline, independent of any
 library.
+
+Note what this project did **not** adopt along with the split: there is
+still no fixed-tick simulation clock. Each bridge drives its simulation
+object from `_PhysicsProcess`/`_Process` at Godot's own cadence. A separate
+tick loop is a distinct decision that needs its own reason (replay,
+rollback, networking) — sim-view separation does not imply it.
 
 ## Pattern guidance
 

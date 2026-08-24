@@ -18,9 +18,10 @@ short-lived codebase, not for scaling one.
   `net9.0` override for `GodotTargetPlatform=android` (no Android export
   preset exists in `export_presets.cfg`).
 - No `<Nullable>` or `<LangVersion>` set in the Game project — nullable
-  reference types are off by default. The separate `GodotWildJam96.Sim`
-  project has `<Nullable>enable</Nullable>`, but see Architecture below —
-  it holds no hand-written code.
+  reference types are off by default there. `GodotWildJam96.Sim` has
+  `<Nullable>enable</Nullable>` and now holds the whole simulation layer, so
+  new Sim code is written nullable-aware; new Game code is not. Don't
+  "fix" one side to match the other.
 - `TreatWarningsAsErrors`, `AnalysisLevel=latest`, and
   `EnforceCodeStyleInBuild` are all on, backed by six analyzer packages
   (Roslynator, SonarAnalyzer.CSharp, Meziantou.Analyzer,
@@ -41,26 +42,46 @@ dotnet test "GodotWildJam96.Tests/GodotWildJam96.Tests.csproj"
 ```
 
 `GodotWildJam96.Tests` is a plain xUnit project (no Godot test runner) that
-references `GodotWildJam96.Game` directly and covers engine-free logic only
-— see
+references **only** `GodotWildJam96.Sim` — deliberately not the Game
+project, so a Godot dependency leaking into the simulation breaks this
+build. It covers the simulation classes directly; don't write a test that
+drives a bridge script, because a bridge with logic worth testing is a
+bridge that hasn't finished handing that logic over. See
 `.claude/knowledge/decisions/007-unit-test-harness-scoped-to-pure-logic.md`
-for why, and `.claude/knowledge/refactor-roadmap.md` for what it's expected
-to cover next. Anything touching the scene tree or `GD.*` still has no
-automated coverage. Verification bar: a clean `dotnet build`, `dotnet test`
-green, then a manual play pass in the editor.
+and `009-sim-view-separation.md`.
+
+The bridge layer itself — scene tree, `GD.*`, `Input.*`, animation and
+audio — still has no automated coverage and is verified by playing it.
+Verification bar: a clean `dotnet build`, `dotnet test` green, then a
+manual play pass in the editor.
 
 ## Architecture
 
-- Core loop is reactive/event-driven, not a ticking background sim — 15 of
-  25 hand-written scripts override `_PhysicsProcess`/`_Process` directly on
-  their Godot node.
-- No sim-view split. `GodotWildJam96.Sim` exists as a second,
-  Godot-reference-free class library — scaffolded for exactly that
-  separation — but holds zero hand-written source; every glob hit under it
-  is generator output in `obj/`. All gameplay logic lives directly in node
-  scripts under `GodotWildJam96.Game`. Don't route new logic through it
-  without a concrete need (threading, headless unit tests, networking) —
-  see `.claude/rules/doctrine.md` on this being earned, not default.
+- **Sim-view split, project-wide.** Gameplay rules live in
+  `GodotWildJam96.Sim`, a plain `net8.0` class library with **no Godot
+  reference at all**; node scripts under `GodotWildJam96.Game` are bridges
+  that poll input, call into the simulation, and render what it returns.
+  Dependency direction is one-way and enforced by the reference graph:
+  Game → Sim, and `GodotWildJam96.Tests` references **only** Sim, so a
+  `using Godot;` in the simulation layer is a build failure, not a review
+  catch. See `.claude/knowledge/decisions/009-sim-view-separation.md`.
+- Sim is Godot-*namespace*-free, not merely `GD.*`-free. It uses
+  `System.Numerics.Vector2`, and `Sim/SimMath.cs` reimplements the Godot
+  4.7 helpers whose semantics differ from the `System.Numerics`
+  equivalents — most importantly `Normalized()`, which returns `Zero` for a
+  zero vector where `Vector2.Normalize` returns `NaN`. Use `SimMath`, not
+  `System.Numerics` directly, for anything Godot had its own helper for.
+  `classes/utils/SimVec.cs` in the Game assembly is the **only** place
+  vectors convert between the two representations — don't hand-roll a
+  `new Vector2(v.X, v.Y)` at a call site.
+- The bridge never holds a second copy of simulation state. Where Godot
+  owns the transform (`CharacterBody2D.Velocity` after `MoveAndSlide`), the
+  bridge loads it into the simulation at the top of the tick and writes it
+  back, rather than letting the simulation keep a copy that drifts.
+- Still reactive/event-driven, not a fixed-tick background sim: 6 scripts
+  override `_PhysicsProcess`/`_Process`, and each drives its simulation
+  object from Godot's own cadence. There is no separate simulation clock —
+  adding one is a separate decision that needs a replay/networking reason.
 - One global event bus, `globals/EventBus.cs`, registered as the
   `EventBus` autoload: a self-assigned `static Instance`, one plain C#
   `event Action<T>` per event, and `EmitOnX` helpers that
@@ -79,11 +100,15 @@ green, then a manual play pass in the editor.
   `.tscn` with a wired node path uses `node_paths=PackedStringArray(...)`,
   and there are zero `GetNode<T>()`/`%UniqueName` lookups in the codebase.
   Don't introduce one.
-- Namespaces are flat: every file declares `namespace GodotWildJam96;`
-  (file-scoped) — enforced by the analyzer suite (MA0047/S3903 fail the
-  build on a type with no namespace). `.editorconfig` explicitly sets
-  `dotnet_diagnostic.IDE0130.severity = none` for this — it's deliberate
-  policy, not drift.
+- Two flat namespaces, one per assembly: `namespace GodotWildJam96;` in the
+  Game assembly, `namespace GodotWildJam96.Sim;` in the Sim assembly. Both
+  are file-scoped and flat — folders inside an assembly never add a
+  namespace segment. The split is deliberate: the `using GodotWildJam96.Sim;`
+  at the top of a bridge script is a visible marker of where the boundary
+  is. Enforced by the analyzer suite (MA0047/S3903 fail the build on a type
+  with no namespace); `.editorconfig` sets
+  `dotnet_diagnostic.IDE0130.severity = none` so folders don't have to
+  match — deliberate policy, not drift.
 - Public members are PascalCase properties (`{ get; set; }`, `[Export]`
   where editor-wired); private members stay `_camelCase` fields. A raw
   public field fails the build (S1104). This includes `[Export]` fields
@@ -106,15 +131,18 @@ green, then a manual play pass in the editor.
   `EnemyBase` stay unsealed — they're the only two classes with a real
   subclass (`MainSun`; `Squid`, `Devourer`). Assume any other class here is
   sealed unless you're about to give it its first subclass.
-- `GodotWildJam96.Game/classes/` splits into `enums/` (pure enum types),
-  `constants/` (pure constant holders like `GameConstants`), and `utils/`
-  (stateless static-method helpers like `NearestTarget`, `SpawnPlacement`).
-  Stateful collaborator classes a node constructs at runtime (`EnergyPool`,
-  `ChargeMeter`, `ThrusterAnimator`) and the `Resource` subtype
-  `ScrollingBackgroundImages` stay in `classes/` root — none of the three
-  subfolders fit a class with instance state or a scene-referenced
-  `Resource`. Namespace stays flat (`namespace GodotWildJam96;`)
-  regardless of which folder a file lives in.
+- Where a new class goes is decided by the boundary first, the folder
+  second. If it holds gameplay state or a gameplay rule and needs no engine
+  type, it belongs in `GodotWildJam96.Sim` (flat, with `enums/` the only
+  subfolder). If it needs a `Node`, `Resource`, `GD.*`, or `Input.*`, it
+  belongs in `GodotWildJam96.Game`.
+- Inside the Game assembly, `classes/` splits into `constants/` (pure
+  constant holders like `GameConstants`), `utils/` (stateless static
+  helpers like `SimVec`), `anims/` (`ThrusterAnimator`), and `images/`
+  (the `Resource` subtype `ScrollingBackgroundImages`). `ThrusterAnimator`
+  stays on the Game side deliberately — it drives four `AnimatedSprite2D`s
+  and polls `Input`, so it is view code that happens not to be a `Node`,
+  not a simulation class.
 
 ## Out of scope
 
@@ -154,12 +182,15 @@ green, then a manual play pass in the editor.
   list.
 - [`.claude/rules/skill-authoring.md`](.claude/rules/skill-authoring.md) —
   conventions for this project's own `.claude/skills/*` files.
-- `.claude/knowledge/decisions/` — eight ADRs recording calls already made
+- `.claude/knowledge/decisions/` — nine ADRs recording calls already made
   (events over `[Signal]`, `[Export]` over `GetNode`, the net8.0/Godot
   version pins, the NASA Power-of-Ten adaptation, the unit test harness,
-  and three judgment calls from the teaching-codebase refactor — plain C#
+  three judgment calls from the teaching-codebase refactor — plain C#
   collaborators over scene components, `System.Random` injection over an
-  `IRandomSource` interface, and the deliberately-unfixed sun distribution).
+  `IRandomSource` interface, and the deliberately-unfixed sun distribution
+  — and **ADR-009, the project-wide sim-view migration**, which supersedes
+  this file's former "no sim-view split" position and partly supersedes
+  ADR-008's first decision).
 - [`.claude/knowledge/godot-csharp-gotchas.md`](.claude/knowledge/godot-csharp-gotchas.md),
   [`multithreading-csharp-godot.md`](.claude/knowledge/multithreading-csharp-godot.md),
   [`gaming-patterns-index.md`](.claude/knowledge/gaming-patterns-index.md) —

@@ -32,6 +32,18 @@ for the harness this roadmap assumes.
 
 ## The seam that makes any of this possible
 
+> [!IMPORTANT]
+> **Superseded for new code by
+> [ADR-009](decisions/009-sim-view-separation.md).** This section's rule —
+> "extracted logic may use `Vector2`/`Mathf` freely, but must never call
+> `GD.*`" — is still *technically* accurate about `GodotSharp.dll`, and is
+> why the tiers below were safe. But the project has since moved the whole
+> simulation into `GodotWildJam96.Sim`, which carries **no Godot reference
+> at all**, so `Vector2`/`Mathf` don't resolve there either. New simulation
+> code uses `System.Numerics.Vector2` plus `Sim/SimMath.cs`. Read the rest
+> of this document as the record of how the codebase got here, not as
+> current guidance on what may be referenced.
+
 `GodotSharp.dll` is a plain managed .NET library containing two different
 kinds of API:
 
@@ -223,6 +235,12 @@ decision, not silently fixed as part of any tier above.
 
 ---
 
-Version: 2.0 — 2026-08-24 — all four tiers complete; see
+Version: 3.0 — 2026-08-24 — all four tiers complete; see
 [ADR-008](decisions/008-refactor-judgment-calls.md) for the judgment calls
-made while executing them.
+made while executing them, and
+[ADR-009](decisions/009-sim-view-separation.md) for the subsequent
+project-wide sim-view migration that moved every class this roadmap
+extracted out of the Game assembly entirely. The `_interruptDamage` item
+above is still open: it survives as an explicit `InterruptDamage = 0`
+constant feeding `PlayerSiphonState`, and is now pinned by a test, but the
+balance call has still not been made.
