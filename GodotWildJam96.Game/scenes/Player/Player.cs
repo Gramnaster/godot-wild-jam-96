@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Godot;
 
@@ -19,32 +18,7 @@ public partial class Player : CharacterBody2D
     private const float UNSAFE_DAMAGE_INTERVAL = 10.0f;
 
     // Animation Names
-    private const string ANIM_MAIN_THRUST_START = "MainThrustStart";
-    private const string ANIM_MAIN_THRUST_CONTINUOUS = "MainThrustContinuous";
-    private const string ANIM_MAIN_THRUST_POWER = "MainThrustPower";
-
-    private const string ANIM_THRUST_FORWARD_START = "ThrustForward";
-    private const string ANIM_THRUST_FORWARD_CONTINUOUS = "ThrustForwardContinuous";
-
-    private const string ANIM_THRUST_LEFT_START = "ThrustLeft";
-    private const string ANIM_THRUST_LEFT_CONTINUOUS = "ThrustLeftContinuous";
-
-    private const string ANIM_THRUST_RIGHT_START = "ThrustRight";
-    private const string ANIM_THRUST_RIGHT_CONTINUOUS = "ThrustRightContinuous";
-
     private const string ANIM_FIRING = "Firing";
-
-    [Export] private int _energyLevels = 0;
-    private int EnergyLevels
-    {
-        get => _energyLevels;
-        set
-        {
-            // 0 to 6 (7 levels total)
-            _energyLevels = Mathf.Clamp(value, 0, 6);
-            UpdateEnergySprite();
-        }
-    }
 
     public bool InLightRadius { get; set; } = true;
     public float SafetyTimer { get; set; } = 0.0f;
@@ -93,69 +67,30 @@ public partial class Player : CharacterBody2D
     private float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
     private float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
 
-    // Measure of time for the charge attack
-    private ulong _shoot1PressedAtMsec;
-
-    // All thruster effects with one shared state machine
-    private Thruster[] _thrusters;
-
-    private sealed class Thruster(
-        AnimatedSprite2D sprite,
-        string actionName,
-        string startAnimation,
-        string continuousAnimation
-        )
-    {
-        public readonly AnimatedSprite2D Sprite = sprite;
-        public readonly string ActionName = actionName;
-        public readonly string StartAnimation = startAnimation;
-        public readonly string ContinuousAnimation = continuousAnimation;
-        public bool WasActive;
-        public Action AnimationFinishedHandler;
-    }
+    private EnergyPool _energyPool;
+    private ChargeMeter _chargeMeter;
+    private ThrusterAnimator _thrusterAnimator;
     #endregion
 
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsActionPressed("shoot1"))
         {
-            _shoot1PressedAtMsec = Time.GetTicksMsec();
+            _chargeMeter.Press(Time.GetTicksMsec());
         }
 
         if (@event.IsActionReleased("shoot1"))
         {
-            ShootFront(ChargeRatio(_shoot1PressedAtMsec));
+            ShootFront(_chargeMeter.Release(Time.GetTicksMsec()));
         }
 
         if (@event.IsActionPressed("siphon_out") && CurrentSunInteractionArea != null)
         {
-            if (!SiphonUnderway)
-            {
-                _siphonType = SiphonDirection.Out;
-                // GD.Print("Start siphoning energy out of Sun");
-                EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
-                EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
-                SiphonUnderway = true;
-            }
-            else
-            {
-                // GD.Print("Already Siphoning!");
-            }
+            TryStartSiphon(SiphonDirection.Out);
         }
         else if (@event.IsActionPressed("siphon_in") && CurrentSunInteractionArea != null)
         {
-            if (!SiphonUnderway)
-            {
-                _siphonType = SiphonDirection.In;
-                // GD.Print("Start siphoning energy into Sun");
-                EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
-                EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
-                SiphonUnderway = true;
-            }
-            else
-            {
-                // GD.Print("Already Siphoning!");
-            }
+            TryStartSiphon(SiphonDirection.In);
         }
         if (@event.IsActionPressed("teleport_home"))
         {
@@ -169,6 +104,21 @@ public partial class Player : CharacterBody2D
         AddToGroup(GameConstants.GroupPlayer);
     }
 
+    private void TryStartSiphon(SiphonDirection direction)
+    {
+        if (SiphonUnderway)
+        {
+            // GD.Print("Already Siphoning!");
+            return;
+        }
+
+        _siphonType = direction;
+        // GD.Print($"Start siphoning energy {direction}");
+        EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
+        EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
+        SiphonUnderway = true;
+    }
+
     public override void _Ready()
     {
         _playerSprite.RotationDegrees = 90f;
@@ -180,12 +130,8 @@ public partial class Player : CharacterBody2D
         _energySprite.RotationDegrees = 90f;
         // _energySprite.
 
-        // Effect sprites starts hidden. Show in UpdateThrusterAnimations()
+        // Effect sprites start hidden. Show in ThrusterAnimator.UpdateAnimations()
         _firingSprite.Hide();
-        _thrustMainSprite.Hide();
-        _thrustForwardSprite.Hide();
-        _thrustLeftSprite.Hide();
-        _thrustRightSprite.Hide();
         _energySprite.Hide();
 
         EventBus.Instance.OnShipEntered += OnPlayerEntered;
@@ -194,29 +140,13 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnEnergySiphoned += GainEnergyFromSun;
         EventBus.Instance.OnAllSunsSpawned += OnAllSunsSpawned;
 
-        // Animation events
-        _thrusters =
-        [
-            new Thruster(_thrustMainSprite, "move_up", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_CONTINUOUS),
-            new Thruster(_thrustForwardSprite, "move_down", ANIM_THRUST_FORWARD_START, ANIM_THRUST_FORWARD_CONTINUOUS),
-            new Thruster(_thrustLeftSprite, "move_left", ANIM_THRUST_LEFT_START, ANIM_THRUST_LEFT_CONTINUOUS),
-            new Thruster(_thrustRightSprite, "move_right", ANIM_THRUST_RIGHT_START, ANIM_THRUST_RIGHT_CONTINUOUS),
-            // new Thruster(_thrustMainSprite, "brake", ANIM_MAIN_THRUST_START, ANIM_MAIN_THRUST_POWER),
-        ];
-
-        // Each thruster has its own AnimationFinished subscription
-        // so it can pass itself from start clip to continuous
-        foreach (Thruster thruster in _thrusters)
-        {
-            Thruster eventThruster = thruster;
-            eventThruster.AnimationFinishedHandler = () => OnThrusterAnimationFinished(eventThruster);
-            eventThruster.Sprite.AnimationFinished += eventThruster.AnimationFinishedHandler;
-        }
+        _thrusterAnimator = new ThrusterAnimator(_thrustMainSprite, _thrustForwardSprite, _thrustLeftSprite, _thrustRightSprite);
+        _chargeMeter = new ChargeMeter(_maxChargeSeconds);
 
         _firingSprite.AnimationFinished += OnFiringAnimationFinished;
 
         // Starting energy levels
-        EnergyLevels = 3;
+        _energyPool = new EnergyPool(3, UpdateEnergySprite);
 
         // Makes the label independent of Player transformations
         // DebugLabel.TopLevel = true;
@@ -230,13 +160,7 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnEnergySiphoned -= GainEnergyFromSun;
         EventBus.Instance.OnAllSunsSpawned -= OnAllSunsSpawned;
 
-        if (_thrusters != null)
-        {
-            foreach (Thruster thruster in _thrusters)
-            {
-                thruster.Sprite.AnimationFinished -= thruster.AnimationFinishedHandler;
-            }
-        }
+        _thrusterAnimator?.Unsubscribe();
 
         _firingSprite.AnimationFinished -= OnFiringAnimationFinished;
     }
@@ -253,7 +177,7 @@ public partial class Player : CharacterBody2D
         float dt = (float)delta;
 
         GetInput(dt);
-        UpdateThrusterAnimations();
+        _thrusterAnimator.UpdateAnimations(IsPowerThrusting);
         // RapidShoot();
         MoveAndSlide();
         CheckIfSafe((float)delta);
@@ -328,67 +252,16 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    private void UpdateThrusterAnimations()
+    private void UpdateEnergySprite(int levels)
     {
-        foreach (Thruster thruster in _thrusters)
-        {
-            bool active = Input.IsActionPressed(thruster.ActionName);
-
-            // Std Main thruster gets a higher-priority over Power Main thruster
-            if (thruster.Sprite == _thrustMainSprite && IsPowerThrusting)
-            {
-                thruster.Sprite.Show();
-
-                if (thruster.Sprite.Animation != ANIM_MAIN_THRUST_POWER)
-                {
-                    thruster.Sprite.Play(ANIM_MAIN_THRUST_POWER);
-                }
-
-                thruster.WasActive = true;
-                continue;
-            }
-
-            // Standard thruster handling
-            if (active)
-            {
-                // Because they're all hidden at _Ready
-                thruster.Sprite.Show();
-
-                if (!thruster.WasActive || !thruster.Sprite.IsPlaying())
-                {
-                    thruster.Sprite.Play(thruster.StartAnimation);
-                }
-            }
-            else
-            {
-                thruster.Sprite.Stop();
-                thruster.Sprite.Hide();
-            }
-
-            thruster.WasActive = active;
-        }
-    }
-
-    private static void OnThrusterAnimationFinished(Thruster thruster)
-    {
-        bool active = Input.IsActionPressed(thruster.ActionName);
-
-        if (active && thruster.Sprite.Animation == thruster.StartAnimation)
-        {
-            thruster.Sprite.Play(thruster.ContinuousAnimation);
-        }
-    }
-
-    private void UpdateEnergySprite()
-    {
-        if (_energyLevels == 0)
+        if (levels == 0)
         {
             _energySprite.Hide();
             return;
         }
 
         _energySprite.Show();
-        _energySprite.Frame = _energyLevels - 1;
+        _energySprite.Frame = levels - 1;
     }
 
     private void ShootFront(float chargeRatio)
@@ -403,13 +276,6 @@ public partial class Player : CharacterBody2D
         _firingSprite.Play(ANIM_FIRING);
     }
 
-    // Determines how much charging you can pull off in the listed charging time
-    private float ChargeRatio(ulong pressedAtMsec)
-    {
-        float heldSeconds = (Time.GetTicksMsec() - pressedAtMsec) / 1000f;
-        return Mathf.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
-    }
-
     private void PlayerResetSiphon(bool reset)
     {
         // GD.Print("Siphon Reset!");
@@ -418,10 +284,10 @@ public partial class Player : CharacterBody2D
 
     private void TakeDamage(int dmg)
     {
-        EnergyLevels -= dmg;
+        _energyPool.Drain(dmg);
         // GD.Print(dmg + " damage taken!");
-        // GD.Print("Only " + _energyLevels + " energy levels left!");
-        if (EnergyLevels <= 0)
+        // GD.Print("Only " + _energyPool.Levels + " energy levels left!");
+        if (_energyPool.IsEmpty)
         {
             GameOver();
         }
@@ -452,9 +318,9 @@ public partial class Player : CharacterBody2D
 
     private void GainEnergyFromSun(int energyGained)
     {
-        EnergyLevels += energyGained;
+        _energyPool.Gain(energyGained);
         // GD.Print(energyGained);
-        // GD.Print("Current Energy Levels: " + _energyLevels);
+        // GD.Print("Current Energy Levels: " + _energyPool.Levels);
     }
 
     private void GameOver()
