@@ -28,6 +28,7 @@ public partial class Sun : Area2D
     private bool _siphonInOngoing = false;
     private int _sunSiphonRate = 1;
     private float _siphonTimePassed = 0.0f;
+    private const float SiphonTickIntervalSeconds = 1.8f;
     private SiphonOwner _siphonOwner = SiphonOwner.Player;
     public SunInteractionArea CurrentSunInteractionArea { get; set; }
 
@@ -73,55 +74,60 @@ public partial class Sun : Area2D
     {
         if (_siphonOutOngoing)
         {
-            _siphonTimePassed += dt;
-            // Enemy drains can still empty the sun; a player drain stops at MinPlayerDrainEnergy
-            // so the player can't solo-trigger MainSun's instant game-over by over-absorbing.
-            bool drainedToFloor = _siphonOwner == SiphonOwner.Player
-                ? CurrentEnergy <= MinPlayerDrainEnergy
-                : CurrentEnergy < 1;
-            if (drainedToFloor)
-            {
-                StopPlayerSiphon(null);
-                return;
-            }
-            else if (_siphonTimePassed > 1.8f)
-            {
-                SiphonSound.Play();
-                CurrentEnergy -= _sunSiphonRate;
-                UpdateInteractionAreaScale();
-                if (_siphonOwner == SiphonOwner.Player)
-                {
-                    EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
-                }
-                EnergyValuebar.UpdateValue(CurrentEnergy);
-                _siphonTimePassed = 0.0f;
-                _siphonCount++;
-            }
-            //GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
+            UpdateSiphon(dt, SiphonDirection.Out);
         }
         else if (_siphonInOngoing)
         {
-            _siphonTimePassed += dt;
-            if (CurrentEnergy >= MaxEnergy)
-            {
-                StopPlayerSiphon(null);
-                return;
-            }
-            else if (_siphonTimePassed > 1.8f)
-            {
-                SiphonSound.Play();
-                CurrentEnergy += _sunSiphonRate;
-                UpdateInteractionAreaScale();
-                EnergyValuebar.UpdateValue(CurrentEnergy);
-                _siphonTimePassed = 0.0f;
-                _siphonCount++;
-            }
-            //GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
+            UpdateSiphon(dt, SiphonDirection.In);
         }
+
         if (_siphonCount > 0)
         {
             SiphonSound.PitchScale = 1.0f + (0.15f * _siphonCount);
         }
+    }
+
+    private void UpdateSiphon(float dt, SiphonDirection direction)
+    {
+        _siphonTimePassed += dt;
+
+        // Enemy drains can still empty the sun; a player drain stops at MinPlayerDrainEnergy
+        // so the player can't solo-trigger MainSun's instant game-over by over-absorbing.
+        // Siphon-in has no owner distinction -- it always stops at MaxEnergy.
+        bool reachedStop;
+        if (direction == SiphonDirection.Out)
+        {
+            reachedStop = _siphonOwner == SiphonOwner.Player
+                ? CurrentEnergy <= MinPlayerDrainEnergy
+                : CurrentEnergy < 1;
+        }
+        else
+        {
+            reachedStop = CurrentEnergy >= MaxEnergy;
+        }
+
+        if (reachedStop)
+        {
+            StopPlayerSiphon(null);
+            return;
+        }
+
+        //GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
+        if (_siphonTimePassed <= SiphonTickIntervalSeconds) return;
+
+        SiphonSound.Play();
+        CurrentEnergy += direction == SiphonDirection.Out ? -_sunSiphonRate : _sunSiphonRate;
+        UpdateInteractionAreaScale();
+
+        // Only a player-owned siphon-out reports energy gained to the player; siphon-in emits nothing.
+        if (direction == SiphonDirection.Out && _siphonOwner == SiphonOwner.Player)
+        {
+            EventBus.EmitOnEnergySiphoned(_sunSiphonRate);
+        }
+
+        EnergyValuebar.UpdateValue(CurrentEnergy);
+        _siphonTimePassed = 0.0f;
+        _siphonCount++;
     }
 
     // Subclasses (MainSun) can scale their interaction area up independently of the energy ratio.

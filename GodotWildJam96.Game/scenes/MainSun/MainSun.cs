@@ -11,6 +11,10 @@ public partial class MainSun : Sun
     protected override float InteractionAreaScaleMultiplier => 4.0f;
     protected override int MinPlayerDrainEnergy => 1;
 
+    // Latches once the game-over/win scene change fires, so it fires exactly
+    // once instead of every frame the end-state condition remains true.
+    private bool _gameEndTriggered;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -24,12 +28,16 @@ public partial class MainSun : Sun
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
+        if (_gameEndTriggered) return;
+
         if (CurrentEnergy == 0)
         {
+            _gameEndTriggered = true;
             GameOver();
         }
         else if (CurrentEnergy == MaxEnergy)
         {
+            _gameEndTriggered = true;
             WinTheGame();
         }
     }
