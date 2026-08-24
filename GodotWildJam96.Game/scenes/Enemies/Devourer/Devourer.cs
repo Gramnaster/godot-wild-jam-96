@@ -9,19 +9,15 @@ namespace GodotWildJam96;
 public sealed partial class Devourer : EnemyBase
 {
     [Export] private AnimatedSprite2D _mouthSprite;
-    private const float MOVE_SPEED = 50.0f;
-    // SunInteractionArea's own radius (~127) is the shared player light radius, too wide
-    // for the Devourer's actual draining range, so it must close to within this first.
-    private const float SIPHON_RANGE = 60.0f;
 
     protected override AnimatedSprite2D[] FlashSprites => [AnimateSprite, _mouthSprite];
+
+    private readonly DevourerApproach _approach = new();
 
     private Sun _currentClosestSun;
     private SunInteractionArea _pendingInteractionArea;
     // Parallel to SunRefs; suns never move, so this is safe to build once.
     private SimVector2[] _sunPositions = [];
-
-    private bool _siphoning = false;
 
     public override void _Ready()
     {
@@ -38,7 +34,7 @@ public sealed partial class Devourer : EnemyBase
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!_siphoning)
+        if (!_approach.IsSiphoning)
         {
             MoveToClosestSun();
             MoveAndSlide();
@@ -50,9 +46,10 @@ public sealed partial class Devourer : EnemyBase
     private void TryStartSiphoning()
     {
         if (_pendingInteractionArea is null || _currentClosestSun is null) return;
-        if (GlobalPosition.DistanceTo(_currentClosestSun.GlobalPosition) > SIPHON_RANGE) return;
+        if (!DevourerApproach.IsWithinSiphonRange(
+                GlobalPosition.ToSim(), _currentClosestSun.GlobalPosition.ToSim())) return;
 
-        _siphoning = true;
+        _approach.BeginSiphon();
         StartSiphoning(_pendingInteractionArea);
         _pendingInteractionArea = null;
     }
@@ -60,7 +57,7 @@ public sealed partial class Devourer : EnemyBase
     // Body pulses while cruising toward a sun; mouth takes over once it's actually feeding.
     private void UpdateMouthAnimation()
     {
-        if (_siphoning)
+        if (_approach.IsSiphoning)
         {
             AnimateSprite.Stop();
             _mouthSprite.Play();
@@ -94,7 +91,9 @@ public sealed partial class Devourer : EnemyBase
     {
         if (_currentClosestSun is null) return;
         LookAt(_currentClosestSun.GlobalPosition);
-        Velocity = GlobalPosition.DirectionTo(_currentClosestSun.GlobalPosition) * MOVE_SPEED;
+        Velocity = DevourerApproach
+            .VelocityToward(GlobalPosition.ToSim(), _currentClosestSun.GlobalPosition.ToSim())
+            .ToGodot();
     }
 
     protected override void OnSunsReady()

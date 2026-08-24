@@ -1,5 +1,6 @@
 using System.Linq;
 using Godot;
+using GodotWildJam96.Sim;
 
 namespace GodotWildJam96;
 
@@ -10,13 +11,17 @@ public partial class EnemyBase : CharacterBody2D
     [Export] private HitBox _hitBox;
     [Export] private Timer _timer;
 
-    // Per-enemy child tuning. Protected so sub-classes can read them.
+    // Per-enemy child tuning, authored in the Inspector. Config, not runtime
+    // state -- the running life count belongs to Vitals.
     [Export] protected float Speed { get; set; } = 30f;
     [Export] protected int SunPoints { get; set; } = 5;
-    [Export] protected int Lives { get; set; } = 3;
+    [Export] protected int StartingLives { get; set; } = 3;
     [Export] protected int StolenPower { get; set; }
     [Export] protected float TargetRotation { get; set; }
     [Export] protected float TurnSpeed { get; set; } = Mathf.Tau; // Radians/sec
+
+    // Owns the life count and the death latch; this node keeps no copy.
+    protected EnemyVitals Vitals { get; private set; }
 
     // Encapsulation: Base class (enemyBase) owns this node,
     // Sub-classes can use it but NOT replace it
@@ -30,12 +35,13 @@ public partial class EnemyBase : CharacterBody2D
     // Sprites flashed on hit. Subclasses with extra sprites (e.g. a mouth) override this.
     protected virtual AnimatedSprite2D[] FlashSprites => [_animatedSprite2D];
 
-    private bool _isDead;
     private Tween[] _hitFlashTweens = [];
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Vitals = new EnemyVitals(StartingLives);
+
         // Gets the player in the group
         PlayerRef = GetTree().GetFirstNodeInGroup(GameConstants.GroupPlayer) as Player;
 
@@ -87,23 +93,19 @@ public partial class EnemyBase : CharacterBody2D
     protected virtual void OnHitBoxAreaEntered(Area2D body)
     {
         // GD.Print("Body Entered is: " + body);
-        if (body is BulletBase)
+        if (body is not BulletBase) return;
+
+        switch (Vitals.TakeHit())
         {
-            // GD.Print("You're hitting me: ", nameof(EnemyBase));
-            Lives--;
-            if (Lives <= 0)
-            {
-                Die();
-            }
-            else
-            {
-                GlobalPosition += (GlobalPosition.Normalized() * 6.0f);
+            case EnemyHitResult.Survived:
+                GlobalPosition += EnemyVitals.KnockbackOffset(GlobalPosition.ToSim()).ToGodot();
                 FlashOnHit();
-            }
-        }
-        else
-        {
-            // GD.Print("Entered a random body!");
+                break;
+            case EnemyHitResult.Killed:
+                Die();
+                break;
+            case EnemyHitResult.AlreadyDead:
+                break;
         }
     }
 
@@ -131,11 +133,10 @@ public partial class EnemyBase : CharacterBody2D
     }
 
     // EventBus -> ObjectMaker -> Create Explosion
+    // Only ever reached on the hit that actually empties Lives -- EnemyVitals
+    // reports a later hit as AlreadyDead, so this needs no re-entry guard.
     protected virtual void Die()
     {
-        if (_isDead) return;
-
-        _isDead = true;
         EventBus.EmitOnCreateExplosion(GlobalPosition);
         // Need to EmitOnTransferPower too
         // But only if the enemies have power already
