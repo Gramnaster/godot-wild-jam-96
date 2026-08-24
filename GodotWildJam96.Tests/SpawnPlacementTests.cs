@@ -1,6 +1,6 @@
 using System;
-using Godot;
-using GodotWildJam96;
+using System.Numerics;
+using GodotWildJam96.Sim;
 using Xunit;
 
 namespace GodotWildJam96.Tests;
@@ -52,8 +52,8 @@ public class SpawnPlacementTests
         {
             Vector2 result = SpawnPlacement.OffscreenOffset(new Random(seed), halfExtent);
 
-            bool clearsX = Mathf.Abs(result.X) >= halfExtent.X + 50f;
-            bool clearsY = Mathf.Abs(result.Y) >= halfExtent.Y + 50f;
+            bool clearsX = MathF.Abs(result.X) >= halfExtent.X + 50f;
+            bool clearsY = MathF.Abs(result.Y) >= halfExtent.Y + 50f;
             Assert.True(clearsX || clearsY, $"seed {seed} produced {result} inside the buffer");
         }
     }

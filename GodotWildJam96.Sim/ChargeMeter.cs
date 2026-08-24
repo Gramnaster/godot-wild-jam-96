@@ -1,6 +1,6 @@
-using Godot;
+using System;
 
-namespace GodotWildJam96;
+namespace GodotWildJam96.Sim;
 
 // Held-milliseconds -> clamped 0-1 charge ratio. Caller supplies both
 // timestamps (Time.GetTicksMsec()) so this stays Godot-engine-free.
@@ -17,6 +17,6 @@ public sealed class ChargeMeter(float maxChargeSeconds)
     public float Release(ulong nowMsec)
     {
         float heldSeconds = (nowMsec - _pressedAtMsec) / 1000f;
-        return Mathf.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
+        return Math.Clamp(heldSeconds / _maxChargeSeconds, 0f, 1f);
     }
 }

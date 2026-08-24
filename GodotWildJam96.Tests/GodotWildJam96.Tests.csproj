@@ -15,8 +15,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Sim only. No reference to the Godot-bearing Game project: a `using Godot;`
+       leaking into the simulation assembly must fail this project's build. -->
   <ItemGroup>
-    <ProjectReference Include="..\GodotWildJam96.Game\GodotWildJam-96.csproj" />
+    <ProjectReference Include="..\GodotWildJam96.Sim\GodotWildJam96.Sim.csproj" />
   </ItemGroup>
 
 </Project>

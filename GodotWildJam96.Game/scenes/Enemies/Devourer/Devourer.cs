@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using Godot;
+using GodotWildJam96.Sim;
+using SimVector2 = System.Numerics.Vector2;
 
 namespace GodotWildJam96;
 
@@ -17,7 +19,7 @@ public sealed partial class Devourer : EnemyBase
     private Sun _currentClosestSun;
     private SunInteractionArea _pendingInteractionArea;
     // Parallel to SunRefs; suns never move, so this is safe to build once.
-    private Vector2[] _sunPositions = [];
+    private SimVector2[] _sunPositions = [];
 
     private bool _siphoning = false;
 
@@ -82,7 +84,7 @@ public sealed partial class Devourer : EnemyBase
     }
     private void FindClosestSun()
     {
-        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition, _sunPositions);
+        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition.ToSim(), _sunPositions);
         if (closestIndex < 0) return;
 
         _currentClosestSun = SunRefs[closestIndex];
@@ -97,10 +99,10 @@ public sealed partial class Devourer : EnemyBase
 
     protected override void OnSunsReady()
     {
-        _sunPositions = new Vector2[SunRefs.Length];
+        _sunPositions = new SimVector2[SunRefs.Length];
         for (int i = 0; i < SunRefs.Length; i++)
         {
-            _sunPositions[i] = SunRefs[i].GlobalPosition;
+            _sunPositions[i] = SunRefs[i].GlobalPosition.ToSim();
         }
         FindClosestSun();
     }

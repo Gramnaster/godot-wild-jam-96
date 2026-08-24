@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Godot;
+using GodotWildJam96.Sim;
 
 namespace GodotWildJam96;
 
@@ -47,7 +48,7 @@ public sealed partial class Spawner : Node2D
             bool positionFound = false;
             for (int attempt = 0; attempt < 25 && !positionFound; attempt++)
             {
-                sunPos = SpawnPlacement.RandomSunPosition(_rng);
+                sunPos = SpawnPlacement.RandomSunPosition(_rng).ToGodot();
                 positionFound = EnsurePositionValid(sunPos);
             }
 
@@ -110,6 +111,6 @@ public sealed partial class Spawner : Node2D
             ? new Vector2(480f, 360f)
             : GetViewport().GetVisibleRect().Size / 2f / camera.Zoom;
 
-        return SpawnPlacement.OffscreenOffset(_rng, halfExtent);
+        return SpawnPlacement.OffscreenOffset(_rng, halfExtent.ToSim()).ToGodot();
     }
 }

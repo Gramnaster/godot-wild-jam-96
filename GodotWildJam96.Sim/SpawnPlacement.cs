@@ -1,7 +1,7 @@
 using System;
-using Godot;
+using System.Numerics;
 
-namespace GodotWildJam96;
+namespace GodotWildJam96.Sim;
 
 public static class SpawnPlacement
 {
@@ -11,9 +11,9 @@ public static class SpawnPlacement
     // are pinned by SpawnPlacementTests, not corrected here.
     public static Vector2 RandomSunPosition(Random rng)
     {
-        float angle = (float)(rng.NextDouble() * Mathf.Tau);
+        float angle = (float)(rng.NextDouble() * MathF.Tau);
         float radius = rng.Next(-5000, 5001);
-        return Vector2.FromAngle(angle) * radius;
+        return SimMath.FromAngle(angle) * radius;
     }
 
     // Picks a point just outside a halfExtent-sized rectangle, on a random edge,

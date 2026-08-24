@@ -1,4 +1,4 @@
-namespace GodotWildJam96;
+namespace GodotWildJam96.Sim;
 
 // A Squid's movement cycle: idle, then a short eased burst toward the
 // player, then a coast that decays back to a stop.

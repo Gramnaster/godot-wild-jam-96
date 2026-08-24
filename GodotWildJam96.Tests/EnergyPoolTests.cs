@@ -1,4 +1,4 @@
-using GodotWildJam96;
+using GodotWildJam96.Sim;
 using Xunit;
 
 namespace GodotWildJam96.Tests;

@@ -1,6 +1,6 @@
-using Godot;
+using System.Numerics;
 
-namespace GodotWildJam96;
+namespace GodotWildJam96.Sim;
 
 public static class NearestTarget
 {
@@ -13,7 +13,7 @@ public static class NearestTarget
 
         for (int i = 0; i < positions.Length; i++)
         {
-            float distSquared = from.DistanceSquaredTo(positions[i]);
+            float distSquared = Vector2.DistanceSquared(from, positions[i]);
             if (distSquared < closestDistSquared)
             {
                 closestDistSquared = distSquared;

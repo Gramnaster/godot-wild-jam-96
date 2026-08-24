@@ -1,5 +1,7 @@
 using System.Linq;
 using Godot;
+using GodotWildJam96.Sim;
+using SimVector2 = System.Numerics.Vector2;
 
 namespace GodotWildJam96;
 
@@ -27,7 +29,7 @@ public sealed partial class Player : CharacterBody2D
     [Export] private Sprite2D _closestSunIndicator;
     // Suns never move and are never freed after spawning, so this is safe
     // to cache once instead of re-querying the scene tree every frame.
-    private Vector2[] _sunPositions = [];
+    private SimVector2[] _sunPositions = [];
 
     [Export] private Sprite2D _playerSprite;
     [Export] private AnimatedSprite2D _firingSprite;
@@ -302,15 +304,15 @@ public sealed partial class Player : CharacterBody2D
     private void OnAllSunsSpawned()
     {
         _sunPositions = GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>()
-            .Select(sun => sun.GlobalPosition).ToArray();
+            .Select(sun => sun.GlobalPosition.ToSim()).ToArray();
     }
 
     private void FindClosestSun()
     {
-        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition, _sunPositions);
+        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition.ToSim(), _sunPositions);
         if (closestIndex < 0) return;
 
-        Vector2 closestSunPosition = _sunPositions[closestIndex];
+        Vector2 closestSunPosition = _sunPositions[closestIndex].ToGodot();
         _closestSunVector = GlobalPosition.DirectionTo(closestSunPosition);
         _closestSunIndicator.LookAt(closestSunPosition);
         _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector * 50.0f;
