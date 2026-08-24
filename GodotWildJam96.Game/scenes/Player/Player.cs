@@ -51,6 +51,9 @@ public partial class Player : CharacterBody2D
 
     private Vector2 _closestSunVector;
     [Export] private Sprite2D _closestSunIndicator;
+    // Suns never move and are never freed after spawning, so this is safe
+    // to cache once instead of re-querying the scene tree every frame.
+    private Vector2[] _sunPositions = [];
 
     [Export] private Sprite2D _playerSprite;
     [Export] private AnimatedSprite2D _firingSprite;
@@ -189,6 +192,7 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnPlayerSiphonReset += PlayerResetSiphon;
         EventBus.Instance.OnDamageTakenPlayer += TakeDamage;
         EventBus.Instance.OnEnergySiphoned += GainEnergyFromSun;
+        EventBus.Instance.OnAllSunsSpawned += OnAllSunsSpawned;
 
         // Animation events
         _thrusters =
@@ -224,6 +228,7 @@ public partial class Player : CharacterBody2D
         EventBus.Instance.OnShipEntered -= OnPlayerEntered;
         EventBus.Instance.OnDamageTakenPlayer -= TakeDamage;
         EventBus.Instance.OnEnergySiphoned -= GainEnergyFromSun;
+        EventBus.Instance.OnAllSunsSpawned -= OnAllSunsSpawned;
 
         if (_thrusters != null)
         {
@@ -428,23 +433,20 @@ public partial class Player : CharacterBody2D
         }
     }
 
+    private void OnAllSunsSpawned()
+    {
+        _sunPositions = GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>()
+            .Select(sun => sun.GlobalPosition).ToArray();
+    }
+
     private void FindClosestSun()
     {
+        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition, _sunPositions);
+        if (closestIndex < 0) return;
 
-        Sun _closestSun = null;
-        float _closestDist = float.MaxValue;
-
-        foreach (Sun sun in GetTree().GetNodesInGroup(GameConstants.GroupSuns).OfType<Sun>())
-        {
-            float _distSquared = GlobalPosition.DistanceSquaredTo(sun.GlobalPosition);
-            if (_distSquared < _closestDist)
-            {
-                _closestDist = _distSquared;
-                _closestSun = sun;
-            }
-        }
-        _closestSunVector = GlobalPosition.DirectionTo(_closestSun.GlobalPosition);
-        _closestSunIndicator.LookAt(_closestSun.GlobalPosition);
+        Vector2 closestSunPosition = _sunPositions[closestIndex];
+        _closestSunVector = GlobalPosition.DirectionTo(closestSunPosition);
+        _closestSunIndicator.LookAt(closestSunPosition);
         _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector * 50.0f;
     }
 

@@ -16,6 +16,8 @@ public partial class Devourer : EnemyBase
 
     private Sun _currentClosestSun;
     private SunInteractionArea _pendingInteractionArea;
+    // Parallel to SunRefs; suns never move, so this is safe to build once.
+    private Vector2[] _sunPositions = [];
 
     private bool _siphoning = false;
 
@@ -80,16 +82,10 @@ public partial class Devourer : EnemyBase
     }
     private void FindClosestSun()
     {
-        float _closestDist = float.MaxValue;
-        foreach (Sun sun in SunRefs)
-        {
-            float _distSquared = GlobalPosition.DistanceSquaredTo(sun.GlobalPosition);
-            if (_distSquared < _closestDist)
-            {
-                _closestDist = _distSquared;
-                _currentClosestSun = sun;
-            }
-        }
+        int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition, _sunPositions);
+        if (closestIndex < 0) return;
+
+        _currentClosestSun = SunRefs[closestIndex];
     }
 
     private void MoveToClosestSun()
@@ -101,6 +97,11 @@ public partial class Devourer : EnemyBase
 
     protected override void OnSunsReady()
     {
+        _sunPositions = new Vector2[SunRefs.Length];
+        for (int i = 0; i < SunRefs.Length; i++)
+        {
+            _sunPositions[i] = SunRefs[i].GlobalPosition;
+        }
         FindClosestSun();
     }
 
