@@ -16,9 +16,19 @@
 This document sequences the path from "working jam submission with zero test
 coverage" to "exemplar teaching codebase," ordered safest-first. Each tier
 depends on the previous one landing and staying green under
-`GodotWildJam96.Tests`. No tier in this document has been executed yet —
-see [ADR-007](decisions/007-unit-test-harness-scoped-to-pure-logic.md) for
-what *was* shipped this pass (the harness itself, zero gameplay changes).
+`GodotWildJam96.Tests`. See [ADR-007](decisions/007-unit-test-harness-scoped-to-pure-logic.md)
+for the harness this roadmap assumes.
+
+> [!NOTE]
+> **All four tiers below are complete.** They shipped as part of a broader
+> 8-phase refactor plan (Tiers 1-4 here map to that plan's Phases 1, 3, 4,
+> and 5; the remaining phases — enums replacing magic ints, Sun siphon DRY +
+> MainSun's end-state guard, `.tscn`-touching `[Export]` cleanups, and the
+> final `sealed`/property/`readonly` convention sweep — aren't tiered here
+> since they weren't part of this document's original scope). See
+> [ADR-008](decisions/008-refactor-judgment-calls.md) for the three
+> non-obvious judgment calls made along the way. `GodotWildJam96.Tests` grew
+> from the 5-test baseline this refactor started from to 21.
 
 ## The seam that makes any of this possible
 
@@ -39,8 +49,8 @@ injected as a plain `System.Random` parameter instead — seedable
 
 ## Tier 1 — safe, mechanical, no behavior change
 
-No characterization tests needed first; these are refactorings a compiler
-and the existing analyzer suite already fully protect.
+**Done.** No characterization tests needed first; these are refactorings a
+compiler and the existing analyzer suite already fully protect.
 
 - Remove 4 unused `using`s in
   [Spawner.cs:2-7](../../GodotWildJam96.Game/scenes/Spawner/Spawner.cs#L2-L7)
@@ -70,7 +80,7 @@ and the existing analyzer suite already fully protect.
 
 ## Tier 2 — first real extraction: Player.FindClosestSun
 
-[Player.cs:438-456](../../GodotWildJam96.Game/scenes/Player/Player.cs#L438-L456)
+**Done.** [Player.cs:438-456](../../GodotWildJam96.Game/scenes/Player/Player.cs#L438-L456)
 is the highest-value first target — better than `Spawner`, because the pure
 part is trivially separable and extracting it fixes two live defects at the
 same time:
@@ -90,6 +100,9 @@ this one first, prove the pattern works end to end, then move to Tier 3.
 
 ## Tier 3 — Spawner SRP split
 
+**Done**, including the off-by-one fix flagged below (a sun whose 25th
+placement attempt succeeded was being discarded anyway; tracked explicitly
+now instead of inferred from the retry counter).
 [Spawner.cs](../../GodotWildJam96.Game/scenes/Spawner/Spawner.cs) holds four
 unrelated spawn policies plus a `MainSun` bootstrap in 140 lines. Per-method
 purity, mapped in full:
@@ -129,11 +142,14 @@ into the extraction.
 
 ## Tier 4 — Player.cs decomposition (deferred)
 
-[Player.cs](../../GodotWildJam96.Game/scenes/Player/Player.cs) is ~480 lines
-spanning input, movement, braking physics, thruster animation, charge-shot
-combat, siphon interaction, damage/health, and light-radius safety — a
-textbook God Object mapping to
-[`E15 - Component`](../gaming-patterns-index.md). It is deliberately
+**Done**, as plain C# collaborators Player owns and constructs in `_Ready()`
+(`EnergyPool`, `ChargeMeter`, `ThrusterAnimator`) — not scene-component
+child nodes; see [ADR-008](decisions/008-refactor-judgment-calls.md#1-plain-c-collaborators-over-scene-component-child-nodes-phase-5)
+for why. [Player.cs](../../GodotWildJam96.Game/scenes/Player/Player.cs) was
+~480 lines spanning input, movement, braking physics, thruster animation,
+charge-shot combat, siphon interaction, damage/health, and light-radius
+safety — a textbook God Object mapping to
+[`E15 - Component`](../gaming-patterns-index.md). It was deliberately
 sequenced last:
 
 - It is the single most game-feel-critical file in the project — regressions
@@ -142,9 +158,11 @@ sequenced last:
   removed; what's left is input handling and physics tuning that rides on
   manual verification alone, not automated tests.
 
-Do not start this tier until Tiers 1-3 are done and green, and expect it to
-lean on the manual-play verification bar stated in
-[CLAUDE.md](../../CLAUDE.md) rather than test coverage.
+This tier only started once Tiers 1-3 were done and green, and leaned on the
+manual-play verification bar stated in [CLAUDE.md](../../CLAUDE.md) rather
+than test coverage for the Godot-coupled remainder
+(`ThrusterAnimator`) — `EnergyPool` and `ChargeMeter` are pure and covered
+by `EnergyPoolTests`/`ChargeMeterTests`.
 
 ## Honest pattern notes
 
@@ -178,31 +196,33 @@ as what it does:
 ## Flagged, not scheduled
 
 Found while mapping the codebase for this roadmap. Listed for a deliberate
-decision, not silently fixed as part of any tier above:
+decision, not silently fixed as part of any tier above.
+
+**Resolved during the refactor:**
+
+- ~~`Stolenpower` should be `StolenPower`~~ — renamed, no `.tscn` edits
+  needed (it was unassigned everywhere at the time).
+- ~~`EnemyBase`'s `protected` members are raw fields, not properties~~ —
+  promoted to `[Export]` auto-properties (`Speed`, `SunPoints`, `Lives`,
+  `StolenPower`, `TargetRotation`, `TurnSpeed`); same export keys, same
+  subclass call sites.
+- ~~`SPAWN_ATTEMPTS` is SCREAMING_CASE~~ — renamed to `spawnAttempts`.
+
+**Still open — not folded into this refactor:**
 
 - `_interruptDamage`
-  ([Player.cs:86](../../GodotWildJam96.Game/scenes/Player/Player.cs#L86))
+  ([Player.cs:60](../../GodotWildJam96.Game/scenes/Player/Player.cs#L60))
   is declared but never assigned anywhere, so it is always `0.0f`. Since
   `TakeDamage` checks `if (dmg > _interruptDamage)`, every nonzero hit
   interrupts an active siphon. This may be the intended feel, but as
   written it's accidental — there's no code path that sets a real
-  threshold.
-- `Stolenpower`
-  ([EnemyBase.cs:20](../../GodotWildJam96.Game/scenes/Enemies/EnemyBase/EnemyBase.cs#L20))
-  should be `StolenPower` by this project's naming convention. It's
-  `[Export]`, so a rename needs matching `.tscn` export-key edits, not just
-  a C# rename.
-- `EnemyBase`'s `protected` members are raw PascalCase fields, not
-  properties. S1104 (the analyzer rule that forced 16 `public` fields to
-  properties this session) only flags `public` members, so these were never
-  caught. The convention for `protected` fields is currently undecided in
-  this codebase — worth a stated decision one way or the other rather than
-  leaving it ambiguous.
-- `SPAWN_ATTEMPTS`
-  ([Spawner.cs:50](../../GodotWildJam96.Game/scenes/Spawner/Spawner.cs#L50))
-  is a SCREAMING_CASE local variable, inconsistent with the project's
-  `_camelCase` private-field / PascalCase-property convention.
+  threshold. Left alone deliberately: game feel was frozen for this whole
+  pass except three explicitly-named fixes, and this wasn't one of them —
+  fixing it is a balance call for whoever owns game feel next, not a
+  refactor.
 
 ---
 
-Version: 1.0 — 2026-08-24
+Version: 2.0 — 2026-08-24 — all four tiers complete; see
+[ADR-008](decisions/008-refactor-judgment-calls.md) for the judgment calls
+made while executing them.

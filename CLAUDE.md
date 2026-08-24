@@ -89,11 +89,32 @@ green, then a manual play pass in the editor.
   public field fails the build (S1104). This includes `[Export]` fields
   exposed to the Inspector — see `Sun.EnergyValuebar`, `Sun.SiphonSound`,
   `Spawner.SunScene`, etc. for the pattern.
+- `protected` members on a subclassable base follow the same PascalCase
+  property style as `public` ones, not the private `_camelCase` field
+  style — see `EnemyBase`'s `Speed`, `SunPoints`, `Lives`, `StolenPower`,
+  `TargetRotation`, `TurnSpeed`. They're `EnemyBase`'s subclass-facing API
+  surface (read by `Squid`/`Devourer`), not private state that happens to
+  be shared, so they're styled like the public API they effectively are.
+- Small state/mode values are enums, not magic ints — `SiphonDirection`
+  (Out/In), `SiphonOwner` (Player/Enemy), `SquidMoveState`
+  (Waiting/Thrusting/Coasting) replace what used to be 0/1/2 threaded
+  through method signatures with only a comment to explain the meaning.
 - Style: Allman braces, 4-space indent, LF endings, 120-char lines,
   explicit types except where `var`'s type is apparent
   (`csharp_style_var_when_type_is_apparent`).
-- `sealed` is applied inconsistently (3 of 25 classes) — no enforced
-  project-wide rule either way; don't assume a leaf class must be sealed.
+- `sealed` by default on every leaf class, enforced project-wide. `Sun` and
+  `EnemyBase` stay unsealed — they're the only two classes with a real
+  subclass (`MainSun`; `Squid`, `Devourer`). Assume any other class here is
+  sealed unless you're about to give it its first subclass.
+- `GodotWildJam96.Game/classes/` splits into `enums/` (pure enum types),
+  `constants/` (pure constant holders like `GameConstants`), and `utils/`
+  (stateless static-method helpers like `NearestTarget`, `SpawnPlacement`).
+  Stateful collaborator classes a node constructs at runtime (`EnergyPool`,
+  `ChargeMeter`, `ThrusterAnimator`) and the `Resource` subtype
+  `ScrollingBackgroundImages` stay in `classes/` root — none of the three
+  subfolders fit a class with instance state or a scene-referenced
+  `Resource`. Namespace stays flat (`namespace GodotWildJam96;`)
+  regardless of which folder a file lives in.
 
 ## Out of scope
 
@@ -133,9 +154,12 @@ green, then a manual play pass in the editor.
   list.
 - [`.claude/rules/skill-authoring.md`](.claude/rules/skill-authoring.md) —
   conventions for this project's own `.claude/skills/*` files.
-- `.claude/knowledge/decisions/` — six ADRs recording calls already made
+- `.claude/knowledge/decisions/` — eight ADRs recording calls already made
   (events over `[Signal]`, `[Export]` over `GetNode`, the net8.0/Godot
-  version pins, the NASA Power-of-Ten adaptation).
+  version pins, the NASA Power-of-Ten adaptation, the unit test harness,
+  and three judgment calls from the teaching-codebase refactor — plain C#
+  collaborators over scene components, `System.Random` injection over an
+  `IRandomSource` interface, and the deliberately-unfixed sun distribution).
 - [`.claude/knowledge/godot-csharp-gotchas.md`](.claude/knowledge/godot-csharp-gotchas.md),
   [`multithreading-csharp-godot.md`](.claude/knowledge/multithreading-csharp-godot.md),
   [`gaming-patterns-index.md`](.claude/knowledge/gaming-patterns-index.md) —
