@@ -448,7 +448,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_energySprite", "_shootSound", "_shooter", "_leftMarker", "_rightMarker")]
+[node name="Player" type="CharacterBody2D" unique_id=153989784 node_paths=PackedStringArray("_closestSunIndicator", "_playerSprite", "_firingSprite", "_thrustMainSprite", "_thrustForwardSprite", "_thrustLeftSprite", "_thrustRightSprite", "_energySprite", "_shooter", "_leftMarker", "_rightMarker")]
 collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_h00vy")
@@ -461,7 +461,6 @@ _thrustForwardSprite = NodePath("ThrustForwardSprite")
 _thrustLeftSprite = NodePath("ThrustLeftSprite")
 _thrustRightSprite = NodePath("ThrustRightSprite")
 _energySprite = NodePath("EnergySprite")
-_shootSound = NodePath("ShootSound")
 _shooter = NodePath("Shooter")
 _leftMarker = NodePath("LeftGunMarker2D")
 _rightMarker = NodePath("RightGunMarker2D")

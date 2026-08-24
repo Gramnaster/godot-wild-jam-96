@@ -1,10 +1,6 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Godot;
-using Microsoft.VisualBasic;
 
 namespace GodotWildJam96;
 
@@ -27,8 +23,8 @@ public partial class Spawner : Node2D
     {
         EventBus.Instance.OnSpawnDevourers += SpawnDevourers;
         MainSun newMainSun = MainSunScene.Instantiate<MainSun>();
-        CallDeferred("add_child", newMainSun);
-        CallDeferred("Trial");
+        CallDeferred(Node.MethodName.AddChild, newMainSun);
+        CallDeferred(MethodName.Trial);
         _spawnSquidTimer.Timeout += SpawnSquid;
     }
 
@@ -47,23 +43,23 @@ public partial class Spawner : Node2D
     {
         for (int i = 0; i < spawnCount; i++)
         {
-            int SPAWN_ATTEMPTS = 0;
+            int spawnAttempts = 0;
             do
             {
                 SunSpawnCalculator();
-                SPAWN_ATTEMPTS++;
-                //GD.Print(_sunPos + " " + SPAWN_ATTEMPTS + " " + i);
-            } while (!EnsurePositionValid(_sunPos) && SPAWN_ATTEMPTS < 25);
+                spawnAttempts++;
+                //GD.Print(_sunPos + " " + spawnAttempts + " " + i);
+            } while (!EnsurePositionValid(_sunPos) && spawnAttempts < 25);
 
-            if (SPAWN_ATTEMPTS == 25)
+            if (spawnAttempts == 25)
             {
                 //GD.Print("Abort spawning this sun! No suitable place found!");
                 continue;
             }
 
             Sun newSun = SunScene.Instantiate<Sun>();
-            //Adding to the Sun group so enemies can see it
-            //Instantiating the new sun as a child of the Main scene so it will be visible in the game
+            //Instantiating the new sun as a child of the Main scene so it will be visible in the game.
+            //The sun group itself is assigned in Sun._Ready, not here.
             LevelBase.AddChild(newSun);
             newSun.GlobalPosition = _sunPos;
 
@@ -101,7 +97,7 @@ public partial class Spawner : Node2D
         Squid _newSquid = SquidScene.Instantiate<Squid>();
         _newSquid.GlobalPosition = _player.GlobalPosition + OffscreenSpawnOffset();
         AddChild(_newSquid);
-        GD.Print("Spawning Squid!");
+        // GD.Print("Spawning Squid!");
         _spawnSquidTimer.Start();
     }
 
@@ -135,6 +131,5 @@ public partial class Spawner : Node2D
     private void SunSpawnCalculator()
     {
         _sunPos = Vector2.FromAngle((float)GD.RandRange(0, Mathf.Tau)) * GD.RandRange(-5000, 5000);
-        _sunPos = new Vector2(_sunPos.X, _sunPos.Y);
     }
 }

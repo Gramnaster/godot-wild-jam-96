@@ -38,22 +38,22 @@ public partial class EventBus : Node
         Instance = this;
     }
 
-    public void EmitOnShipEntered(Player ship, SunInteractionArea interactionArea)
+    public static void EmitOnShipEntered(Player ship, SunInteractionArea interactionArea)
     {
-        OnShipEntered?.Invoke(ship, interactionArea);
+        Instance.OnShipEntered?.Invoke(ship, interactionArea);
     }
 
 
-    public void EmitOnShipExited(Player ship, SunInteractionArea interactionArea)
+    public static void EmitOnShipExited(Player ship, SunInteractionArea interactionArea)
     {
-        OnShipExited?.Invoke(ship, interactionArea);
+        Instance.OnShipExited?.Invoke(ship, interactionArea);
     }
 
-    public void EmitOnSiphonStart(SunInteractionArea interactionArea, int siphonType)
+    public static void EmitOnSiphonStart(SunInteractionArea interactionArea, int siphonType)
     {
         //Code to see who is subscribed to this event
         //GD.Print($"Siphon Start Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonStart?.GetInvocationList().Length ?? 0}");
-        OnSiphonStart?.Invoke(interactionArea, siphonType);
+        Instance.OnSiphonStart?.Invoke(interactionArea, siphonType);
     }
 
     public static void EmitOnEnemySiphonStart(SunInteractionArea interactionArea, Devourer devourer, int siphonType)
@@ -65,22 +65,22 @@ public partial class EventBus : Node
         Instance.OnEnemySiphonStop?.Invoke(interactionArea);
     }
 
-    public void EmitOnPlayerSiphonEnd(SunInteractionArea interactionArea)
+    public static void EmitOnPlayerSiphonEnd(SunInteractionArea interactionArea)
     {
         //Code to see who is subscribed to this event
         //GD.Print($"Siphon End Event Emitted {interactionArea.Name} on EventBus {GetInstanceId()}, subscribers: {OnSiphonEnd?.GetInvocationList().Length ?? 0}");
-        GD.Print("Siphon End Event Emitted");
-        OnPlayerSiphonEnd?.Invoke(interactionArea);
+        // GD.Print("Siphon End Event Emitted");
+        Instance.OnPlayerSiphonEnd?.Invoke(interactionArea);
     }
 
-    public void EmitOnPlayerSiphonReset(Boolean reset)
+    public static void EmitOnPlayerSiphonReset(Boolean reset)
     {
-        GD.Print("Siphon Reset!");
-        OnPlayerSiphonReset?.Invoke(reset);
+        // GD.Print("Siphon Reset!");
+        Instance.OnPlayerSiphonReset?.Invoke(reset);
     }
     public static void EmitOnDamageTakenPlayer(int dmg)
     {
-        GD.Print("Player taking damage!");
+        // GD.Print("Player taking damage!");
         Instance.OnDamageTakenPlayer?.Invoke(dmg);
     }
 
@@ -96,13 +96,13 @@ public partial class EventBus : Node
 
     public static void EmitOnCreateBullet(Vector2 position, Vector2 direction, float speed, float lifetimeSeconds, PackedScene scene)
     {
-        GD.Print("Im firing ma lazors");
+        // GD.Print("Im firing ma lazors");
         Instance.OnCreateBullet?.Invoke(position, direction, speed, lifetimeSeconds, scene);
     }
 
     public static void EmitOnCreateExplosion(Vector2 position)
     {
-        GD.Print("Explosion triggered");
+        // GD.Print("Explosion triggered");
         Instance.OnCreateExplosion?.Invoke(position);
     }
 

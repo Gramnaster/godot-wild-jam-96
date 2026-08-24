@@ -1,6 +1,4 @@
-using System;
 using Godot;
-using GodotWildJam96;
 
 namespace GodotWildJam96;
 

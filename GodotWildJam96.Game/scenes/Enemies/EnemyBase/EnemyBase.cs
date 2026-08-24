@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using Godot;
-using GodotWildJam96;
 
 namespace GodotWildJam96;
 
@@ -79,7 +77,7 @@ public partial class EnemyBase : CharacterBody2D
     // Subclasses can override this if they need custom hit behaviour
     protected virtual void OnHitBoxBodyEntered(Node2D body)
     {
-        GD.Print("Body Entered is: " + body);
+        // GD.Print("Body Entered is: " + body);
         if (body is Player)
         {
             EventBus.EmitOnDamageTakenPlayer(1);
@@ -88,10 +86,10 @@ public partial class EnemyBase : CharacterBody2D
 
     protected virtual void OnHitBoxAreaEntered(Area2D body)
     {
-        GD.Print("Body Entered is: " + body);
+        // GD.Print("Body Entered is: " + body);
         if (body is BulletBase)
         {
-            GD.Print("You're hitting me: ", nameof(EnemyBase));
+            // GD.Print("You're hitting me: ", nameof(EnemyBase));
             Lives--;
             if (Lives <= 0)
             {
@@ -105,7 +103,7 @@ public partial class EnemyBase : CharacterBody2D
         }
         else
         {
-            GD.Print("Entered a random body!");
+            // GD.Print("Entered a random body!");
         }
     }
 

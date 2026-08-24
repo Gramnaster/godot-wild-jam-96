@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Xml;
 using Godot;
 
 namespace GodotWildJam96;
@@ -60,7 +59,6 @@ public partial class Player : CharacterBody2D
     [Export] private AnimatedSprite2D _thrustLeftSprite;
     [Export] private AnimatedSprite2D _thrustRightSprite;
     [Export] private AnimatedSprite2D _energySprite;
-    [Export] private AudioStreamPlayer2D _shootSound;
     [Export] private Shooter _shooter;
     // [Export] private Label DebugLabel { get; set; }
     [Export] private Marker2D _leftMarker;
@@ -87,11 +85,9 @@ public partial class Player : CharacterBody2D
 
     // Weapons will use this to query the angle
     private Vector2 FacingDirection => Vector2.FromAngle(GlobalRotation);
-    private float _targetRotation;
 
     // Attack properties
     private float _primarySpeed = 450f;                     // How fast the bullet moves
-    private float _primaryChargedSpeed = 900f;              // (unused) How fast the bullet moves after charging
     private float _primaryLifetimeSeconds = 0.15f;           // How long the bullet lasts (determines range)
     private float _primaryChargedLifetimeSeconds = 0.8f;    // How long the bullet lasts after charging
 
@@ -136,7 +132,7 @@ public partial class Player : CharacterBody2D
                 _siphonType = 0;
                 // GD.Print("Start siphoning energy out of Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-                EventBus.Instance.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
                 SiphonUnderway = true;
             }
@@ -152,7 +148,7 @@ public partial class Player : CharacterBody2D
                 _siphonType = 1;
                 // GD.Print("Start siphoning energy into Sun");
                 //0 For siphon out, 1 for siphon in. This is to differentiate between the two siphon events.
-                EventBus.Instance.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
+                EventBus.EmitOnSiphonStart(CurrentSunInteractionArea, _siphonType);
                 EventBus.EmitOnSpawnDevourers(CurrentSunInteractionArea);
                 SiphonUnderway = true;
             }
@@ -280,7 +276,7 @@ public partial class Player : CharacterBody2D
 
         // 'W'/'S' apply thrust where facing
         Thrust(dt);
-        Break(dt);
+        Brake(dt);
 
         // Limit to how fast player goes or they'll zoom too fast
         Velocity = Velocity.LimitLength(MAX_LINEAR_SPEED);
@@ -307,7 +303,7 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    private void Break(float dt)
+    private void Brake(float dt)
     {
         IsPowerThrusting = false;
 
@@ -430,7 +426,7 @@ public partial class Player : CharacterBody2D
         //If the shield takes too much damage too fast, interrupt the siphoning
         if (dmg > _interruptDamage)
         {
-            EventBus.Instance.EmitOnPlayerSiphonEnd(CurrentSunInteractionArea);
+            EventBus.EmitOnPlayerSiphonEnd(CurrentSunInteractionArea);
             SiphonUnderway = false;
         }
     }

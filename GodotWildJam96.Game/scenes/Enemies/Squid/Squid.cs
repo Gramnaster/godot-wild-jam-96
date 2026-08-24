@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace GodotWildJam96;
@@ -7,8 +6,8 @@ public partial class Squid : EnemyBase
 {
     private const float BiteRange = 150f;
 
-    [Export] AnimatedSprite2D _squidMouthSprite;
-    [Export] Timer _moveTimer;
+    [Export] private AnimatedSprite2D _squidMouthSprite;
+    [Export] private Timer _moveTimer;
     private double _thrustTimer = 1.8f;
     private Vector2 _direction;
     private int _moveState = 0;
@@ -38,7 +37,7 @@ public partial class Squid : EnemyBase
         MoveAndSlide();
     }
 
-    private void ChooseDiretcion(float dt)
+    private void ChooseDirection(float dt)
     {
         Vector2 toPlayer = PlayerRef.GlobalPosition - GlobalPosition;
         _direction = toPlayer.Normalized();
@@ -50,7 +49,7 @@ public partial class Squid : EnemyBase
 
     private void MoveTo(float dt)
     {
-        ChooseDiretcion(dt);
+        ChooseDirection(dt);
         //0 means Squid is waiting for the ability to move
         if (_moveState == 0)
         {

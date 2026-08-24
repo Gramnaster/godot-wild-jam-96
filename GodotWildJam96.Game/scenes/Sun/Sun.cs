@@ -1,8 +1,4 @@
-using System;
-using System.Data;
-using System.Runtime.CompilerServices;
 using Godot;
-
 
 namespace GodotWildJam96;
 
@@ -121,7 +117,7 @@ public partial class Sun : Area2D
                 _siphonTimePassed = 0.0f;
                 _siphonCount++;
             }
-            GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
+            //GD.Print("Current Energy:" + CurrentEnergy + " Max Energy:" + MaxEnergy);
         }
         if (_siphonCount > 0)
         {
@@ -149,7 +145,7 @@ public partial class Sun : Area2D
     {
         if (_siphonInOngoing || _siphonOutOngoing)
         {
-            GD.Print("Siphon stopped, you lost some energy!");
+            // GD.Print("Siphon stopped, you lost some energy!");
         }
         player.InLightRadius = false;
         CurrentSunInteractionArea = null;
@@ -180,7 +176,7 @@ public partial class Sun : Area2D
                 // collided with the player's in-progress one),
                 // so tell the player it's not underway
                 // otherwise SiphonUnderway sticks true forever
-                EventBus.Instance.EmitOnPlayerSiphonReset(false);
+                EventBus.EmitOnPlayerSiphonReset(false);
             }
         }
 
@@ -199,18 +195,18 @@ public partial class Sun : Area2D
     {
         if ((_siphonOutOngoing || _siphonInOngoing) && _siphonOwner == 0)
         {
-            GD.Print("Siphon Stopped");
+            // GD.Print("Siphon Stopped");
             //Can also add code to stop or 'finish' siphoning for other factors
             _siphonOutOngoing = false;
             _siphonInOngoing = false;
             _siphonCount = 0;
-            EventBus.Instance.EmitOnPlayerSiphonReset(false);
+            EventBus.EmitOnPlayerSiphonReset(false);
         }
     }
 
     public void EnemyStopSiphon(SunInteractionArea sunInteractionArea)
     {
-        GD.Print("Siphon Stopped");
+        // GD.Print("Siphon Stopped");
         //Can also add code to stop or 'finish' siphoning for other factors
         _siphonOutOngoing = false;
         _siphonInOngoing = false;

@@ -26,7 +26,7 @@ public partial class SunInteractionArea : Area2D
     {
         if (body is Player player)
         {
-            EventBus.Instance.EmitOnShipEntered(player, this);
+            EventBus.EmitOnShipEntered(player, this);
         }
         if (body is Squid squid)
         {
@@ -42,7 +42,7 @@ public partial class SunInteractionArea : Area2D
     {
         if (body is Player player)
         {
-            EventBus.Instance.EmitOnShipExited(player, this);
+            EventBus.EmitOnShipExited(player, this);
         }
     }
 
