@@ -66,12 +66,12 @@ manual play pass in the editor.
   `using Godot;` in the simulation layer is a build failure, not a review
   catch. See `.claude/knowledge/decisions/009-sim-view-separation.md`.
 - Sim is Godot-*namespace*-free, not merely `GD.*`-free. It uses
-  `System.Numerics.Vector2`, and `Sim/SimMath.cs` reimplements the Godot
+  `System.Numerics.Vector2`, and `Sim/Utils/SimMath.cs` reimplements the Godot
   4.7 helpers whose semantics differ from the `System.Numerics`
   equivalents — most importantly `Normalized()`, which returns `Zero` for a
   zero vector where `Vector2.Normalize` returns `NaN`. Use `SimMath`, not
   `System.Numerics` directly, for anything Godot had its own helper for.
-  `classes/utils/SimVec.cs` in the Game assembly is the **only** place
+  `classes/Utils/SimVec.cs` in the Game assembly is the **only** place
   vectors convert between the two representations — don't hand-roll a
   `new Vector2(v.X, v.Y)` at a call site.
 - The bridge never holds a second copy of simulation state. Where Godot
@@ -133,16 +133,29 @@ manual play pass in the editor.
   sealed unless you're about to give it its first subclass.
 - Where a new class goes is decided by the boundary first, the folder
   second. If it holds gameplay state or a gameplay rule and needs no engine
-  type, it belongs in `GodotWildJam96.Sim` (flat, with `enums/` the only
-  subfolder). If it needs a `Node`, `Resource`, `GD.*`, or `Input.*`, it
-  belongs in `GodotWildJam96.Game`.
-- Inside the Game assembly, `classes/` splits into `constants/` (pure
-  constant holders like `GameConstants`), `utils/` (stateless static
-  helpers like `SimVec`), `anims/` (`ThrusterAnimator`), and `images/`
+  type, it belongs in `GodotWildJam96.Sim`, categorized into PascalCase
+  folders that mirror the Game assembly's own entity scenes: `Player/`
+  (`ShipMotion`, `ChargeMeter`, `PlayerSiphonState`, `ExposureTimer`,
+  `EnergyPool`), `Enemies/` (`EnemyVitals`, `SquidMotion`,
+  `DevourerApproach`), `Suns/` (`SunEnergy`), `Combat/` (`ProjectileMotion`,
+  `ShotProfile`), `Utils/` (`SimMath`, `NearestTarget`, `SpawnPlacement`),
+  and `Enums/` (`SiphonDirection`, `SiphonOwner`, `SquidMoveState`) — small
+  value types cross-cutting more than one entity stay grouped by kind there
+  rather than split across the entity folders. Folders are purely
+  organizational: the namespace stays flat regardless (see above), so a new
+  Sim file only needs the right folder, not a new `using`. If it needs a
+  `Node`, `Resource`, `GD.*`, or `Input.*`, it belongs in
+  `GodotWildJam96.Game`.
+- Inside the Game assembly, `classes/` splits into `Constants/` (pure
+  constant holders like `GameConstants`), `Utils/` (stateless static
+  helpers like `SimVec`), `Anims/` (`ThrusterAnimator`), and `Images/`
   (the `Resource` subtype `ScrollingBackgroundImages`). `ThrusterAnimator`
   stays on the Game side deliberately — it drives four `AnimatedSprite2D`s
   and polls `Input`, so it is view code that happens not to be a `Node`,
-  not a simulation class.
+  not a simulation class. (Folder casing is PascalCase project-wide,
+  matching the Game assembly's `scenes/Player/`, `scenes/Enemies/`, etc. —
+  the same convention now applied to Sim's category folders and Game's
+  `classes/` category folders alike.)
 
 ## Out of scope
 
