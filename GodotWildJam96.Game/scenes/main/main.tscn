@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://e578stec1hgi" path="res://scenes/main/Main.cs" id="1_hyk8p"]
 [ext_resource type="Texture2D" uid="uid://c8blw0ermlv8m" path="res://assets/backgrounds/empty-01.png" id="3_blune"]
-[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/images/ScrollingBackgroundImages.cs" id="3_hujxm"]
+[ext_resource type="Script" uid="uid://bg2qdbskuvwe" path="res://classes/Images/ScrollingBackgroundImages.cs" id="3_hujxm"]
 [ext_resource type="Texture2D" uid="uid://b8su8ntml16qu" path="res://assets/backgrounds/stars-01.png" id="4_th5th"]
 [ext_resource type="Script" uid="uid://b0kwhxeyd6tb5" path="res://scenes/main/StartGameButton.cs" id="5_6q06x"]
 [ext_resource type="Texture2D" uid="uid://c0hf2t4350x0v" path="res://assets/backgrounds/stars-02.png" id="5_7smn1"]
