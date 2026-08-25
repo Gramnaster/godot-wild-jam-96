@@ -12,7 +12,7 @@ public sealed partial class Devourer : EnemyBase
 
     protected override AnimatedSprite2D[] FlashSprites => [AnimateSprite, _mouthSprite];
 
-    private readonly DevourerApproach _approach = new();
+    private DevourerApproach _approach;
 
     private Sun _currentClosestSun;
     private SunInteractionArea _pendingInteractionArea;
@@ -22,6 +22,7 @@ public sealed partial class Devourer : EnemyBase
     public override void _Ready()
     {
         base._Ready();
+        _approach = new DevourerApproach(TurnSpeed);
         EventBus.Instance.OnDevourerEntered += DevourerEntered;
         base.OnAllSunsSpawned();
     }
@@ -36,7 +37,7 @@ public sealed partial class Devourer : EnemyBase
     {
         if (!_approach.IsSiphoning)
         {
-            MoveToClosestSun();
+            MoveToClosestSun((float)delta);
             MoveAndSlide();
             TryStartSiphoning();
         }
@@ -87,13 +88,18 @@ public sealed partial class Devourer : EnemyBase
         _currentClosestSun = SunRefs[closestIndex];
     }
 
-    private void MoveToClosestSun()
+    private void MoveToClosestSun(float deltaSeconds)
     {
         if (_currentClosestSun is null) return;
-        LookAt(_currentClosestSun.GlobalPosition);
-        Velocity = DevourerApproach
-            .VelocityToward(GlobalPosition.ToSim(), _currentClosestSun.GlobalPosition.ToSim())
-            .ToGodot();
+
+        SimVector2 selfPosition = GlobalPosition.ToSim();
+        SimVector2 sunPosition = _currentClosestSun.GlobalPosition.ToSim();
+
+        _approach.Rotation = Rotation;
+        _approach.TurnToward(selfPosition, sunPosition, deltaSeconds);
+        Rotation = _approach.Rotation;
+
+        Velocity = DevourerApproach.VelocityToward(selfPosition, sunPosition).ToGodot();
     }
 
     protected override void OnSunsReady()
