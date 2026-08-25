@@ -4,7 +4,7 @@ using System.Reflection;
 using GodotWildJam96.Sim;
 using Xunit;
 
-namespace GodotWildJam96.Tests;
+namespace GodotWildJam96.Sim.Tests;
 
 // The reference graph is the real enforcement -- this test project has no
 // ProjectReference to the Game assembly, so a `using Godot;` in Sim fails the

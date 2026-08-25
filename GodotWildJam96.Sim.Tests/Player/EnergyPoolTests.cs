@@ -1,7 +1,7 @@
 using GodotWildJam96.Sim;
 using Xunit;
 
-namespace GodotWildJam96.Tests;
+namespace GodotWildJam96.Sim.Tests;
 
 public class EnergyPoolTests
 {
