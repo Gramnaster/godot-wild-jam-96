@@ -280,9 +280,10 @@ public sealed partial class Player : CharacterBody2D
         int closestIndex = NearestTarget.IndexOfNearest(GlobalPosition.ToSim(), _sunPositions);
         if (closestIndex < 0) return;
 
-        Vector2 closestSunPosition = _sunPositions[closestIndex].ToGodot();
-        _closestSunVector = GlobalPosition.DirectionTo(closestSunPosition);
-        _closestSunIndicator.LookAt(closestSunPosition);
+        SimVector2 closestSunPosition = _sunPositions[closestIndex];
+        _closestSunVector = GlobalPosition.ToSim().DirectionTo(closestSunPosition).ToGodot();
+
+        _closestSunIndicator.LookAt(closestSunPosition.ToGodot());
         _closestSunIndicator.GlobalPosition = GlobalPosition + _closestSunVector * 50.0f;
     }
 
