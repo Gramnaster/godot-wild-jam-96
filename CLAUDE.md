@@ -38,17 +38,21 @@ dotnet build "GodotWildJam-96.sln"
 ```
 
 ```
-dotnet test "GodotWildJam96.Tests/GodotWildJam96.Tests.csproj"
+dotnet test "GodotWildJam96.Sim.Tests/GodotWildJam96.Sim.Tests.csproj"
 ```
 
-`GodotWildJam96.Tests` is a plain xUnit project (no Godot test runner) that
-references **only** `GodotWildJam96.Sim` — deliberately not the Game
+`GodotWildJam96.Sim.Tests` is a plain xUnit project (no Godot test runner)
+that references **only** `GodotWildJam96.Sim` — deliberately not the Game
 project, so a Godot dependency leaking into the simulation breaks this
 build. It covers the simulation classes directly; don't write a test that
 drives a bridge script, because a bridge with logic worth testing is a
 bridge that hasn't finished handing that logic over. See
 `.claude/knowledge/decisions/007-unit-test-harness-scoped-to-pure-logic.md`
-and `009-sim-view-separation.md`.
+and `009-sim-view-separation.md`. Its own folders mirror Sim's categories
+one class per file (`Player/`, `Enemies/`, `Suns/`, `Combat/`, `Utils/`),
+flat namespace `GodotWildJam96.Sim.Tests` regardless of subfolder;
+`SimBoundaryTests.cs` stays at the root since it tests the assembly
+boundary itself, not one entity category.
 
 The bridge layer itself — scene tree, `GD.*`, `Input.*`, animation and
 audio — still has no automated coverage and is verified by playing it.
@@ -62,7 +66,7 @@ manual play pass in the editor.
   reference at all**; node scripts under `GodotWildJam96.Game` are bridges
   that poll input, call into the simulation, and render what it returns.
   Dependency direction is one-way and enforced by the reference graph:
-  Game → Sim, and `GodotWildJam96.Tests` references **only** Sim, so a
+  Game → Sim, and `GodotWildJam96.Sim.Tests` references **only** Sim, so a
   `using Godot;` in the simulation layer is a build failure, not a review
   catch. See `.claude/knowledge/decisions/009-sim-view-separation.md`.
 - Sim is Godot-*namespace*-free, not merely `GD.*`-free. It uses
