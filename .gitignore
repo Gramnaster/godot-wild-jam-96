@@ -1,5 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
+.export/
 GodotWildJam96.Game/android/
 GodotWildJam96.Game/.export/
 
@@ -10,5 +11,5 @@ obj/
 # Visual Studio
 .vs/
 
-# Project-designs
+# Project Designs
 Concepts/
