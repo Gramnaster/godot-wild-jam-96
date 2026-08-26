@@ -10,6 +10,86 @@ hitting 0 energy levels ends the run (`GameOverScreen.tscn`). Single-player,
 no networking, built by a 2-contributor jam team. Optimize for finishing a
 short-lived codebase, not for scaling one.
 
+This file is the single canonical instruction document for Claude Code,
+Codex, and other coding agents working in this repository. Shared rules,
+skills, agent playbooks, and knowledge remain under `.claude/`; do not create
+parallel copies for another agent runtime.
+
+## Shared agent integration
+
+Project-specific decisions in this file override generic guidance in
+`.claude/`. In particular, this project's small, single-player jam scope and
+project-wide sim-view split take precedence over advice written for larger,
+networked, or long-lived games.
+
+### Runtime-specific integration
+
+- Claude Code uses the existing `.claude` settings, agent, skills, and
+  workflow wiring directly.
+- Codex uses `.codex/config.toml` to discover this file and
+  `.codex/agents/godot-advisor.toml` to register the one project specialist.
+  Those files contain Codex mechanics only and point back to the canonical
+  Markdown under `.claude/`.
+- Claude-only frontmatter, tool names, model settings, hooks, memory behavior,
+  and slash-command registration are integration metadata. Other runtimes
+  should use their native equivalents while following the shared guidance.
+- Root `AGENTS.md` and `.agents/` are intentionally absent. Do not recreate
+  them or translate `.claude` content into a Codex-specific copy.
+
+### Agent routing
+
+| Agent | Canonical playbook | Use for |
+|---|---|---|
+| `godot-advisor` | `.claude/agents/godot-advisor.md` | Non-trivial gameplay design, Godot/C# architecture, code review, pattern selection, and implementation or refactoring advice |
+
+Use the specialist when its domain matches the task; otherwise handle the
+task directly. The specialist reads this file first, then its playbook and
+only the shared skills or references needed for the request.
+
+### Skill loading
+
+Load shared guidance in this order:
+
+1. Read `CLAUDE.md` completely.
+2. Read `.claude/agents/godot-advisor.md` when the specialist domain applies.
+3. Read the matching `.claude/skills/<name>/SKILL.md` and only the rules or
+   knowledge files it directly requires.
+
+| Task | Shared skill |
+|---|---|
+| Initialize or adopt these conventions in a Godot C# project | `godot-init` |
+| Choose the least sophisticated applicable game pattern | `pattern-check` |
+| Make a small project-convention refactor | `refactor` |
+| Carry out an end-to-end sim-view migration | `refactor-sim-view` |
+| Verify a technical document against current official sources | `verify-doc` |
+| Record reusable learning-project lessons | `lesson-maker` |
+| Split the working tree into atomic commits | `commit` |
+| Save progress before continuing | `checkpoint` |
+| End or resume a session through the handoff lifecycle | `wrap-up` |
+
+Claude Code may expose these as slash commands. Other runtimes should treat
+the names as shared workflows and load the same `.claude/skills/` source.
+
+### Roslyn and source navigation
+
+Prefer the available Roslyn MCP server for semantic C# operations such as
+symbol definitions, references, implementations, diagnostics, project
+relationships, call chains, and overrides. Use `rg`, focused source reads,
+and normal `dotnet` commands when the semantic operation is unavailable or
+plain text search is the better fit.
+
+### Conflict and response defaults
+
+- Resolve conflicts in this order: correctness, simplicity, documented
+  project intent, readability, then measured performance. `CLAUDE.md` is the
+  final authority for project-specific choices.
+- For a small task, load only the directly relevant skill or source files.
+  For architecture or cross-system work, inspect the affected project graph
+  and established decisions before proposing changes.
+- Lead with the recommended outcome, keep implementation ahead of extended
+  explanation, and state concrete tradeoffs or scope triggers when they
+  matter.
+
 ## Versions (do not assume newer)
 
 - Godot **4.7** (`config/features` in `project.godot`), pinned at 4.7.1 per
