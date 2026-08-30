@@ -26,7 +26,6 @@ Use one or combine them deliberately:
 | Mode | Implementation truth | Curriculum evidence | Main risk |
 |---|---|---|---|
 | Codebase-derived | Current source, build, tests, configuration | Real dependency and request/gameplay flow | Teaching accidental inconsistencies as intentional design |
-| Plan-driven cumulative | Verified per-lesson checkpoints | Canonical plan and completed prerequisite lessons | Treating repository tip as reader history |
 | Topic/reference-driven | Verified reference implementation | Primary docs, specifications, canonical books/papers | Inventing code that was never executed |
 | Validated tutorial synthesis | Reproduced examples and primary docs | Strong tutorials, books, and courses | Copying outdated claims or another author's structure |
 | Hybrid | Codebase plus verified extensions | All applicable sources, with roles recorded | Mixing current behavior with aspirational architecture |
@@ -68,7 +67,6 @@ For each proposed lesson, record:
 - its minimum direct prerequisite and required recall;
 - whether it is core, optional, alternative, reference, drill, or capstone;
 - what new code/state/artifact it introduces;
-- its exact before-state, after-state, and ownership of every new symbol;
 - what later lesson depends on it.
 
 Then audit the graph:
@@ -100,11 +98,6 @@ Freeze:
 - the verification surface: tests, commands, observable UI, requests, logs, or
   serialized output.
 
-For a cumulative course, freeze recoverable checkpoints as well. The current
-working tree is not a checkpoint until it passes the documented verification,
-and later or partial implementation is not evidence that the reader already
-has a dependency.
-
 Use smaller independent examples for conceptual-only material when a cumulative
 project would add ceremony without improving transfer. State that choice in the
 plan so later authors do not invent a second architecture.
@@ -135,3 +128,4 @@ Before freezing filenames and headers, ask:
 - Can a reader stop at each declared stopping point with a complete, honest
   mental model?
 - Does the capstone test reasoning rather than memory of the running example?
+

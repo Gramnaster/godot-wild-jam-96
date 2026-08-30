@@ -1,11 +1,11 @@
 ---
 name: tutorial-maker
 description: >
-  Design, plan, author, verify, or repair a coherent programming or
-  game-development tutorial series. Use for codebase-derived courses, conceptual
-  curricula, validated tutorial syntheses, master plans, individual lessons,
-  course audits, and execution handoffs. Do not use for a short one-off
-  explanation that does not need a maintained curriculum.
+  Design, plan, author, verify, or repair a coherent programming tutorial
+  series. Use for codebase-derived courses, conceptual curricula, validated
+  syntheses of existing tutorials, master plans, individual lessons, course
+  audits, and execution handoffs. Do not use for a short one-off explanation
+  that does not need a maintained curriculum.
 argument-hint: "Topic, codebase, plan, lesson, or tutorial-series task"
 user-invocable: true
 ---
@@ -47,13 +47,11 @@ Read only the references required for the chosen mode:
 - New series or sequence work: [curriculum-design.md](references/curriculum-design.md)
 - Creating or reinforcing a plan: [master-plan.md](references/master-plan.md)
 - Writing or revising a lesson: [lesson-authoring.md](references/lesson-authoring.md)
-- Any game-development course: [game-development.md](references/game-development.md)
 - Internet research, fact-checking, audits, or handoffs:
   [research-review-handoff.md](references/research-review-handoff.md)
 
-Read the four core references when creating a complete new course plan, plus
-the game-development profile when that course concerns games or an engine. Do
-not load every reference for a narrow single-lesson edit.
+Read all four when creating a complete new course plan. Do not load every
+reference for a narrow single-lesson edit.
 
 ## Intake
 
@@ -65,11 +63,8 @@ Establish:
 - exact destination and canonical plan path;
 - topic and course boundary;
 - reader baseline and intended exit competence;
-- source mode: codebase-derived, plan-driven cumulative build-along,
-  topic/reference-driven, validated tutorial synthesis, or hybrid;
-- canonical course contract and the implementation source of truth;
-- narrative mode: greenfield build, retrospective reconstruction, or explicit
-  migration from a named before-state;
+- source mode: codebase-derived, topic/reference-driven, validated tutorial
+  synthesis, or hybrid;
 - required output format and local naming/navigation conventions;
 - whether one cumulative reference implementation is justified;
 - pinned languages, frameworks, engines, SDKs, tools, and platforms;
@@ -98,15 +93,6 @@ the codebase's actual versions and conventions. Do not manufacture lessons for
 features the codebase does not contain unless the requested course explicitly
 teaches a greenfield extension.
 
-### Plan-driven cumulative build-along
-
-Treat the canonical plan and completed prerequisite lessons as the reader's
-history. Use a verified reference implementation for the end-of-lesson state,
-but never treat repository tip as proof that the reader already owns its types,
-settings, assets, routes, scenes, or helpers. Every introduced symbol needs a
-lesson owner and every code-changing lesson needs recoverable before and after
-states.
-
 ### Topic/reference-driven
 
 Derive the curriculum from the learner outcome, current primary documentation,
@@ -128,22 +114,6 @@ do not copy distinctive explanations, examples, exercises, or course structure.
 Use the codebase as implementation truth, primary sources as technical truth,
 and validated educational sources as evidence about how to teach the material.
 Record each source's role so those forms of authority are never conflated.
-
-## Course-state integrity
-
-For a cumulative course, resolve authority in this order unless its contract
-explicitly says otherwise:
-
-1. canonical plan and current course decisions;
-2. completed prerequisite lessons and their verified checkpoints;
-3. verified reference implementation for the assigned lesson;
-4. current primary documentation and specifications.
-
-Before planning or authoring a code-changing lesson, record its before-state,
-after-state, and symbol provenance. Compare repository tip with the before-state
-so partial, future, or broken work is not smuggled in as a prerequisite. If the
-plan, lesson history, and implementation disagree, settle the course contract
-before teaching through the inconsistency.
 
 ## Non-negotiable teaching standard
 
@@ -167,9 +137,6 @@ before teaching through the inconsistency.
   checked conclusion.
 - Examples claimed to work must compile, run, or otherwise be verified in the
   real environment. Mark pseudocode and unverified sketches honestly.
-- Verify the lesson's central risk with evidence capable of observing it; a
-  successful build or happy path is not sufficient proof of timing, persistence,
-  concurrency, networking, security, rendering, or platform behavior.
 - Preserve one authoritative current decision. Remove review transcripts,
   superseded proposals, and drafting history from execution instructions.
 
@@ -197,3 +164,4 @@ Report:
 - validation performed and any checks that require a human or unavailable tool;
 - unresolved factual or curriculum decisions;
 - the exact next lesson or planning action, when a sequence continues.
+

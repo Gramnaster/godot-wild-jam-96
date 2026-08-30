@@ -18,24 +18,6 @@ If code exists, establish a clean baseline with the relevant build, tests, and
 runtime check before editing. Record unrelated failures instead of silently
 teaching around them.
 
-## Establish the numbered checkpoint
-
-For a cumulative lesson, do not use repository tip as the reader baseline.
-Before writing:
-
-1. read the canonical course contract and completed direct prerequisites;
-2. reconstruct or retrieve the successful before-state;
-3. list the code, configuration, schema, scene/resource, asset, package, and
-   editor state present before this lesson;
-4. list every artifact and symbol added or changed by this lesson;
-5. trace each assumed dependency to a completed lesson owner;
-6. compare the reference repository with both manifests and quarantine partial
-   or future work from the lesson narrative;
-7. verify the after-state independently before claiming that the code works.
-
-An older rewritten or renumbered lesson is source material, not a prerequisite,
-unless the canonical plan explicitly retains it in the active path.
-
 ## Default lesson shape
 
 Adopt the existing course format when one exists. Otherwise use this adaptable
@@ -117,9 +99,6 @@ show symptom, cause, proof, and fix as a reusable warning.
 ## Code and artifact rules
 
 - Use code actually read from or applied to the verified reference state.
-- For a plan-driven new capability, first produce or retrieve the approved
-  after-state and verify it. For a retrospective lesson, do not invent a
-  capability absent from the selected implementation state.
 - Match the target's naming, formatting, dependency, and project conventions.
 - Use exact installed versions from manifests or pinned setup instructions.
 - Provide complete namespaces/imports and access modifiers when the language
@@ -134,9 +113,6 @@ show symptom, cause, proof, and fix as a reusable warning.
   as fallbacks.
 - Never replace a runtime or integration check with a unit test that cannot
   observe the behavior being claimed.
-- Make the Files Touched inventory match the complete lesson delta, including
-  configuration, migrations/schemas, scenes/resources, assets, request files,
-  tests, and generated artifacts the reader must understand.
 
 Pseudocode is allowed when implementation would distract from the lesson or the
 plan declares a read-along. Label it visibly and do not claim it compiles.
@@ -161,17 +137,10 @@ Do not add a callout for ordinary narration.
 
 - The lesson answers one dominant question and matches its execution card.
 - Prerequisites and file lists match the actual delta.
-- The before-state matches completed prerequisite lessons, and every assumed
-  symbol, setting, route, table, package, scene, resource, asset, or helper has
-  a visible owner.
 - Every stage has evidence and states the expected result before execution.
 - Working code matches the verified reference state and complete files contain
   no members from later lessons.
 - Version-sensitive claims have nearby primary citations.
-- Load-bearing defaults, contracts, and risk claims are verified by primary
-  evidence and an executable or observable check when practical.
-- Verification exercises the central risk, not only compilation or the happy
-  path.
 - Educational sources shaped pedagogy without becoming unverified technical
   authority or copied prose.
 - The running example and terminology remain consistent.
@@ -180,3 +149,4 @@ Do not add a callout for ordinary narration.
 - Summary aids retrieval; conclusion synthesizes instead of repeating it.
 - Navigation, internal links, headings, callouts, and code fences render in the
   target publication system.
+

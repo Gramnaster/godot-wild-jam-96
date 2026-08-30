@@ -64,9 +64,6 @@ Files created:
 Files edited:
 Files deliberately unchanged:
 Reference implementation state or tag:
-Before-state manifest and successful proof:
-After-state manifest and successful proof:
-Symbols/settings/assets introduced here and later owners:
 Contracts, types, APIs, versions, and ranges introduced:
 Implementation or reasoning order:
 Expected proof and exact verification method:
@@ -116,12 +113,6 @@ Record:
 - which parts require an editor, device, browser, server, database, or multiple
   processes and cannot be proved by a unit test alone.
 
-Also distinguish repository tip from the reader's checkpoint. A migration,
-unfinished feature, or future lesson already present in source does not become
-course history. Every type, member, route, setting, table, scene, asset,
-package, helper, and editor object used by a lesson must either exist in its
-verified before-state or be introduced in that lesson.
-
 Do not claim a snippet is working unless it exists in a verified state. Label
 architecture sketches, pseudocode, and read-alongs accurately.
 
@@ -138,8 +129,6 @@ Verify:
 - headings in the blueprint match headings already published;
 - technical contracts agree across cards, tables, and final specifications;
 - each working code claim maps to a verified reference state;
-- every assumed symbol and artifact has a completed prerequisite owner;
-- each verification method can observe the central behavior or risk claimed;
 - every accepted review correction is routed to a lesson or marked inapplicable;
 - old plan copies are clearly backups, not competing instructions;
 - the plan contains no drafting dialogue, unclosed proposals, or unexplained
@@ -161,3 +150,4 @@ lesson card and determine:
 If the author must choose an architecture, invent an API, guess a version,
 infer a prerequisite, or fabricate validation, reinforce the plan before
 delegating the lesson.
+

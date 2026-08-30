@@ -98,11 +98,6 @@ For each checkable claim:
 5. Record caveats and scope without expanding them into unrelated teaching.
 6. Cite the primary source close to the claim and list sources actually used.
 
-Running code proves what that implementation did in the tested environment; it
-does not by itself prove a documented default, compatibility guarantee,
-security contract, platform promise, or behavior across versions. Re-open the
-applicable primary source for those claims.
-
 Prefer two independent forms of evidence for load-bearing or high-risk claims:
 documentation plus a build/test/runtime check, specification plus implementation,
 or official docs plus a primary production account.
@@ -165,9 +160,6 @@ Check:
 - required paths do not depend on optional material;
 - terminology, code contracts, versions, and ranges remain consistent;
 - every working snippet maps to a verified reference state;
-- repository tip has not been mistaken for the reader's prerequisite state;
-- every assumed code symbol, setting, schema object, scene/resource, asset, or
-  package has a completed lesson owner;
 - the cumulative example evolves without parallel replacement examples;
 - chapter spines and sub-lessons do not duplicate one another;
 - failures are routed to the lesson where readers first have enough context;
@@ -198,7 +190,6 @@ Minimum prerequisite and required reading:
 Single observable outcome:
 Exact H2 sequence:
 Reference state before and after:
-Before/after manifests and symbol provenance:
 Frozen contracts, APIs, versions, ranges, and critical snippets:
 Implementation or reasoning order:
 Required primary and educational sources:
