@@ -33,8 +33,10 @@ networked, or long-lived games.
 - Claude-only frontmatter, tool names, model settings, hooks, memory behavior,
   and slash-command registration are integration metadata. Other runtimes
   should use their native equivalents while following the shared guidance.
-- Root `AGENTS.md` and `.agents/` are intentionally absent. Do not recreate
-  them or translate `.claude` content into a Codex-specific copy.
+- Root `AGENTS.md` is a small compatibility shim containing shared operating
+  principles and directing agents back to this canonical file. Keep `.agents/`
+  absent; do not translate `.claude` content into a parallel runtime-specific
+  copy.
 
 ### Agent routing
 
